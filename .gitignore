@@ -1,6 +1,7 @@
 dist
 node_modules
 .turbo
+.next
 
 .env
 .env.production
