@@ -1,6 +1,5 @@
 # ==============================================================================
 # Multi-stage Dockerfile for Sentinel backend services (api, webhooks, reactor)
-# Usage: docker compose build --build-arg APP=api
 # ==============================================================================
 
 # --- Base ---
@@ -32,21 +31,8 @@ COPY . .
 RUN pnpm prisma:generate
 RUN pnpm build
 
-# --- Production ---
-FROM node:22-slim AS production
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
-WORKDIR /app
-
-# Run as non-root
-RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
-
-# Copy built application
-COPY --from=build /app /app
-
-# Clean up unnecessary files
+# Clean up source files (keep dist, node_modules, generated)
 RUN rm -rf packages/*/src apps/*/src .turbo **/tsconfig* **/*.tsbuildinfo
-
-USER appuser
 
 # APP is set via docker-compose (api, webhooks, reactor)
 ARG APP
