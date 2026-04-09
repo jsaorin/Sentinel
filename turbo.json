@@ -1,0 +1,30 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"globalPassThroughEnv": ["DATABASE_URL", "NODE_ENV"],
+	"tasks": {
+		"db:generate": {
+			"cache": false
+		},
+		"db:migrate": {
+			"cache": false,
+			"persistent": true
+		},
+		"db:deploy": {
+			"cache": false
+		},
+		"db:seed": {
+			"cache": false
+		},
+		"db:reset": {
+			"cache": false
+		},
+		"build": {
+			"dependsOn": ["^build", "prisma:generate"],
+			"outputs": ["dist/**"]
+		},
+		"dev": {
+			"persistent": true
+		},
+		"prisma:generate": {}
+	}
+}

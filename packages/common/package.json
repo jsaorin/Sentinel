@@ -1,0 +1,33 @@
+{
+	"name": "@sentinel/common",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./logger": {
+			"import": "./dist/logger/index.js",
+			"types": "./dist/logger/index.d.ts"
+		},
+		"./errors": {
+			"import": "./dist/errors/index.js",
+			"types": "./dist/errors/index.d.ts"
+		},
+		"./utils": {
+			"import": "./dist/utils/index.js",
+			"types": "./dist/utils/index.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc -b"
+	},
+	"dependencies": {
+		"dotenv": "^16.4.7",
+		"pino": "^9.6.0"
+	}
+}

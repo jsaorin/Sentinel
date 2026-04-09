@@ -1,0 +1,32 @@
+{
+	"name": "@sentinel/domain",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./entities": {
+			"import": "./dist/entities/index.js",
+			"types": "./dist/entities/index.d.ts"
+		},
+		"./repositories": {
+			"import": "./dist/repositories/index.js",
+			"types": "./dist/repositories/index.d.ts"
+		},
+		"./errors": {
+			"import": "./dist/errors/index.js",
+			"types": "./dist/errors/index.d.ts"
+		}
+	},
+	"dependencies": {
+		"@sentinel/common": "workspace:*"
+	},
+	"scripts": {
+		"build": "tsc -b"
+	}
+}

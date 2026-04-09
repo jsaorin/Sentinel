@@ -1,0 +1,44 @@
+{
+	"name": "@sentinel/infrastructure",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./prisma": "./generated/client/index.js",
+		"./mappers": {
+			"import": "./dist/mappers/index.js",
+			"types": "./dist/mappers/index.d.ts"
+		}
+	},
+	"scripts": {
+		"prisma:generate": "npx prisma generate --schema=./src/prisma/schema",
+		"db:migrate": "npx prisma migrate dev --schema=./src/prisma/schema",
+		"db:deploy": "npx prisma migrate deploy --schema=./src/prisma/schema",
+		"db:reset": "npx prisma db push --force-reset --schema=./src/prisma/schema && pnpm prisma:generate && tsx src/prisma/seed/index.ts",
+		"db:seed": "tsx src/prisma/seed/index.ts",
+		"prebuild": "pnpm run prisma:generate",
+		"build": "tsc -b"
+	},
+	"prisma": {
+		"seed": "tsx src/prisma/seed/index.ts"
+	},
+	"dependencies": {
+		"@sentinel/application": "workspace:*",
+		"@sentinel/common": "workspace:*",
+		"@sentinel/domain": "workspace:*",
+		"@prisma/client": "^7.4.2",
+		"amqplib": "^0.10.3"
+	},
+	"devDependencies": {
+		"@types/amqplib": "^0.10.4",
+		"dotenv": "^16.4.7",
+		"prisma": "^7.4.2"
+	}
+}

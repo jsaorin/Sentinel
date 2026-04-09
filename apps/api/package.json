@@ -1,0 +1,37 @@
+{
+	"name": "api",
+	"version": "1.0.0",
+	"main": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"build": "tsc -b",
+		"start": "node dist/index.js",
+		"dev": "node --loader ts-node/esm src/index.ts",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"nodemonConfig": {
+		"watch": [
+			"src",
+			"../../packages/common/src",
+			"../../packages/domain/src",
+			"../../packages/infrastructure/src"
+		],
+		"ext": "ts,json",
+		"exec": "node --enable-source-maps --loader ts-node/esm src/index.ts"
+	},
+	"dependencies": {
+		"@sentinel/application": "workspace:*",
+		"@sentinel/common": "workspace:*",
+		"@sentinel/domain": "workspace:*",
+		"@sentinel/infrastructure": "workspace:*",
+		"cors": "^2.8.5",
+		"express": "^4.21.2",
+		"helmet": "^8.0.0"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.17",
+		"@types/express": "^5.0.0",
+		"ts-node": "^10.9.2"
+	}
+}

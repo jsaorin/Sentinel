@@ -1,0 +1,39 @@
+{
+	"name": "reactor",
+	"version": "1.0.0",
+	"main": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"build": "tsc -b",
+		"start": "node dist/index.js",
+		"dev": "node --loader ts-node/esm src/index.ts",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"nodemonConfig": {
+		"watch": [
+			"src",
+			"../../packages/common/src",
+			"../../packages/domain/src",
+			"../../packages/infrastructure/src"
+		],
+		"ext": "ts,json",
+		"exec": "node --enable-source-maps --loader ts-node/esm src/index.ts"
+	},
+	"dependencies": {
+		"@sentinel/application": "workspace:*",
+		"@sentinel/common": "workspace:*",
+		"@sentinel/domain": "workspace:*",
+		"@sentinel/infrastructure": "workspace:*",
+		"amqplib": "^0.10.3",
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"helmet": "^8.0.0",
+		"reflect-metadata": "^0.2.2"
+	},
+	"devDependencies": {
+		"@types/amqplib": "^0.10.4",
+		"@types/express": "^5.0.0",
+		"ts-node": "^10.9.2"
+	}
+}

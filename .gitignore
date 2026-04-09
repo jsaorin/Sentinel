@@ -1,0 +1,22 @@
+dist
+node_modules
+.turbo
+
+.env
+.env.production
+.env.local
+
+.idea
+.vscode
+.zed
+.DS_Store
+
+packages/infrastructure/generated/
+tsconfig.tsbuildinfo
+
+.cursor
+
+# Claude
+.claude/reports/
+.claude/worktrees/
+.claude/CLAUDE.local.md
