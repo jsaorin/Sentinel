@@ -8,6 +8,7 @@ class ApiEnvironment extends Environment {
 	private _port!: number;
 	private _basePath!: string;
 	private _solanaRpcUrl!: string;
+	private _heliusApiKey!: string;
 	private _amqpUrl!: string;
 
 	constructor() {
@@ -23,6 +24,7 @@ class ApiEnvironment extends Environment {
 		this.port = env.API_PORT;
 		this.basePath = env.BASE_PATH;
 		this.solanaRpcUrl = env.SOLANA_RPC_URL;
+		this.heliusApiKey = env.HELIUS_API_KEY;
 		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
 	}
 
@@ -64,6 +66,14 @@ class ApiEnvironment extends Environment {
 
 	set solanaRpcUrl(value) {
 		this._solanaRpcUrl = value;
+	}
+
+	get heliusApiKey() {
+		return this._heliusApiKey;
+	}
+
+	set heliusApiKey(value) {
+		this._heliusApiKey = value;
 	}
 
 	get amqpUrl() {

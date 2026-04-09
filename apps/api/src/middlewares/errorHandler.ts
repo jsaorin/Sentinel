@@ -1,6 +1,7 @@
 import { ServiceError } from "@sentinel/common/errors";
 import { ResourceNotFoundError } from "@sentinel/domain/errors";
 import type { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 import environment from "../env/api-environment.js";
 import { logger } from "../logger/logger.js";
 
@@ -30,7 +31,15 @@ export const errorHandler = () => {
 		};
 
 		let statusCode = 500;
-		if (err instanceof ServiceError) {
+		if ("statusCode" in err && typeof err.statusCode === "number") {
+			statusCode = err.statusCode;
+			errorBody.message = err.message;
+		} else if (err instanceof ZodError) {
+			statusCode = 422;
+			errorBody.message = err.issues
+				.map((e) => `${e.path.join(".")}: ${e.message}`)
+				.join(", ");
+		} else if (err instanceof ServiceError) {
 			statusCode = 400;
 		} else if (err instanceof ResourceNotFoundError) {
 			statusCode = 404;

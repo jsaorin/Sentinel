@@ -1,0 +1,9 @@
+model Multisig {
+  id        String   @id @default(uuid())
+  address   String   @unique
+  label     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("multisig")
+}

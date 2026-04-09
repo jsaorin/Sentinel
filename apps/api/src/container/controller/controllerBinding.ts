@@ -1,5 +1,6 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { HealthController } from "../../presentation/health/HealthController.js";
+import { MultisigController } from "../../presentation/multisigs/MultisigController.js";
 import { CONTROLLER_TYPES } from "./controllerTypes.js";
 
 export const controllerBindings = new ContainerModule(
@@ -7,5 +8,9 @@ export const controllerBindings = new ContainerModule(
 		options
 			.bind<HealthController>(CONTROLLER_TYPES.HealthController)
 			.to(HealthController);
+
+		options
+			.bind<MultisigController>(CONTROLLER_TYPES.MultisigController)
+			.to(MultisigController);
 	},
 );

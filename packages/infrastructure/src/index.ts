@@ -4,4 +4,5 @@ export * from "./container/RepositoryModule.js";
 export * from "./container/ServiceModule.js";
 export * from "./container/PortModule.js";
 export * from "./events/index.js";
+export * from "./services/index.js";
 export * from "./types.js";

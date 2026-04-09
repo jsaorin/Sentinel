@@ -1,6 +1,7 @@
 import { APPLICATION_TYPES } from "@sentinel/application";
 import type { EventPublisherConfig } from "@sentinel/application";
 import type { ILogger } from "@sentinel/common/logger";
+import { DOMAIN_TYPES } from "@sentinel/domain";
 import { INFRASTRUCTURE_TYPES } from "@sentinel/infrastructure";
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import environment from "../../env/api-environment.js";
@@ -19,5 +20,9 @@ export const configBindings = new ContainerModule(
 				confirmTimeoutMs: 5000,
 				appId: environment.appName,
 			});
+
+		options
+			.bind(DOMAIN_TYPES.HeliusApiConfig)
+			.toConstantValue({ apiKey: environment.heliusApiKey });
 	},
 );

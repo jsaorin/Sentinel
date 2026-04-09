@@ -9,8 +9,6 @@ const controller = container.get<HealthController>(
 	CONTROLLER_TYPES.HealthController,
 );
 
-router.get("/health", (req, res, next) => {
-	controller.health(req, res).catch(next);
-});
+router.get("/health", controller.health.bind(controller));
 
 export default router;

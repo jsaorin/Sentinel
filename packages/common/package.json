@@ -25,6 +25,14 @@
 		"./api": {
 			"import": "./dist/api/index.js",
 			"types": "./dist/api/index.d.ts"
+		},
+		"./dtos": {
+			"import": "./dist/dto/index.js",
+			"types": "./dist/dto/index.d.ts"
+		},
+		"./middlewares": {
+			"import": "./dist/middlewares/index.js",
+			"types": "./dist/middlewares/index.d.ts"
 		}
 	},
 	"scripts": {
