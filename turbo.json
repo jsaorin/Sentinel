@@ -20,7 +20,11 @@
 		},
 		"build": {
 			"dependsOn": ["^build", "prisma:generate"],
-			"outputs": ["dist/**"]
+			"outputs": ["dist/**", ".next/**"]
+		},
+		"test": {
+			"dependsOn": ["^build"],
+			"outputs": ["coverage/**"]
 		},
 		"dev": {
 			"persistent": true

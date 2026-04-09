@@ -57,7 +57,8 @@
 			"**/*.tsbuildinfo",
 			"**/pnpm-lock.yaml",
 			"pnpm-workspace.yaml",
-			".env.example"
+			".env.example",
+			"apps/web/.next/**"
 		]
 	}
 }
