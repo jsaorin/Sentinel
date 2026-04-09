@@ -271,16 +271,16 @@ importers:
       amqplib:
         specifier: ^0.10.3
         version: 0.10.9
-    devDependencies:
-      '@types/amqplib':
-        specifier: ^0.10.4
-        version: 0.10.8
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
       prisma:
         specifier: ^7.4.2
         version: 7.7.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)
+    devDependencies:
+      '@types/amqplib':
+        specifier: ^0.10.4
+        version: 0.10.8
 
   packages/ui:
     dependencies:

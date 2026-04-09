@@ -62,7 +62,7 @@ jobs:
             docker compose -f docker/docker-compose.prod.yml up -d
 
             # Run database migrations
-            docker compose -f docker/docker-compose.prod.yml exec -T api pnpm db:deploy
+            docker compose -f docker/docker-compose.prod.yml exec -T api npx prisma migrate deploy --schema=./packages/infrastructure/src/prisma/schema
 
             # Conditional seed (if commit message contains [run-seeds])
             LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
