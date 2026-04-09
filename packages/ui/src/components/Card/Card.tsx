@@ -1,16 +1,37 @@
 import type { HTMLAttributes } from "react";
 
+type CardVariant = "default" | "raised" | "outlined";
+type CardPadding = "sm" | "md" | "lg";
+
 type CardProps = HTMLAttributes<HTMLDivElement> & {
-	padding?: "sm" | "md" | "lg";
+	variant?: CardVariant;
+	padding?: CardPadding;
 };
 
-const paddingClasses = { sm: "p-4", md: "p-6", lg: "p-8" };
+const variantClasses: Record<CardVariant, string> = {
+	default: "bg-bg-card border border-border-subtle shadow-sm",
+	raised: "bg-bg-raised border border-border-default shadow-md",
+	outlined: "bg-transparent border border-border-strong",
+};
 
-export function Card({ padding = "md", className = "", children, ...props }: CardProps) {
+const paddingClasses: Record<CardPadding, string> = {
+	sm: "p-4",
+	md: "p-5",
+	lg: "p-6",
+};
+
+export function Card({
+	variant = "default",
+	padding = "md",
+	className = "",
+	children,
+	...props
+}: CardProps) {
 	return (
 		<div
 			className={[
-				"rounded-lg border border-gray-200 bg-white shadow-sm",
+				"rounded-lg",
+				variantClasses[variant],
 				paddingClasses[padding],
 				className,
 			].join(" ")}

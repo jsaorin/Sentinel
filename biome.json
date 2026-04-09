@@ -58,7 +58,8 @@
 			"**/pnpm-lock.yaml",
 			"pnpm-workspace.yaml",
 			".env.example",
-			"apps/web/.next/**"
+			"apps/web/.next/**",
+			"apps/web/src/app/globals.css"
 		]
 	}
 }

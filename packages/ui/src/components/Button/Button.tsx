@@ -10,16 +10,17 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
-	primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
-	secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500",
-	ghost: "bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
-	destructive: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+	primary: "bg-primary text-text-inverse hover:bg-primary-hover focus:ring-primary",
+	secondary:
+		"bg-bg-raised border border-border-default text-text-primary hover:bg-bg-overlay focus:ring-border-strong",
+	ghost: "bg-transparent text-text-secondary hover:bg-bg-hover focus:ring-border-default",
+	destructive: "bg-critical text-white hover:opacity-80 focus:ring-critical",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
 	sm: "px-3 py-1.5 text-sm",
 	md: "px-4 py-2 text-base",
-	lg: "px-6 py-3 text-lg",
+	lg: "px-6 py-3 text-md",
 };
 
 export function Button({
@@ -35,7 +36,7 @@ export function Button({
 		<button
 			className={[
 				"inline-flex items-center justify-center rounded-md font-medium",
-				"transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+				"transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-bg-base",
 				"disabled:opacity-50 disabled:pointer-events-none",
 				variantClasses[variant],
 				sizeClasses[size],

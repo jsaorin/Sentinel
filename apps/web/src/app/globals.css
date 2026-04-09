@@ -1,2 +1,212 @@
 @import "tailwindcss";
+
+/* ── Content scanning ─────────────────────────────────────── */
 @source "../../packages/ui/src";
+
+/* ── Dark mode (class-based, .dark on <html>) ─────────────── */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Font bridge (next/font → Tailwind) ───────────────────── */
+@theme inline {
+	--font-sans: var(--font-ibm-plex-sans);
+	--font-mono: var(--font-jetbrains-mono);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   All semantic tokens generate Tailwind utility classes:
+   --color-critical → bg-critical, text-critical, border-critical
+   ══════════════════════════════════════════════════════════════ */
+@theme {
+	/* ── Reset Tailwind's default palette ──────────────────── */
+	--color-*: initial;
+
+	/* ── Semantic Status Colors ────────────────────────────── */
+
+	--color-critical: #fc3e4e;
+	--color-critical-subtle: oklch(62.8% 0.257 25 / 0.12);
+	--color-critical-border: oklch(62.8% 0.257 25 / 0.35);
+
+	--color-high: #ff9345;
+	--color-high-subtle: oklch(73% 0.18 46 / 0.12);
+	--color-high-border: oklch(73% 0.18 46 / 0.35);
+
+	--color-medium: #ffba00;
+	--color-medium-subtle: oklch(83% 0.17 84 / 0.12);
+	--color-medium-border: oklch(83% 0.17 84 / 0.35);
+
+	--color-low: #3dd68c;
+	--color-low-subtle: oklch(77% 0.17 155 / 0.12);
+	--color-low-border: oklch(77% 0.17 155 / 0.35);
+
+	--color-safe: #10b981;
+	--color-safe-subtle: oklch(72% 0.17 162 / 0.12);
+	--color-safe-border: oklch(72% 0.17 162 / 0.35);
+
+	--color-info: #4b9fe5;
+	--color-info-subtle: oklch(70% 0.13 230 / 0.12);
+	--color-info-border: oklch(70% 0.13 230 / 0.35);
+
+	--color-unknown: #6b7280;
+	--color-unknown-subtle: rgba(107, 114, 128, 0.12);
+	--color-unknown-border: rgba(107, 114, 128, 0.35);
+
+	/* ── Background Surfaces (dark-first) ──────────────────── */
+	--color-bg-base: #0a0f1e;
+	--color-bg-surface: #0d1117;
+	--color-bg-card: #111827;
+	--color-bg-raised: #161b27;
+	--color-bg-overlay: #1e2537;
+	--color-bg-hover: rgba(255, 255, 255, 0.04);
+	--color-bg-active: rgba(255, 255, 255, 0.07);
+
+	/* ── Text Hierarchy ────────────────────────────────────── */
+	--color-text-primary: rgba(249, 250, 251, 0.92);
+	--color-text-secondary: rgba(249, 250, 251, 0.6);
+	--color-text-tertiary: rgba(249, 250, 251, 0.38);
+	--color-text-disabled: rgba(249, 250, 251, 0.2);
+	--color-text-inverse: #0a0f1e;
+	--color-text-link: #4b9fe5;
+	--color-text-link-hover: #7dd3fc;
+
+	/* ── Borders ───────────────────────────────────────────── */
+	--color-border-subtle: rgba(255, 255, 255, 0.06);
+	--color-border-default: rgba(255, 255, 255, 0.12);
+	--color-border-strong: rgba(255, 255, 255, 0.22);
+
+	/* ── Interactive (primary brand) ───────────────────────── */
+	--color-primary: #4b9fe5;
+	--color-primary-hover: #2563eb;
+	--color-primary-muted: rgba(75, 159, 229, 0.15);
+
+	/* ── Utility ───────────────────────────────────────────── */
+	--color-white: #ffffff;
+	--color-black: #000000;
+	--color-transparent: transparent;
+
+	/* ── Typography Scale ────────────────────────────────────── */
+	--text-xs: 0.6875rem;
+	--text-sm: 0.75rem;
+	--text-base: 0.8125rem;
+	--text-md: 0.875rem;
+	--text-lg: 1rem;
+	--text-xl: 1.125rem;
+	--text-2xl: 1.25rem;
+	--text-3xl: 1.5rem;
+	--text-4xl: 2rem;
+	--text-5xl: 3rem;
+	--text-6xl: 4rem;
+
+	/* ── Border Radius ─────────────────────────────────────── */
+	--radius-none: 0;
+	--radius-xs: 2px;
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+	--radius-xl: 12px;
+	--radius-2xl: 16px;
+	--radius-full: 9999px;
+
+	/* ── Shadows (tuned for dark backgrounds) ─────────────── */
+	--shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+	--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+	--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5), 0 4px 6px rgba(0, 0, 0, 0.4);
+	--shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
+	--shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+
+	--shadow-glow-critical: 0 0 0 1px var(--color-critical-border),
+		0 0 16px oklch(62.8% 0.257 25 / 0.4);
+	--shadow-glow-safe: 0 0 0 1px var(--color-safe-border),
+		0 0 12px oklch(72% 0.17 162 / 0.25);
+
+	/* ── Spacing ───────────────────────────────────────────── */
+	--spacing: 0.25rem;
+
+	/* ── Breakpoints ───────────────────────────────────────── */
+	--breakpoint-sm: 640px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1280px;
+	--breakpoint-2xl: 1440px;
+
+	/* ── Animations ────────────────────────────────────────── */
+	--animate-pulse-critical: pulse-critical 2.5s ease-in-out infinite;
+	--animate-fade-in: fade-in 0.2s ease-out;
+	--animate-slide-up: slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+	@keyframes pulse-critical {
+		0%,
+		100% {
+			box-shadow: 0 0 8px rgba(252, 62, 78, 0.3);
+		}
+		50% {
+			box-shadow: 0 0 24px rgba(252, 62, 78, 0.65);
+		}
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slide-up {
+		from {
+			transform: translateY(6px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+}
+
+/* ── Base Styles ───────────────────────────────────────────── */
+@layer base {
+	html {
+		background-color: var(--color-bg-base);
+		color: var(--color-text-primary);
+		font-family: var(--font-sans);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		font-feature-settings: "kern" 1, "liga" 1;
+	}
+
+	code,
+	pre,
+	kbd,
+	.font-mono {
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+	}
+
+	::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	::-webkit-scrollbar-track {
+		background: var(--color-bg-base);
+	}
+	::-webkit-scrollbar-thumb {
+		background: var(--color-border-default);
+		border-radius: 3px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: var(--color-border-strong);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-primary);
+		outline-offset: 2px;
+		border-radius: var(--radius-sm);
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+}
