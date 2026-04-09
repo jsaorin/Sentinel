@@ -21,6 +21,10 @@
 		"./utils": {
 			"import": "./dist/utils/index.js",
 			"types": "./dist/utils/index.d.ts"
+		},
+		"./api": {
+			"import": "./dist/api/index.js",
+			"types": "./dist/api/index.d.ts"
 		}
 	},
 	"scripts": {

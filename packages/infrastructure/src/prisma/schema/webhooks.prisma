@@ -1,0 +1,25 @@
+model WebhookConfig {
+  id               String      @id @default(uuid())
+  heliusWebhookId  String      @map("helius_webhook_id")
+  type             WebhookType
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@map("webhook_config")
+}
+
+model OutboxEvent {
+  id         String            @id @default(uuid())
+  exchange   String            @default("reactor.events")
+  routingKey String            @map("routing_key")
+  event      Json
+  status     OutboxEventStatus @default(PENDING)
+  attempts   Int               @default(0)
+  lastError  String?           @map("last_error")
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+
+  @@index([status, createdAt])
+  @@map("outbox_event")
+}

@@ -1,0 +1,18 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"strictNullChecks": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"composite": true,
+		"outDir": "./dist",
+		"rootDir": "./src"
+	},
+	"references": [
+		{ "path": "../../packages/common" },
+		{ "path": "../../packages/domain" },
+		{ "path": "../../packages/infrastructure" },
+		{ "path": "../../packages/application" }
+	],
+	"include": ["src"]
+}

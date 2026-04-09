@@ -1,1 +1,1 @@
-// Event publishers - add as needed
+export { OutboxAwareEventPublisher } from "./OutboxAwareEventPublisher.js";

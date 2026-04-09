@@ -1,0 +1,33 @@
+{
+	"name": "webhooks",
+	"version": "1.0.0",
+	"main": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"build": "tsc -b",
+		"start": "node dist/index.js",
+		"dev": "node --loader ts-node/esm src/index.ts"
+	},
+	"nodemonConfig": {
+		"watch": [
+			"src",
+			"../../packages/common/src",
+			"../../packages/domain/src",
+			"../../packages/infrastructure/src"
+		],
+		"ext": "ts,json",
+		"exec": "node --enable-source-maps --loader ts-node/esm src/index.ts"
+	},
+	"dependencies": {
+		"@sentinel/application": "workspace:*",
+		"@sentinel/common": "workspace:*",
+		"@sentinel/domain": "workspace:*",
+		"@sentinel/infrastructure": "workspace:*",
+		"express": "^4.21.2",
+		"helmet": "^8.0.0"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.0",
+		"ts-node": "^10.9.2"
+	}
+}

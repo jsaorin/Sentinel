@@ -1,0 +1,10 @@
+enum WebhookType {
+  MULTISIG_ACTIVITY
+  ADDRESS_ACTIVITY
+}
+
+enum OutboxEventStatus {
+  PENDING
+  PUBLISHED
+  FAILED
+}
