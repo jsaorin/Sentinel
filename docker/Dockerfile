@@ -5,6 +5,7 @@
 
 # --- Base ---
 FROM node:22-slim AS base
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 WORKDIR /app
 
@@ -32,7 +33,7 @@ RUN pnpm prisma:generate
 RUN pnpm build
 
 # Remove dev dependencies
-RUN pnpm prune --prod
+RUN CI=true pnpm prune --prod
 
 # --- Production ---
 FROM node:22-slim AS production
