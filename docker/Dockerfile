@@ -37,7 +37,7 @@ RUN CI=true pnpm prune --prod --ignore-scripts
 
 # --- Production ---
 FROM node:22-slim AS production
-RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Run as non-root
@@ -55,4 +55,4 @@ USER appuser
 ARG APP
 ENV APP=${APP}
 
-CMD pnpm start:${APP}
+CMD node apps/${APP}/dist/index.js
