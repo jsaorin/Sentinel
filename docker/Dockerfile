@@ -11,8 +11,8 @@ WORKDIR /app
 # --- Dependencies ---
 FROM base AS deps
 
-# Copy workspace config
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+# Copy workspace config (including .npmrc for pnpm hoist settings)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .npmrc ./
 
 # Copy all package.json files to leverage Docker cache
 COPY packages/common/package.json packages/common/
