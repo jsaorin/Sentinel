@@ -1,0 +1,21 @@
+# Replace {$DOMAIN} with your actual domain or set as env var
+# Examples:
+#   sentinel.yourdomain.com → single domain with path-based routing
+#   api.sentinel.com / webhooks.sentinel.com → subdomain routing
+
+{$DOMAIN:localhost} {
+	# API: /api/*
+	handle /api/* {
+		reverse_proxy api:3000
+	}
+
+	# Webhooks: /webhooks/*
+	handle /webhooks/* {
+		reverse_proxy webhooks:3001
+	}
+
+	# Default: 404
+	handle {
+		respond "Not Found" 404
+	}
+}

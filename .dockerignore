@@ -1,0 +1,17 @@
+node_modules
+dist
+.next
+.turbo
+.git
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+.claude
+.cursor
+.idea
+.vscode
+.zed
+apps/web
+packages/ui
