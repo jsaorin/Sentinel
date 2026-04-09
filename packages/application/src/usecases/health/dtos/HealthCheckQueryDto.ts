@@ -1,4 +1,4 @@
-export type HealthCheckQueryInputDto = void;
+export type HealthCheckQueryInputDto = undefined;
 
 export interface HealthCheckQueryOutputDto {
 	status: string;

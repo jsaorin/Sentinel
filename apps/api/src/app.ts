@@ -56,7 +56,7 @@ class App {
 			const basePath = environment.basePath;
 			const version = environment.apiVersion;
 
-			logger.info(`Sentinel API started`, {
+			logger.info("Sentinel API started", {
 				port,
 				env,
 				url: `http://localhost:${port}/${basePath}/${version}`,

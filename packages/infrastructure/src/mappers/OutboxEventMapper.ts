@@ -1,7 +1,7 @@
 import type { OutboxEvent as PrismaOutboxEvent } from "../../generated/client/index.js";
 import {
 	OutboxEvent,
-	OutboxEventStatus,
+	type OutboxEventStatus,
 } from "@sentinel/domain";
 
 export function mapOutboxEventToDomain(

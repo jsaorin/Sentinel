@@ -45,7 +45,7 @@ function project(
   h: number,
 ): { sx: number; sy: number; depth: number } {
   // Rotate around Y axis
-  let x = node.x * Math.cos(rotY) - node.z * Math.sin(rotY);
+  const x = node.x * Math.cos(rotY) - node.z * Math.sin(rotY);
   let z = node.x * Math.sin(rotY) + node.z * Math.cos(rotY);
   let y = node.y;
 
@@ -214,7 +214,7 @@ export function HeroVisual() {
       ref={containerRef}
       className="absolute inset-0 lg:relative lg:inset-auto flex items-center justify-center w-full h-full lg:min-h-[600px] opacity-30 lg:opacity-100"
     >
-      <canvas ref={canvasRef} className="w-full h-full" aria-hidden="true" />
+      <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
 }

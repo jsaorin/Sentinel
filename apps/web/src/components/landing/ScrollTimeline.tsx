@@ -65,7 +65,7 @@ export function ScrollTimeline({ children, nodeCount }: ScrollTimelineProps) {
 				{/* Nodes */}
 				{nodePositions.map((top, i) => (
 					<div
-						key={`node-${i}`}
+						key={`node-${top}`}
 						className={[
 							"timeline-node absolute -left-1.5",
 							activeNodes.has(i) ? "timeline-node--active" : "",

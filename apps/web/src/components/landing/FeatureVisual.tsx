@@ -91,8 +91,8 @@ function NetworkVisual() {
       className="w-full max-w-xs mx-auto"
       aria-hidden="true"
     >
-      {signers.map((s, i) => (
-        <g key={`conn-${i}`}>
+      {signers.map((s) => (
+        <g key={`conn-${s.label}`}>
           <line
             x1={s.cx}
             y1={s.cy}
@@ -128,8 +128,8 @@ function NetworkVisual() {
       <circle cx={hub.cx} cy={hub.cy} r="8" fill="rgba(255,255,255,0.9)" />
 
       {/* Signer nodes */}
-      {signers.map((s, i) => (
-        <g key={`s${i}`}>
+      {signers.map((s) => (
+        <g key={`s-${s.label}`}>
           <circle
             cx={s.cx}
             cy={s.cy}
@@ -191,7 +191,7 @@ function TimelineVisual() {
       />
 
       {steps.map((step, i) => (
-        <g key={`step${i}`}>
+        <g key={`step-${step.x}`}>
           <circle
             cx={step.x}
             cy="60"
@@ -204,7 +204,7 @@ function TimelineVisual() {
           />
           {step.label.split("\n").map((line, li) => (
             <text
-              key={`t${i}-${li}`}
+              key={`t-${step.x}-${li}`}
               x={step.x}
               y={95 + li * 16}
               textAnchor="middle"
