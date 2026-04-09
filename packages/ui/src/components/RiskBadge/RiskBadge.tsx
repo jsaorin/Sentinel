@@ -13,37 +13,37 @@ const levelConfig: Record<RiskLevel, { label: string; icon: string; classes: str
 	critical: {
 		label: "Critical",
 		icon: "⛔",
-		classes: "bg-critical-subtle border-critical-border text-critical",
+		classes: "bg-critical-subtle text-critical",
 	},
 	high: {
 		label: "High",
 		icon: "⚠",
-		classes: "bg-high-subtle border-high-border text-high",
+		classes: "bg-high-subtle text-high",
 	},
 	medium: {
 		label: "Medium",
 		icon: "●",
-		classes: "bg-medium-subtle border-medium-border text-medium",
+		classes: "bg-medium-subtle text-medium",
 	},
 	low: {
 		label: "Low",
 		icon: "✓",
-		classes: "bg-low-subtle border-low-border text-low",
+		classes: "bg-low-subtle text-low",
 	},
 	safe: {
 		label: "Safe",
 		icon: "🛡",
-		classes: "bg-safe-subtle border-safe-border text-safe",
+		classes: "bg-safe-subtle text-safe",
 	},
 	info: {
 		label: "Info",
 		icon: "ℹ",
-		classes: "bg-info-subtle border-info-border text-info",
+		classes: "bg-info-subtle text-info",
 	},
 	unknown: {
 		label: "Unknown",
 		icon: "?",
-		classes: "bg-unknown-subtle border-unknown-border text-unknown",
+		classes: "bg-unknown-subtle text-unknown",
 	},
 };
 
@@ -65,7 +65,7 @@ export function RiskBadge({
 	return (
 		<span
 			className={[
-				"inline-flex items-center rounded-full border font-semibold tracking-wider uppercase",
+				"inline-flex items-center rounded-full font-semibold tracking-wider uppercase",
 				sizeClasses[size],
 				config.classes,
 				className,

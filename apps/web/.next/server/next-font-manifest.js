@@ -1,1 +1,1 @@
-self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/alvaroteranrodriguez/Desktop/Sentinel/apps/web/src/app/layout":["static/media/26d4368bf94c0ec4-s.p.woff2","static/media/bb3ef058b751a6ad-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/alvaroteranrodriguez/Desktop/Sentinel/apps/web/src/app/layout\":[\"static/media/26d4368bf94c0ec4-s.p.woff2\",\"static/media/bb3ef058b751a6ad-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"

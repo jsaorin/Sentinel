@@ -21,63 +21,63 @@
 	/* ── Reset Tailwind's default palette ──────────────────── */
 	--color-*: initial;
 
-	/* ── Semantic Status Colors ────────────────────────────── */
+	/* ── Semantic Status Colors (deep, earthy, professional) ── */
 
-	--color-critical: #fc3e4e;
-	--color-critical-subtle: oklch(62.8% 0.257 25 / 0.12);
-	--color-critical-border: oklch(62.8% 0.257 25 / 0.35);
+	--color-critical: #902c2c;
+	--color-critical-subtle: rgba(144, 44, 44, 0.10);
+	--color-critical-border: rgba(144, 44, 44, 0.30);
 
-	--color-high: #ff9345;
-	--color-high-subtle: oklch(73% 0.18 46 / 0.12);
-	--color-high-border: oklch(73% 0.18 46 / 0.35);
+	--color-high: #90682c;
+	--color-high-subtle: rgba(144, 104, 44, 0.10);
+	--color-high-border: rgba(144, 104, 44, 0.30);
 
-	--color-medium: #ffba00;
-	--color-medium-subtle: oklch(83% 0.17 84 / 0.12);
-	--color-medium-border: oklch(83% 0.17 84 / 0.35);
+	--color-medium: #8a8428;
+	--color-medium-subtle: rgba(138, 132, 40, 0.10);
+	--color-medium-border: rgba(138, 132, 40, 0.30);
 
-	--color-low: #3dd68c;
-	--color-low-subtle: oklch(77% 0.17 155 / 0.12);
-	--color-low-border: oklch(77% 0.17 155 / 0.35);
+	--color-low: #41902c;
+	--color-low-subtle: rgba(65, 144, 44, 0.10);
+	--color-low-border: rgba(65, 144, 44, 0.30);
 
-	--color-safe: #10b981;
-	--color-safe-subtle: oklch(72% 0.17 162 / 0.12);
-	--color-safe-border: oklch(72% 0.17 162 / 0.35);
+	--color-safe: #2c7a24;
+	--color-safe-subtle: rgba(44, 122, 36, 0.10);
+	--color-safe-border: rgba(44, 122, 36, 0.30);
 
-	--color-info: #4b9fe5;
-	--color-info-subtle: oklch(70% 0.13 230 / 0.12);
-	--color-info-border: oklch(70% 0.13 230 / 0.35);
+	--color-info: #2c5a90;
+	--color-info-subtle: rgba(44, 90, 144, 0.10);
+	--color-info-border: rgba(44, 90, 144, 0.30);
 
-	--color-unknown: #6b7280;
-	--color-unknown-subtle: rgba(107, 114, 128, 0.12);
-	--color-unknown-border: rgba(107, 114, 128, 0.35);
+	--color-unknown: #4a4e55;
+	--color-unknown-subtle: rgba(74, 78, 85, 0.10);
+	--color-unknown-border: rgba(74, 78, 85, 0.30);
 
-	/* ── Background Surfaces (dark-first) ──────────────────── */
-	--color-bg-base: #0a0f1e;
-	--color-bg-surface: #0d1117;
-	--color-bg-card: #111827;
-	--color-bg-raised: #161b27;
-	--color-bg-overlay: #1e2537;
-	--color-bg-hover: rgba(255, 255, 255, 0.04);
-	--color-bg-active: rgba(255, 255, 255, 0.07);
+	/* ── Background Surfaces (pure black base) ─────────────── */
+	--color-bg-base: #000000;
+	--color-bg-surface: #0a0a0a;
+	--color-bg-card: #111111;
+	--color-bg-raised: #181818;
+	--color-bg-overlay: #222222;
+	--color-bg-hover: rgba(255, 255, 255, 0.05);
+	--color-bg-active: rgba(255, 255, 255, 0.08);
 
 	/* ── Text Hierarchy ────────────────────────────────────── */
-	--color-text-primary: rgba(249, 250, 251, 0.92);
-	--color-text-secondary: rgba(249, 250, 251, 0.6);
-	--color-text-tertiary: rgba(249, 250, 251, 0.38);
-	--color-text-disabled: rgba(249, 250, 251, 0.2);
-	--color-text-inverse: #0a0f1e;
-	--color-text-link: #4b9fe5;
-	--color-text-link-hover: #7dd3fc;
+	--color-text-primary: #f5f5f5;
+	--color-text-secondary: #a0a0a0;
+	--color-text-tertiary: #666666;
+	--color-text-disabled: #3a3a3a;
+	--color-text-inverse: #000000;
+	--color-text-link: #d4d4d4;
+	--color-text-link-hover: #ffffff;
 
 	/* ── Borders ───────────────────────────────────────────── */
-	--color-border-subtle: rgba(255, 255, 255, 0.06);
-	--color-border-default: rgba(255, 255, 255, 0.12);
-	--color-border-strong: rgba(255, 255, 255, 0.22);
+	--color-border-subtle: rgba(255, 255, 255, 0.08);
+	--color-border-default: rgba(255, 255, 255, 0.15);
+	--color-border-strong: rgba(255, 255, 255, 0.28);
 
-	/* ── Interactive (primary brand) ───────────────────────── */
-	--color-primary: #4b9fe5;
-	--color-primary-hover: #2563eb;
-	--color-primary-muted: rgba(75, 159, 229, 0.15);
+	/* ── Interactive (primary — muted white/silver) ─────────── */
+	--color-primary: #e0e0e0;
+	--color-primary-hover: #ffffff;
+	--color-primary-muted: rgba(255, 255, 255, 0.08);
 
 	/* ── Utility ───────────────────────────────────────────── */
 	--color-white: #ffffff;
@@ -209,4 +209,110 @@
 	* {
 		box-sizing: border-box;
 	}
+}
+
+/* ── Landing Page Components ───────────────────────────────── */
+@layer components {
+	/* Section reveal on scroll */
+	.section-reveal {
+		opacity: 0;
+		transform: translateY(1rem);
+		transition: opacity 700ms ease-out, transform 700ms ease-out;
+	}
+	.section-reveal--visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* Scroll timeline */
+	.timeline-line {
+		width: 2px;
+		background: var(--color-border-subtle);
+	}
+	.timeline-fill {
+		width: 2px;
+		background: var(--color-primary);
+		transform-origin: top;
+		will-change: transform;
+		transition: transform 150ms linear;
+	}
+	.timeline-node {
+		width: 12px;
+		height: 12px;
+		border-radius: 9999px;
+		border: 2px solid var(--color-border-default);
+		background: var(--color-bg-base);
+		transition: all 500ms ease-out;
+	}
+	.timeline-node--active {
+		border-color: var(--color-primary);
+		background: var(--color-primary);
+		box-shadow: 0 0 8px oklch(70% 0.13 230 / 0.4);
+	}
+
+	/* Hero visual animations */
+	.animate-float {
+		animation: float 4s ease-in-out infinite;
+	}
+	.animate-neural-pulse {
+		animation: neural-pulse 3s ease-in-out infinite;
+	}
+
+	/* Scroll indicator */
+	.animate-bounce-subtle {
+		animation: bounce-subtle 2s ease-in-out infinite;
+	}
+
+	/* Feature visual animations */
+	.animate-gauge-fill {
+		animation: gauge-fill 2s ease-out forwards;
+	}
+	.animate-timeline-draw {
+		stroke-dasharray: 240;
+		stroke-dashoffset: 240;
+		animation: timeline-draw 2.5s ease-out forwards;
+	}
+
+	/* Reduced motion */
+	@media (prefers-reduced-motion: reduce) {
+		.section-reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+		.animate-float,
+		.animate-neural-pulse,
+		.animate-gauge-fill,
+		.animate-timeline-draw {
+			animation: none;
+		}
+		.timeline-fill {
+			transition: none;
+		}
+	}
+}
+
+@keyframes float {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-8px); }
+}
+
+@keyframes neural-pulse {
+	0% { stroke-dashoffset: 220; opacity: 0; }
+	10% { opacity: 1; }
+	90% { opacity: 1; }
+	100% { stroke-dashoffset: -220; opacity: 0; }
+}
+
+@keyframes gauge-fill {
+	from { stroke-dashoffset: 565.5; }
+}
+
+@keyframes timeline-draw {
+	to { stroke-dashoffset: 0; }
+}
+
+@keyframes bounce-subtle {
+	0%, 100% { transform: translateY(0); opacity: 0.6; }
+	50% { transform: translateY(6px); opacity: 1; }
 }
