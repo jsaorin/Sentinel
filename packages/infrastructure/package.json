@@ -30,10 +30,11 @@
 		"seed": "tsx src/prisma/seed/index.ts"
 	},
 	"dependencies": {
+		"@prisma/adapter-pg": "^7.7.0",
+		"@prisma/client": "^7.4.2",
 		"@sentinel/application": "workspace:*",
 		"@sentinel/common": "workspace:*",
 		"@sentinel/domain": "workspace:*",
-		"@prisma/client": "^7.4.2",
 		"amqplib": "^0.10.3"
 	},
 	"devDependencies": {

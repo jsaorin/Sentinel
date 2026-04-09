@@ -8,6 +8,7 @@ class ApiEnvironment extends Environment {
 	private _port!: number;
 	private _basePath!: string;
 	private _solanaRpcUrl!: string;
+	private _amqpUrl!: string;
 
 	constructor() {
 		super();
@@ -22,6 +23,7 @@ class ApiEnvironment extends Environment {
 		this.port = env.API_PORT;
 		this.basePath = env.BASE_PATH;
 		this.solanaRpcUrl = env.SOLANA_RPC_URL;
+		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
 	}
 
 	get appName() {
@@ -62,6 +64,14 @@ class ApiEnvironment extends Environment {
 
 	set solanaRpcUrl(value) {
 		this._solanaRpcUrl = value;
+	}
+
+	get amqpUrl() {
+		return this._amqpUrl;
+	}
+
+	set amqpUrl(value) {
+		this._amqpUrl = value;
 	}
 }
 

@@ -8,6 +8,7 @@ class WebhooksEnvironment extends Environment {
 	private _port!: number;
 	private _basePath!: string;
 	private _heliusWebhookAuthToken!: string;
+	private _amqpUrl!: string;
 
 	constructor() {
 		super();
@@ -22,6 +23,7 @@ class WebhooksEnvironment extends Environment {
 		this.port = env.WEBHOOKS_PORT;
 		this.basePath = env.BASE_PATH;
 		this.heliusWebhookAuthToken = env.HELIUS_WEBHOOK_AUTH_TOKEN;
+		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
 	}
 
 	get appName() {
@@ -62,6 +64,14 @@ class WebhooksEnvironment extends Environment {
 
 	set heliusWebhookAuthToken(value) {
 		this._heliusWebhookAuthToken = value;
+	}
+
+	get amqpUrl() {
+		return this._amqpUrl;
+	}
+
+	set amqpUrl(value) {
+		this._amqpUrl = value;
 	}
 }
 

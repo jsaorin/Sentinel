@@ -13,7 +13,7 @@ export const configBindings = new ContainerModule(
 		options
 			.bind<EventPublisherConfig>(APPLICATION_TYPES.EventPublisherConfig)
 			.toConstantValue({
-				url: "",
+				url: environment.amqpUrl,
 				exchangeName: "reactor.events",
 				exchangeType: "topic",
 				confirmTimeoutMs: 5000,
