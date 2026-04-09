@@ -40,7 +40,7 @@ export function StatsListRow({
 			</div>
 			<div className="flex items-center gap-3 shrink-0 ml-3">
 				<span className="text-sm text-text-secondary hidden sm:block">{metadata}</span>
-				<RiskBadge level={riskLevel} size="sm" showLabel={false} />
+				<RiskBadge level={riskLevel} size="sm" />
 			</div>
 		</div>
 	);

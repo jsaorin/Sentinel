@@ -56,7 +56,7 @@ export function ScoreDisplay({
 	return (
 		<div
 			className={[
-				"inline-flex flex-col items-center gap-1",
+				"inline-flex flex-col items-center gap-3",
 				isCritical ? "animate-pulse-critical rounded-xl p-3" : "",
 			].join(" ")}
 			aria-label={`Security score: ${clampedScore} out of 100, ${levelLabels[level]}`}

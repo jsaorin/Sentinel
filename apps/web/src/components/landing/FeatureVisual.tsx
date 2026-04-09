@@ -1,70 +1,10 @@
 "use client";
 
+import { ScoreGauge } from "@sentinel/ui";
+
 type FeatureVisualProps = {
   variant: "gauge" | "network" | "timeline";
 };
-
-function GaugeVisual() {
-  return (
-    <svg
-      viewBox="0 0 300 300"
-      className="w-full max-w-xs mx-auto"
-      aria-hidden="true"
-    >
-      {/* Track */}
-      <circle
-        cx="150"
-        cy="150"
-        r="120"
-        fill="none"
-        stroke="var(--color-bg-overlay)"
-        strokeWidth="12"
-        strokeDasharray="565.5"
-        strokeDashoffset="141.4"
-        strokeLinecap="round"
-        transform="rotate(135, 150, 150)"
-      />
-      {/* Fill — 73% score */}
-      <circle
-        cx="150"
-        cy="150"
-        r="120"
-        fill="none"
-        stroke="var(--color-low)"
-        strokeWidth="12"
-        strokeDasharray="565.5"
-        strokeDashoffset="calc(141.4 + (424.1 * 0.27))"
-        strokeLinecap="round"
-        transform="rotate(135, 150, 150)"
-        className="animate-gauge-fill"
-      />
-      {/* Score number */}
-      <text
-        x="150"
-        y="145"
-        textAnchor="middle"
-        className="font-mono"
-        fill="var(--color-low)"
-        fontSize="56"
-        fontWeight="700"
-      >
-        73
-      </text>
-      {/* Label */}
-      <text
-        x="150"
-        y="180"
-        textAnchor="middle"
-        fill="var(--color-text-secondary)"
-        fontSize="14"
-        fontWeight="600"
-        letterSpacing="0.1em"
-      >
-        LOW RISK
-      </text>
-    </svg>
-  );
-}
 
 function NetworkVisual() {
   // Center hub
@@ -224,7 +164,7 @@ function TimelineVisual() {
 export function FeatureVisual({ variant }: FeatureVisualProps) {
   return (
     <div className="flex items-center justify-center p-6">
-      {variant === "gauge" && <GaugeVisual />}
+      {variant === "gauge" && <ScoreGauge score={73} size="lg" />}
       {variant === "network" && <NetworkVisual />}
       {variant === "timeline" && <TimelineVisual />}
     </div>

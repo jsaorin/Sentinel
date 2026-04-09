@@ -7,20 +7,20 @@ type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
 };
 
 const variantClasses: Record<BadgeVariant, string> = {
-	critical: "bg-critical-subtle border-critical-border text-critical",
-	high: "bg-high-subtle border-high-border text-high",
-	medium: "bg-medium-subtle border-medium-border text-medium",
-	low: "bg-low-subtle border-low-border text-low",
-	safe: "bg-safe-subtle border-safe-border text-safe",
-	info: "bg-info-subtle border-info-border text-info",
-	unknown: "bg-unknown-subtle border-unknown-border text-unknown",
+	critical: "bg-critical-subtle text-critical",
+	high: "bg-high-subtle text-high",
+	medium: "bg-medium-subtle text-medium",
+	low: "bg-low-subtle text-low",
+	safe: "bg-safe-subtle text-safe",
+	info: "bg-info-subtle text-info",
+	unknown: "bg-unknown-subtle text-unknown",
 };
 
 export function Badge({ variant = "unknown", className = "", children, ...props }: BadgeProps) {
 	return (
 		<span
 			className={[
-				"inline-flex items-center rounded-full border px-2.5 py-0.5",
+				"inline-flex items-center px-2.5 py-0.5",
 				"text-xs font-semibold tracking-wider uppercase",
 				variantClasses[variant],
 				className,
