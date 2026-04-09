@@ -33,7 +33,7 @@ RUN pnpm prisma:generate
 RUN pnpm build
 
 # Remove dev dependencies
-RUN CI=true pnpm prune --prod
+RUN CI=true pnpm prune --prod --ignore-scripts
 
 # --- Production ---
 FROM node:22-slim AS production
