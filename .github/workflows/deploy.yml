@@ -61,14 +61,17 @@ jobs:
             docker compose -f docker/docker-compose.prod.yml build
             docker compose -f docker/docker-compose.prod.yml up -d
 
+            # Wait for services to be ready
+            sleep 5
+
             # Run database migrations
-            docker compose -f docker/docker-compose.prod.yml exec -T api npx prisma migrate deploy --schema=./packages/infrastructure/src/prisma/schema
+            docker compose -f docker/docker-compose.prod.yml exec -T -w /app/packages/infrastructure api sh -c './node_modules/.bin/prisma migrate deploy'
 
             # Conditional seed (if commit message contains [run-seeds])
             LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
             if echo "$LAST_COMMIT_MSG" | grep -q "\[run-seeds\]"; then
               echo "Running database seeds..."
-              docker compose -f docker/docker-compose.prod.yml exec -T api pnpm db:seed
+              docker compose -f docker/docker-compose.prod.yml exec -T -w /app/packages/infrastructure api sh -c 'node ../../node_modules/.bin/tsx src/prisma/seed/index.ts'
             fi
 
             # Verify services are running

@@ -31,8 +31,11 @@ COPY . .
 RUN pnpm prisma:generate
 RUN pnpm build
 
-# Clean up source files (keep dist, node_modules, generated)
-RUN rm -rf packages/*/src apps/*/src .turbo **/tsconfig* **/*.tsbuildinfo
+# Clean up source files but keep prisma schemas (needed for migrations) and generated
+RUN cp -r packages/infrastructure/src/prisma /tmp/prisma-backup \
+    && rm -rf packages/*/src apps/*/src .turbo **/tsconfig* **/*.tsbuildinfo \
+    && mkdir -p packages/infrastructure/src \
+    && mv /tmp/prisma-backup packages/infrastructure/src/prisma
 
 # APP is set via docker-compose (api, webhooks, reactor)
 ARG APP
