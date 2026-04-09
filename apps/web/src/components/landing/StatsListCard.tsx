@@ -13,7 +13,7 @@ export function StatsListCard({ title, children, viewAllLabel, viewAllHref }: St
 	return (
 		<Card variant="default" padding="sm">
 			<div className="flex items-center justify-between px-3 pt-2 pb-3 border-b border-border-subtle">
-				<h3 className="text-lg font-semibold">{title}</h3>
+				<h3 className="text-lg font-semibold font-display">{title}</h3>
 			</div>
 			<div className="px-2">{children}</div>
 			<div className="border-t border-border-subtle mt-1 py-3">

@@ -22,7 +22,7 @@ export function FeatureSection({
           <span className="text-sm uppercase tracking-widest text-primary font-semibold">
             {label}
           </span>
-          <h2 className="text-2xl md:text-3xl font-bold leading-tight mt-3">
+          <h2 className="text-2xl md:text-3xl font-bold leading-tight mt-3 font-display">
             {title}
           </h2>
           <p className="text-lg text-text-secondary mt-4 leading-relaxed">

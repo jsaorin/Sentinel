@@ -15,7 +15,7 @@ export function ScrollIndicator() {
 
   return (
     <div
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-500"
+      className="absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-500 mb-6"
       style={{
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
