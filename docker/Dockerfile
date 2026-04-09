@@ -32,9 +32,6 @@ COPY . .
 RUN pnpm prisma:generate
 RUN pnpm build
 
-# Remove dev dependencies
-RUN CI=true pnpm prune --prod --ignore-scripts
-
 # --- Production ---
 FROM node:22-slim AS production
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
