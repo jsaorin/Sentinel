@@ -1,1 +1,1 @@
-// Repository implementations - add as needed
+export { OutboxEventRepository } from "./OutboxEventRepository.js";

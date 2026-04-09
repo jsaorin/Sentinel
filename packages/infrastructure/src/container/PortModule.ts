@@ -1,7 +1,12 @@
+import { APPLICATION_TYPES } from "@sentinel/application";
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
+import { OutboxAwareEventPublisher } from "../events/OutboxAwareEventPublisher.js";
 
 export const portsModule = new ContainerModule(
 	(options: ContainerModuleLoadOptions) => {
-		// Port implementation bindings - add as needed
+		options
+			.bind(APPLICATION_TYPES.OutboxEventPublisher)
+			.to(OutboxAwareEventPublisher)
+			.inSingletonScope();
 	},
 );

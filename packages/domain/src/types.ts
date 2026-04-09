@@ -1,5 +1,7 @@
 const DOMAIN_REPOSITORY_TYPES = {
 	TransactionManager: Symbol.for("TransactionManager"),
+	OutboxEventRepository: Symbol.for("OutboxEventRepository"),
+	WebhookConfigRepository: Symbol.for("WebhookConfigRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {

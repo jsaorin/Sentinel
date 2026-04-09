@@ -1,1 +1,1 @@
-// Prisma to Domain mappers - add as needed
+export { mapOutboxEventToDomain } from "./OutboxEventMapper.js";

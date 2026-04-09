@@ -1,1 +1,2 @@
-// Domain entities - add as needed
+export * from "./WebhookConfig.js";
+export * from "./OutboxEvent.js";
