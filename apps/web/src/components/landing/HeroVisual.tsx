@@ -4,37 +4,74 @@ import { useEffect, useRef } from "react";
 
 type Node3D = { x: number; y: number; z: number; r: number };
 
-function createNodes(): Node3D[] {
-  const nodes: Node3D[] = [];
-  // Dense neural cloud spread across a large volume
-  for (let i = 0; i < 60; i++) {
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    const radius = 120 + Math.random() * 320;
-    nodes.push({
-      x: radius * Math.sin(phi) * Math.cos(theta),
-      y: radius * Math.sin(phi) * Math.sin(theta) * 0.7,
-      z: radius * Math.cos(phi),
-      r: 1.5 + Math.random() * 3,
-    });
-  }
-  return nodes;
-}
+type TreeResult = { nodes: Node3D[]; connections: Array<[number, number]> };
 
-function getConnections(nodes: Node3D[]): Array<[number, number]> {
+const nodesToDisplay = 1000;
+
+function buildTree(): TreeResult {
+  const nodes: Node3D[] = [];
   const connections: Array<[number, number]> = [];
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      const dx = nodes[i].x - nodes[j].x;
-      const dy = nodes[i].y - nodes[j].y;
-      const dz = nodes[i].z - nodes[j].z;
-      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      if (dist < 180) {
-        connections.push([i, j]);
-      }
+
+  // Root node at center
+  nodes.push({ x: 0, y: 0, z: 0, r: 3 });
+
+  // Grow branches recursively
+  function branch(
+    parentIdx: number,
+    dir: { x: number; y: number; z: number },
+    length: number,
+    depth: number,
+  ) {
+    if (depth > 5 || nodes.length >= nodesToDisplay) return;
+
+    // Create node at end of branch
+    const parent = nodes[parentIdx];
+    const jitter = length * 0.3;
+    const node: Node3D = {
+      x: parent.x + dir.x * length + (Math.random() - 0.5) * jitter,
+      y: parent.y + dir.y * length + (Math.random() - 0.5) * jitter,
+      z: parent.z + dir.z * length + (Math.random() - 0.5) * jitter,
+      r: Math.max(1.5, 3 - depth * 0.3),
+    };
+    const idx = nodes.length;
+    nodes.push(node);
+    connections.push([parentIdx, idx]);
+
+    // Decide how many sub-branches (fewer as depth increases)
+    const numBranches =
+      depth < 2
+        ? 3 + Math.floor(Math.random() * 2)
+        : 1 + Math.floor(Math.random() * 2);
+    const nextLength = length * (0.7 + Math.random() * 0.15);
+
+    for (let b = 0; b < numBranches && nodes.length < nodesToDisplay; b++) {
+      // Random direction biased away from parent
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const newDir = {
+        x: Math.sin(phi) * Math.cos(theta),
+        y: Math.sin(phi) * Math.sin(theta) * 0.7,
+        z: Math.cos(phi),
+      };
+      branch(idx, newDir, nextLength, depth + 1);
     }
   }
-  return connections;
+
+  // Start 5 main branches from root in spread directions
+  const mainDirs = [
+    { x: 1, y: 0.3, z: 0.2 },
+    { x: -0.8, y: 0.5, z: -0.3 },
+    { x: 0.2, y: -0.9, z: 0.4 },
+    { x: -0.3, y: 0.2, z: 1 },
+    { x: 0.5, y: 0.7, z: -0.8 },
+  ];
+
+  for (const dir of mainDirs) {
+    if (nodes.length >= nodesToDisplay) break;
+    branch(0, dir, 250 + Math.random() * 60, 0);
+  }
+
+  return { nodes, connections };
 }
 
 function project(
@@ -56,10 +93,10 @@ function project(
   z = z2;
 
   // Perspective projection
-  const fov = 600;
-  const scale = fov / (fov + z + 300);
+  const fov = 900;
+  const scale = fov / (fov + z + 500);
   return {
-    sx: w / 2 + x * scale,
+    sx: w * 0.7 + x * scale,
     sy: h / 2 + y * scale,
     depth: z,
   };
@@ -87,8 +124,18 @@ export function HeroVisual() {
     canvas.style.height = `${h}px`;
     ctx.scale(dpr, dpr);
 
-    const nodes = createNodes();
-    const connections = getConnections(nodes);
+    const tree = buildTree();
+    // Recenter — shift all nodes so the centroid is at origin
+    const cx = tree.nodes.reduce((s, n) => s + n.x, 0) / tree.nodes.length;
+    const cy = tree.nodes.reduce((s, n) => s + n.y, 0) / tree.nodes.length;
+    const cz = tree.nodes.reduce((s, n) => s + n.z, 0) / tree.nodes.length;
+    const nodes = tree.nodes.map((n) => ({
+      ...n,
+      x: n.x - cx,
+      y: n.y - cy,
+      z: n.z - cz,
+    }));
+    const connections = tree.connections;
 
     // Pulse state — each connection has a traveling pulse
     const pulses = connections.map(() => ({
@@ -99,17 +146,28 @@ export function HeroVisual() {
 
     let animId: number;
     let time = 0;
+    let isVisible = true;
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    const visObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) draw();
+      },
+      { threshold: 0 },
+    );
+    visObserver.observe(container);
+
     function draw() {
-      if (!ctx) return;
-      time += 0.004;
+      if (!ctx || !isVisible) return;
+      time += 0.002;
       ctx.clearRect(0, 0, w, h);
 
-      const rotY = prefersReduced ? 0.3 : time * 0.3;
-      const rotX = 0.25;
+      // Gentle oscillation — swings ±20° instead of full rotation
+      const rotY = prefersReduced ? 0.3 : Math.sin(time * 0.4) * 0.35;
+      const rotX = 0.2;
 
       // Project all nodes
       const projected = nodes.map((n) => project(n, rotY, rotX, w, h));
@@ -124,7 +182,7 @@ export function HeroVisual() {
         const avgDepth = (pa.depth + pb.depth) / 2;
         const depthAlpha = Math.max(
           0.03,
-          Math.min(0.18, (avgDepth + 350) / 1500),
+          Math.min(0.18, (avgDepth + 600) / 2400),
         );
 
         // Base line
@@ -182,7 +240,7 @@ export function HeroVisual() {
         const p = projected[i];
         const node = nodes[i];
 
-        const depthFactor = (p.depth + 350) / 700;
+        const depthFactor = (p.depth + 600) / 1200;
         const alpha = Math.max(0.25, Math.min(1, depthFactor * 1.1));
         const r = node.r * Math.max(0.5, depthFactor);
 
@@ -206,13 +264,16 @@ export function HeroVisual() {
     }
 
     draw();
-    return () => cancelAnimationFrame(animId);
+    return () => {
+      cancelAnimationFrame(animId);
+      visObserver.disconnect();
+    };
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 lg:relative lg:inset-auto flex items-center justify-center w-full h-full lg:min-h-[600px] opacity-30 lg:opacity-100"
+      className="absolute inset-0 flex items-center justify-center opacity-30 lg:opacity-100"
     >
       <canvas ref={canvasRef} className="w-full h-full" />
     </div>

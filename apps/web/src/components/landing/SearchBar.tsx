@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Button } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
 
 const PLACEHOLDERS = [
@@ -70,12 +69,12 @@ export function SearchBar() {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="flex flex-col sm:flex-row gap-2 bg-bg-card border border-border-default rounded-xl p-2 shadow-lg hover:border-border-strong transition-colors mt-8"
+			className="flex items-center gap-2 bg-bg-card border border-border-default rounded-md p-2 shadow-lg hover:border-border-strong transition-colors mt-8 max-w-xl"
 		>
-			<div className="flex flex-1 items-center gap-2 px-3 relative">
+			<div className="flex flex-1 items-center gap-2 px-3 relative min-w-0">
 				<SearchIcon className="w-5 h-5 text-text-tertiary shrink-0" />
 				{!address && !focused && (
-					<span className="absolute left-11 text-text-tertiary text-md font-mono pointer-events-none">
+					<span className="absolute left-11 text-text-tertiary text-md font-mono pointer-events-none truncate pr-4">
 						{typewriterText}
 						<span className="inline-block w-px h-4 bg-text-tertiary ml-0.5 animate-blink align-middle" />
 					</span>
@@ -87,13 +86,16 @@ export function SearchBar() {
 					onFocus={() => setFocused(true)}
 					onBlur={() => setFocused(false)}
 					placeholder=""
-					className="flex-1 bg-transparent py-3 text-text-primary font-mono placeholder:text-text-tertiary focus:outline-none text-md"
+					className="flex-1 bg-transparent py-3 text-text-primary font-mono placeholder:text-text-tertiary focus:outline-none text-md min-w-0"
 					aria-label="Search multisig wallet address"
 				/>
 			</div>
-			<Button variant="primary" size="lg" type="submit">
+			<button
+				type="submit"
+				className="shrink-0 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-text-secondary hover:text-text-primary transition-colors"
+			>
 				Analyze
-			</Button>
+			</button>
 		</form>
 	);
 }

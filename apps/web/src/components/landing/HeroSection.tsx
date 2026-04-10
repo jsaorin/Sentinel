@@ -16,7 +16,7 @@ export function HeroSection() {
             >
               Sentinel
             </span>
-            <span className="text-2xl md:text-3xl font-normal text-text-secondary block my-4 font-display">
+            <span className="text-2xl md:text-3xl font-normal text-text-secondary block my-4">
               AI-Powered Multisig Security
             </span>
           </h1>
@@ -27,6 +27,11 @@ export function HeroSection() {
           <SearchBar />
         </div>
         <HeroVisual />
+        {/* Left gradient overlay — keeps text area clean when mesh extends behind */}
+        <div
+          className="absolute inset-0 pointer-events-none z-[5] hidden lg:block"
+          style={{ background: "linear-gradient(to right, black 0%, black 25%, transparent 55%)" }}
+        />
       </div>
       <ScrollIndicator />
     </section>
