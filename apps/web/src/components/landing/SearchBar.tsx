@@ -74,7 +74,7 @@ export function SearchBar() {
 			<div className="flex flex-1 items-center gap-2 px-3 relative min-w-0">
 				<SearchIcon className="w-5 h-5 text-text-tertiary shrink-0" />
 				{!address && !focused && (
-					<span className="absolute left-11 text-text-tertiary text-md font-mono pointer-events-none truncate pr-4">
+					<span className="absolute left-11 right-0 text-text-tertiary text-md font-mono pointer-events-none truncate">
 						{typewriterText}
 						<span className="inline-block w-px h-4 bg-text-tertiary ml-0.5 animate-blink align-middle" />
 					</span>

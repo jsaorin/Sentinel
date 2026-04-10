@@ -42,7 +42,8 @@ export function SectionDivider({ height = 300 }: SectionDividerProps) {
         className="w-px"
         style={{
           height: "100%",
-          background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.2) 30%, rgba(255,255,255,0.2) 70%, transparent 100%)",
+          background:
+            "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.2) 30%, rgba(255,255,255,1) 100%)",
           transform: `scaleY(${progress})`,
           transformOrigin: "top",
           transition: "transform 600ms ease-out",

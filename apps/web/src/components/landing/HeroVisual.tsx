@@ -115,14 +115,23 @@ export function HeroVisual() {
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
-    const rect = container.getBoundingClientRect();
-    const w = Math.round(rect.width);
-    const h = Math.round(rect.height);
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
-    ctx.scale(dpr, dpr);
+    let w = 0;
+    let h = 0;
+
+    function resize() {
+      if (!canvas || !container) return;
+      const r = container.getBoundingClientRect();
+      w = Math.round(r.width);
+      h = Math.round(r.height);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+    }
+    resize();
+
+    const resizeObs = new ResizeObserver(() => resize());
+    resizeObs.observe(container);
 
     const tree = buildTree();
     // Recenter — shift all nodes so the centroid is at origin
@@ -163,6 +172,7 @@ export function HeroVisual() {
     function draw() {
       if (!ctx || !isVisible) return;
       time += 0.002;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
       // Gentle oscillation — swings ±20° instead of full rotation
@@ -267,13 +277,14 @@ export function HeroVisual() {
     return () => {
       cancelAnimationFrame(animId);
       visObserver.disconnect();
+      resizeObs.disconnect();
     };
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 flex items-center justify-center opacity-30 lg:opacity-100"
+      className="absolute lg:inset-0 flex items-center justify-center opacity-50 lg:opacity-100 h-full"
     >
       <canvas ref={canvasRef} className="w-full h-full" />
     </div>

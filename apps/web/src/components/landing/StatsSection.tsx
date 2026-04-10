@@ -34,7 +34,7 @@ const MOCK_WALLETS: Array<{
 
 export function StatsSection() {
 	return (
-		<section className="max-w-6xl mx-auto px-6 mt-16">
+		<section className="max-w-6xl mx-auto px-6">
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				<StatsListCard
 					title="Latest Proposals"

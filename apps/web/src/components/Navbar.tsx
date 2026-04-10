@@ -23,6 +23,11 @@ export function Navbar() {
       setVisible(true);
       return;
     }
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (!isDesktop) {
+      setVisible(true);
+      return;
+    }
     window.scrollTo(0, 0);
     setVisible(false);
     function handleScroll() {
@@ -54,7 +59,7 @@ export function Navbar() {
     <>
       <nav
         className={[
-          "fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-[60] h-16 transition-all duration-300",
           "bg-black/80 backdrop-blur-md",
           visible
             ? "opacity-100 translate-y-0"
@@ -133,7 +138,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden flex flex-col gap-1.5 p-2"
+            className="md:hidden flex flex-col gap-1.5 p-3"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
           >
             <span
@@ -160,14 +165,8 @@ export function Navbar() {
 
       {/* Mobile overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-md pt-24 px-8 md:hidden">
-          <Link
-            href="/"
-            className="font-display text-md tracking-widest text-text-tertiary mb-8 block"
-          >
-            SENTINEL
-          </Link>
-          <div className="border-t border-border-subtle pt-8 flex flex-col gap-10">
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md pt-24 px-8 md:hidden">
+          <div className="flex flex-col gap-10">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}

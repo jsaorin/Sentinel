@@ -27,7 +27,8 @@ export function TimelineSection({ children }: TimelineSectionProps) {
         if (entry.isIntersecting) {
           // Delay: nothing until 25% visible, then ramp to full by 70%
           const ratio = entry.intersectionRatio;
-          const progress = ratio < 0.25 ? 0 : Math.min((ratio - 0.25) / 0.45, 1);
+          const progress =
+            ratio < 0.25 ? 0 : Math.min((ratio - 0.25) / 0.45, 1);
           setOpacity(progress);
         }
       },
@@ -43,9 +44,10 @@ export function TimelineSection({ children }: TimelineSectionProps) {
       ref={ref}
       style={{
         opacity,
-        transform: `translateY(${(1 - opacity) * 20}px)`,
+        transform: `translateY(${1 - opacity}px)`,
         transition: "opacity 300ms ease-out, transform 300ms ease-out",
       }}
+      className="mt-8 lg:mt-0"
     >
       {children}
     </div>
