@@ -32,10 +32,9 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLanding]);
 
+  // Close mobile menu on every route change
   useEffect(() => {
-    if (pathname) {
-      setMobileOpen(false);
-    }
+    if (pathname) setMobileOpen(false);
   }, [pathname]);
 
   function isActive(href: string) {
