@@ -9,7 +9,7 @@
 /* ── Font bridge (next/font → Tailwind) ───────────────────── */
 @theme inline {
 	--font-sans: var(--font-ibm-plex-sans);
-	--font-mono: var(--font-orbitron);
+	--font-mono: var(--font-jetbrains-mono);
 	--font-display: var(--font-orbitron);
 }
 
@@ -22,35 +22,35 @@
 	/* ── Reset Tailwind's default palette ──────────────────── */
 	--color-*: initial;
 
-	/* ── Semantic Status Colors (deep, earthy, professional) ── */
+	/* ── Semantic Status Colors (balanced — readable but not neon) ── */
 
-	--color-critical: #902c2c;
-	--color-critical-subtle: rgba(144, 44, 44, 0.10);
-	--color-critical-border: rgba(144, 44, 44, 0.30);
+	--color-critical: #c43030;
+	--color-critical-subtle: rgba(196, 48, 48, 0.12);
+	--color-critical-border: rgba(196, 48, 48, 0.30);
 
-	--color-high: #90682c;
-	--color-high-subtle: rgba(144, 104, 44, 0.10);
-	--color-high-border: rgba(144, 104, 44, 0.30);
+	--color-high: #d4952a;
+	--color-high-subtle: rgba(212, 149, 42, 0.12);
+	--color-high-border: rgba(212, 149, 42, 0.30);
 
-	--color-medium: #8a8428;
-	--color-medium-subtle: rgba(138, 132, 40, 0.10);
-	--color-medium-border: rgba(138, 132, 40, 0.30);
+	--color-medium: #b89a30;
+	--color-medium-subtle: rgba(184, 154, 48, 0.12);
+	--color-medium-border: rgba(184, 154, 48, 0.30);
 
-	--color-low: #41902c;
-	--color-low-subtle: rgba(65, 144, 44, 0.10);
-	--color-low-border: rgba(65, 144, 44, 0.30);
+	--color-low: #4da035;
+	--color-low-subtle: rgba(77, 160, 53, 0.12);
+	--color-low-border: rgba(77, 160, 53, 0.30);
 
-	--color-safe: #2c7a24;
-	--color-safe-subtle: rgba(44, 122, 36, 0.10);
-	--color-safe-border: rgba(44, 122, 36, 0.30);
+	--color-safe: #38892e;
+	--color-safe-subtle: rgba(56, 137, 46, 0.12);
+	--color-safe-border: rgba(56, 137, 46, 0.30);
 
-	--color-info: #2c5a90;
-	--color-info-subtle: rgba(44, 90, 144, 0.10);
-	--color-info-border: rgba(44, 90, 144, 0.30);
+	--color-info: #3a7abf;
+	--color-info-subtle: rgba(58, 122, 191, 0.12);
+	--color-info-border: rgba(58, 122, 191, 0.30);
 
-	--color-unknown: #4a4e55;
-	--color-unknown-subtle: rgba(74, 78, 85, 0.10);
-	--color-unknown-border: rgba(74, 78, 85, 0.30);
+	--color-unknown: #5a5f68;
+	--color-unknown-subtle: rgba(90, 95, 104, 0.12);
+	--color-unknown-border: rgba(90, 95, 104, 0.30);
 
 	/* ── Background Surfaces (pure black base) ─────────────── */
 	--color-bg-base: #000000;
