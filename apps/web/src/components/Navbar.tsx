@@ -33,7 +33,9 @@ export function Navbar() {
   }, [isLanding]);
 
   useEffect(() => {
-    setMobileOpen(false);
+    if (pathname) {
+      setMobileOpen(false);
+    }
   }, [pathname]);
 
   function isActive(href: string) {
