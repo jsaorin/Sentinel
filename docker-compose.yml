@@ -28,9 +28,20 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/var/lib/redis/data
+    networks:
+      - app-network
+
 volumes:
   pgdata:
   rabbitmqdata:
+  redisdata:
 
 networks:
   app-network:

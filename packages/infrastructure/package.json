@@ -37,9 +37,11 @@
 		"@sentinel/domain": "workspace:*",
 		"amqplib": "^0.10.3",
 		"dotenv": "^16.4.7",
+		"ioredis": "^5.10.1",
 		"prisma": "^7.4.2"
 	},
 	"devDependencies": {
-		"@types/amqplib": "^0.10.4"
+		"@types/amqplib": "^0.10.4",
+		"@types/ioredis": "^5.0.0"
 	}
 }

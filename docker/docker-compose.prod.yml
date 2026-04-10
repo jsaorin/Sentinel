@@ -25,6 +25,15 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel-redis
+    restart: unless-stopped
+    volumes:
+      - redisdata:/var/lib/redis/data
+    networks:
+      - app-network
+
   api:
     build:
       context: ..
@@ -73,9 +82,11 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-sentinel}:${POSTGRES_PASSWORD:-sentinel}@postgres:5432/${POSTGRES_DB:-sentinel}
       RABBITMQ_HOST: rabbitmq
+      REDIS_HOST: redis
     depends_on:
       - postgres
       - rabbitmq
+      - redis
     networks:
       - app-network
 
@@ -101,6 +112,7 @@ services:
 volumes:
   pgdata:
   rabbitmqdata:
+  redisdata:
   caddy_data:
   caddy_config:
 

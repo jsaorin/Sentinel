@@ -13,6 +13,7 @@ export const DOMAIN_SERVICE_TYPES = {
 
 export const DOMAIN_CONFIG_TYPES = {
 	HeliusApiConfig: Symbol.for("HeliusApiConfig"),
+	RedisConfig: Symbol.for("RedisConfig"),
 };
 
 export const DOMAIN_TYPES = {

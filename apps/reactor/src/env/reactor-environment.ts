@@ -5,6 +5,8 @@ import envValidationConfig from "./env-validation.config.js";
 class ReactorEnvironment extends Environment {
 	private _amqpUrl!: string;
 	private _reactorPort!: number;
+	private _redisHost!: string;
+	private _redisPort!: number;
 
 	constructor() {
 		super();
@@ -16,6 +18,8 @@ class ReactorEnvironment extends Environment {
 
 		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
 		this.reactorPort = env.REACTOR_PORT;
+		this.redisHost = env.REDIS_HOST;
+		this.redisPort = env.REDIS_PORT;
 	}
 
 	get amqpUrl() {
@@ -32,6 +36,22 @@ class ReactorEnvironment extends Environment {
 
 	set reactorPort(value) {
 		this._reactorPort = value;
+	}
+
+	get redisHost() {
+		return this._redisHost;
+	}
+
+	set redisHost(value) {
+		this._redisHost = value;
+	}
+
+	get redisPort() {
+		return this._redisPort;
+	}
+
+	set redisPort(value) {
+		this._redisPort = value;
 	}
 }
 
