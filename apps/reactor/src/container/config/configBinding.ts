@@ -31,5 +31,9 @@ export const configModule = new ContainerModule(
 				host: environment.redisHost,
 				port: environment.redisPort,
 			});
+
+		options
+			.bind(DOMAIN_TYPES.HeliusApiConfig)
+			.toConstantValue({ apiKey: environment.heliusApiKey });
 	},
 );

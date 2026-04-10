@@ -1,9 +1,14 @@
 model Multisig {
-  id        String   @id @default(uuid())
-  address   String   @unique
-  label     String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id              String   @id @default(uuid())
+  address         String   @unique
+  label           String?
+  threshold       Int?
+  configAuthority String?  @map("config_authority")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  signers   Signer[]
+  proposals Proposal[]
 
   @@map("multisig")
 }

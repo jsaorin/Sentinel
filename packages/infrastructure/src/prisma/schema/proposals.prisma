@@ -1,0 +1,28 @@
+enum ProposalStatus {
+  DRAFT
+  ACTIVE
+  APPROVED
+  REJECTED
+  EXECUTED
+  CANCELLED
+}
+
+model Proposal {
+  id               String         @id @default(uuid())
+  multisigId       String         @map("multisig_id")
+  proposalIndex    Int            @map("proposal_index")
+  transactionIndex Int            @map("transaction_index")
+  pda              String
+  transactionPda   String         @map("transaction_pda")
+  status           ProposalStatus
+  creator          String?
+  createdAt        DateTime       @default(now()) @map("created_at")
+  executedAt       DateTime?      @map("executed_at")
+
+  multisig Multisig @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+
+  @@unique([multisigId, proposalIndex])
+  @@index([multisigId])
+  @@index([status])
+  @@map("proposal")
+}

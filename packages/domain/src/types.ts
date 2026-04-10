@@ -3,12 +3,15 @@ const DOMAIN_REPOSITORY_TYPES = {
 	OutboxEventRepository: Symbol.for("OutboxEventRepository"),
 	WebhookConfigRepository: Symbol.for("WebhookConfigRepository"),
 	MultisigRepository: Symbol.for("MultisigRepository"),
+	SignerRepository: Symbol.for("SignerRepository"),
+	ProposalRepository: Symbol.for("ProposalRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {
 	Logger: Symbol.for("Logger"),
 	CacheService: Symbol.for("CacheService"),
 	HeliusWebhookService: Symbol.for("HeliusWebhookService"),
+	SquadsService: Symbol.for("SquadsService"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {

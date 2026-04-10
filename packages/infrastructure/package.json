@@ -35,6 +35,7 @@
 		"@sentinel/application": "workspace:*",
 		"@sentinel/common": "workspace:*",
 		"@sentinel/domain": "workspace:*",
+		"@sqds/multisig": "^2.1.4",
 		"amqplib": "^0.10.3",
 		"dotenv": "^16.4.7",
 		"ioredis": "^5.10.1",

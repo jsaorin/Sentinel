@@ -7,6 +7,7 @@ class ReactorEnvironment extends Environment {
 	private _reactorPort!: number;
 	private _redisHost!: string;
 	private _redisPort!: number;
+	private _heliusApiKey!: string;
 
 	constructor() {
 		super();
@@ -20,6 +21,7 @@ class ReactorEnvironment extends Environment {
 		this.reactorPort = env.REACTOR_PORT;
 		this.redisHost = env.REDIS_HOST;
 		this.redisPort = env.REDIS_PORT;
+		this.heliusApiKey = env.HELIUS_API_KEY;
 	}
 
 	get amqpUrl() {
@@ -52,6 +54,14 @@ class ReactorEnvironment extends Environment {
 
 	set redisPort(value) {
 		this._redisPort = value;
+	}
+
+	get heliusApiKey() {
+		return this._heliusApiKey;
+	}
+
+	set heliusApiKey(value) {
+		this._heliusApiKey = value;
 	}
 }
 

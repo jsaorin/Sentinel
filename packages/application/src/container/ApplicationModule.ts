@@ -1,6 +1,7 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { APPLICATION_TYPES } from "../types.js";
 import { HealthCheckQueryHandler } from "../usecases/health/queries/HealthCheckQueryHandler.js";
+import { AnalyzeMultisigCommandHandler } from "../usecases/multisigs/commands/AnalyzeMultisigCommandHandler.js";
 import { CreateMultisigCommandHandler } from "../usecases/multisigs/commands/CreateMultisigCommandHandler.js";
 import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
 
@@ -18,6 +19,10 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.CreateMultisigCommandHandler)
 			.to(CreateMultisigCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.AnalyzeMultisigCommandHandler)
+			.to(AnalyzeMultisigCommandHandler)
 			.inSingletonScope();
 	},
 );

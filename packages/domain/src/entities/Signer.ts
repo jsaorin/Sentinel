@@ -1,26 +1,23 @@
-export class Multisig {
+export class Signer {
 	public readonly id: string;
 	public readonly address: string;
-	public readonly label: string | null;
-	public readonly threshold: number | null;
-	public readonly configAuthority: string | null;
+	public readonly multisigId: string;
+	public readonly permissions: { mask: number };
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 
 	constructor(params: {
 		id: string;
 		address: string;
-		label: string | null;
-		threshold: number | null;
-		configAuthority: string | null;
+		multisigId: string;
+		permissions: { mask: number };
 		createdAt: Date;
 		updatedAt: Date;
 	}) {
 		this.id = params.id;
 		this.address = params.address;
-		this.label = params.label;
-		this.threshold = params.threshold;
-		this.configAuthority = params.configAuthority;
+		this.multisigId = params.multisigId;
+		this.permissions = params.permissions;
 		this.createdAt = params.createdAt;
 		this.updatedAt = params.updatedAt;
 	}

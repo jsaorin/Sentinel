@@ -9,6 +9,7 @@ const envValidationConfig = {
 	REDIS_HOST: str({ default: "localhost" }),
 	REDIS_PORT: num({ default: 6379 }),
 	REACTOR_PORT: num({ default: 3001 }),
+	HELIUS_API_KEY: str(),
 };
 
 export default envValidationConfig;

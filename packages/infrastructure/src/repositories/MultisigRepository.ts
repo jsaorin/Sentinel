@@ -34,4 +34,15 @@ export class MultisigRepository implements IMultisigRepository {
 		});
 		return mapPrismaMultisigToDomain(record);
 	}
+
+	async update(
+		id: string,
+		data: { threshold?: number; configAuthority?: string | null },
+	): Promise<Multisig> {
+		const record = await this.prisma.multisig.update({
+			where: { id },
+			data,
+		});
+		return mapPrismaMultisigToDomain(record);
+	}
 }

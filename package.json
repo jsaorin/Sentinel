@@ -6,6 +6,7 @@
 		"lint": "biome lint .",
 		"check": "biome check --write .",
 		"dev": "bash scripts/dev.sh",
+		"dev:stop": "pkill -9 -f 'node.*Sentinel' 2>/dev/null; echo 'All Sentinel processes stopped'",
 		"build": "turbo run build",
 		"start:api": "pnpm --dir apps/api start",
 		"dev:api": "pnpm --dir apps/api dev",

@@ -79,3 +79,6 @@ jobs:
             docker compose -f docker/docker-compose.prod.yml ps
 
             echo "Deploy completed successfully"
+
+      - name: Trigger Vercel deploy
+        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
