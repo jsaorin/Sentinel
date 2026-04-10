@@ -54,7 +54,8 @@ jobs:
 
             cd ~/Sentinel
 
-            # Pull latest changes
+            # Discard any local changes and pull latest
+            git checkout -- .
             git pull origin main
 
             # Build and restart services
