@@ -36,7 +36,7 @@ export function ProposalHistory({ proposals, pageSize = 10 }: ProposalHistoryPro
 	return (
 		<Card variant="default" padding="lg">
 			<div className="flex items-center justify-between pb-4 border-b border-border-subtle">
-				<h3 className="font-display text-lg font-semibold">Proposals</h3>
+				<h3 className="text-lg font-semibold">Proposals</h3>
 				<div className="flex items-center gap-1">
 					{STATUSES.map((status) => (
 						<button

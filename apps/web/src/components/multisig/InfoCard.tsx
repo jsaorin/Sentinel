@@ -22,7 +22,7 @@ export function InfoCard({ address, type, threshold, created, lastActivity }: In
 
 	return (
 		<Card variant="default" padding="lg">
-			<h3 className="font-display text-lg font-semibold pb-4 border-b border-border-subtle">Multisig Info</h3>
+			<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">Multisig Info</h3>
 			<div className="mt-1">
 				<InfoRow label="Address" value={truncated} mono />
 				<InfoRow label="Type" value={type} />
