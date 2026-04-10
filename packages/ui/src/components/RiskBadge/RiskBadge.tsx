@@ -1,25 +1,39 @@
 import type { HTMLAttributes } from "react";
+import {
+	ExclamationTriangleIcon,
+	ShieldExclamationIcon,
+	ExclamationCircleIcon,
+	CheckCircleIcon,
+	ShieldCheckIcon,
+	InformationCircleIcon,
+	QuestionMarkCircleIcon,
+} from "@heroicons/react/24/outline";
 
-type RiskLevel = "critical" | "high" | "medium" | "low" | "safe" | "info" | "unknown";
+type RiskLevel =
+	| "critical"
+	| "high"
+	| "medium"
+	| "low"
+	| "safe"
+	| "info"
+	| "unknown";
 
 type RiskBadgeProps = HTMLAttributes<HTMLSpanElement> & {
 	level: RiskLevel;
 	size?: "sm" | "md";
 };
 
-const levelConfig: Record<RiskLevel, { label: string; classes: string }> = {
-	critical: { label: "Critical", classes: "bg-critical-subtle text-critical" },
-	high: { label: "High", classes: "bg-high-subtle text-high" },
-	medium: { label: "Medium", classes: "bg-medium-subtle text-medium" },
-	low: { label: "Low", classes: "bg-low-subtle text-low" },
-	safe: { label: "Safe", classes: "bg-safe-subtle text-safe" },
-	info: { label: "Info", classes: "bg-info-subtle text-info" },
-	unknown: { label: "Unknown", classes: "bg-unknown-subtle text-unknown" },
-};
-
-const sizeClasses = {
-	sm: "px-2 py-0.5 text-xs",
-	md: "px-2.5 py-1 text-sm",
+const levelConfig: Record<
+	RiskLevel,
+	{ label: string; icon: typeof ShieldCheckIcon; color: string }
+> = {
+	critical: { label: "CRITICAL", icon: ShieldExclamationIcon, color: "#c43030" },
+	high: { label: "HIGH", icon: ExclamationTriangleIcon, color: "#d4952a" },
+	medium: { label: "MEDIUM", icon: ExclamationCircleIcon, color: "#b89a30" },
+	low: { label: "LOW", icon: CheckCircleIcon, color: "#4da035" },
+	safe: { label: "SAFE", icon: ShieldCheckIcon, color: "#38892e" },
+	info: { label: "INFO", icon: InformationCircleIcon, color: "#3a7abf" },
+	unknown: { label: "UNKNOWN", icon: QuestionMarkCircleIcon, color: "#5a5f68" },
 };
 
 export function RiskBadge({
@@ -29,18 +43,21 @@ export function RiskBadge({
 	...props
 }: RiskBadgeProps) {
 	const config = levelConfig[level];
+	const IconComponent = config.icon;
+	const iconSize = size === "sm" ? "w-3.5 h-3.5" : "w-4 h-4";
 
 	return (
 		<span
 			className={[
-				"inline-flex items-center font-semibold tracking-wider uppercase",
-				sizeClasses[size],
-				config.classes,
+				"flex items-center gap-1 font-semibold tracking-wider whitespace-nowrap",
+				size === "sm" ? "text-xs" : "text-sm",
 				className,
 			].join(" ")}
+			style={{ color: config.color }}
 			aria-label={`Risk level: ${config.label}`}
 			{...props}
 		>
+			<IconComponent className={`${iconSize} shrink-0`} aria-hidden="true" />
 			{config.label}
 		</span>
 	);
