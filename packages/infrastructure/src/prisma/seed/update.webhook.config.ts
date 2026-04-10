@@ -3,7 +3,7 @@ import { getPrismaClient } from "../prisma-client-factory.js";
 
 const multisigActivityWebhookConfigs = [
 	{
-		heliusWebhookId: "HELIUS_MULTISIG_ACTIVITY_WEBHOOK_ID",
+		heliusWebhookId: "7767df74-6405-4c10-9666-08fd5f732f3f",
 		type: WebhookType.MULTISIG_ACTIVITY,
 	},
 ];
