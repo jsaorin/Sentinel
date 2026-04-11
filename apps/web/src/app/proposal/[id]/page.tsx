@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import { Card, RiskBadge, Badge } from "@sentinel/ui";
 import { MultisigHeader, ReportCard } from "@/components/multisig";
 import { ScoreCard } from "@/components/multisig/ScoreCard";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+	const { id } = await params;
+	return {
+		title: `Proposal #${id}`,
+		description: `Security analysis for Proposal #${id}. AI risk score, signer verification, and transaction action review.`,
+	};
+}
 
 const MOCK_PROPOSALS: Record<
   string,
@@ -110,8 +119,9 @@ function InfoRow({
   );
 }
 
-export default function ProposalPage({ params }: { params: { id: string } }) {
-  const proposal = MOCK_PROPOSALS[params.id] ?? MOCK_PROPOSALS["1247"];
+export default async function ProposalPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const proposal = MOCK_PROPOSALS[id] ?? MOCK_PROPOSALS["1247"];
 
   return (
     <main className="min-h-screen pb-16">

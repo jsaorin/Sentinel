@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Proposals",
+	description:
+		"Browse and analyze risk scores for the latest Solana multisig proposals. AI-powered security assessment for every transaction.",
+};
+
 export default function ProposalsPage() {
 	return (
 		<main className="min-h-screen">

@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Scanner",
+	description:
+		"Scan Solana transactions for durable nonce attacks and suspicious patterns. Real-time threat detection for multisig protocols.",
+};
+
 export default function ScannerPage() {
 	return (
 		<main className="min-h-screen">

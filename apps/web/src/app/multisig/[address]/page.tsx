@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   MultisigHeader,
   InfoCard,
@@ -6,6 +7,14 @@ import {
   ReportCard,
   ProposalHistory,
 } from "@/components/multisig";
+
+export async function generateMetadata({ params }: { params: Promise<{ address: string }> }): Promise<Metadata> {
+  const { address } = await params;
+  return {
+    title: `Multisig ${address.slice(0, 8)}...`,
+    description: `Security report for Solana multisig ${address}. Risk score, signer analysis, and proposal history.`,
+  };
+}
 
 const MOCK_MULTISIG = {
   address: "7xK9f2qR8mNpL3wBvT5aB3qW5nR8kJ2",

@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="512" height="512" rx="64" fill="#000000"/>
+<g transform="translate(256, 256) scale(1.5) translate(-256, -256)">
+<path d="M256 275C266.493 275 275 266.493 275 256C275 245.507 266.493 237 256 237C245.507 237 237 245.507 237 256C237 266.493 245.507 275 256 275Z" fill="white"/>
+<path d="M256 168L344 256L256 344L168 256L256 168Z" stroke="white" stroke-width="6"/>
+<path d="M256 198L314 256L256 314L198 256L256 198Z" stroke="white" stroke-width="6"/>
+<line x1="128.707" y1="256.293" x2="199.418" y2="327.004" stroke="white" stroke-width="6"/>
+<line x1="127.293" y1="256.358" x2="198.004" y2="185.648" stroke="white" stroke-width="6"/>
+<line x1="108.707" y1="256.293" x2="151.134" y2="298.719" stroke="white" stroke-width="6"/>
+<line x1="107.293" y1="256.359" x2="149.719" y2="213.933" stroke="white" stroke-width="6"/>
+<line x1="402.719" y1="256.137" x2="360.293" y2="213.71" stroke="white" stroke-width="6"/>
+<line x1="404.133" y1="256.069" x2="361.707" y2="298.496" stroke="white" stroke-width="6"/>
+<line y1="-1" x2="99.9748" y2="-1" transform="matrix(-0.707285 -0.706928 0.707285 -0.706928 383.711 254.757)" stroke="white" stroke-width="6"/>
+<line y1="-1" x2="99.9748" y2="-1" transform="matrix(-0.707285 0.706928 -0.707285 -0.706928 383.711 254.757)" stroke="white" stroke-width="6"/>
+</g>
+</svg>

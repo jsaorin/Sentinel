@@ -23,8 +23,56 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Sentinel",
-	description: "AI-powered multisig security scoring for Solana",
+	metadataBase: new URL("https://sentinel.security"),
+	title: {
+		default: "Sentinel — AI-Powered Multisig Security for Solana",
+		template: "%s | Sentinel",
+	},
+	description:
+		"Score every proposal. Detect signer anomalies. Catch durable nonce attacks before they drain your protocol. AI-powered security scoring for Solana multisigs.",
+	keywords: [
+		"Solana multisig security",
+		"multisig risk scoring",
+		"Squads multisig",
+		"durable nonce detection",
+		"Solana security",
+		"multisig proposal scoring",
+		"AI blockchain security",
+		"Solana DeFi security",
+		"signer behavior analysis",
+		"Sentinel security",
+	],
+	authors: [{ name: "Sentinel" }],
+	creator: "Sentinel",
+	icons: {
+		icon: "/favicon.svg",
+		apple: "/sentinel-logo.png",
+	},
+	openGraph: {
+		type: "website",
+		siteName: "Sentinel",
+		title: "Sentinel — AI-Powered Multisig Security for Solana",
+		description:
+			"Score every proposal. Detect signer anomalies. Catch durable nonce attacks before they drain your protocol.",
+		locale: "en_US",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Sentinel — AI-Powered Multisig Security for Solana",
+		description:
+			"AI-powered security scoring for Solana multisigs. Score proposals, detect anomalies, catch attacks.",
+	},
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			"max-video-preview": -1,
+			"max-image-preview": "large",
+			"max-snippet": -1,
+		},
+	},
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
