@@ -5,6 +5,7 @@ import {
 	TimelineSection,
 	SectionDivider,
 } from "@/components/landing";
+import { Footer } from "@/components/Footer";
 
 export default function HomePage() {
 	return (
@@ -50,6 +51,8 @@ export default function HomePage() {
 					visual="timeline"
 				/>
 			</TimelineSection>
+
+			<Footer />
 		</main>
 	);
 }
