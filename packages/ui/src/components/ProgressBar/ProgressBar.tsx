@@ -43,7 +43,8 @@ export function ProgressBar({
 }: ProgressBarProps) {
 	const clampedValue = Math.max(0, Math.min(100, Math.round(value)));
 	const level = getLevel(clampedValue);
-	const fillColor = color ?? (colorByValue ? levelFillColors[level] : "bg-primary");
+	const fillColor =
+		color ?? (colorByValue ? levelFillColors[level] : "bg-primary");
 
 	return (
 		<div className="w-full">
@@ -62,7 +63,10 @@ export function ProgressBar({
 				</div>
 			)}
 			<div
-				className={["w-full rounded-full bg-bg-overlay overflow-hidden", trackSizeClasses[size]].join(" ")}
+				className={[
+					"w-full rounded-full bg-bg-overlay overflow-hidden",
+					trackSizeClasses[size],
+				].join(" ")}
 				role="progressbar"
 				tabIndex={0}
 				aria-valuenow={clampedValue}

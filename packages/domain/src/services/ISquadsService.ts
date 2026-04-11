@@ -3,6 +3,7 @@ export interface MultisigAccountData {
 	members: Array<{ address: string; permissions: { mask: number } }>;
 	configAuthority: string | null;
 	transactionIndex: number;
+	vaultPda: string;
 }
 
 export interface ProposalAccountData {

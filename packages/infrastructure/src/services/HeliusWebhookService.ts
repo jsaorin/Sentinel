@@ -40,20 +40,14 @@ export class HeliusWebhookService implements IHeliusWebhookService {
 			await this.webhookConfigRepository.findByType(webhookType);
 
 		if (webhookConfigs.length === 0) {
-			throw new Error(
-				`No webhook configs found for type ${webhookType}`,
-			);
+			throw new Error(`No webhook configs found for type ${webhookType}`);
 		}
 
 		await Promise.all(
 			webhookConfigs.map(async (config) => {
-				const webhook = await this.getWebhookById(
-					config.heliusWebhookId,
-				);
+				const webhook = await this.getWebhookById(config.heliusWebhookId);
 
-				const accountAddresses = webhook.accountAddresses.concat([
-					address,
-				]);
+				const accountAddresses = webhook.accountAddresses.concat([address]);
 				if (accountAddresses.length > 100_000) {
 					throw new Error(
 						"A single webhook cannot contain more than 100,000 addresses",

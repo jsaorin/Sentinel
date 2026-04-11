@@ -5,6 +5,7 @@ import { OutboxEventRepository } from "../repositories/OutboxEventRepository.js"
 import { ProposalInstructionRepository } from "../repositories/ProposalInstructionRepository.js";
 import { ProposalRepository } from "../repositories/ProposalRepository.js";
 import { SignerRepository } from "../repositories/SignerRepository.js";
+import { VaultRepository } from "../repositories/VaultRepository.js";
 import { WebhookConfigRepository } from "../repositories/WebhookConfigRepository.js";
 
 export const repositoryModule = new ContainerModule(
@@ -37,6 +38,11 @@ export const repositoryModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.ProposalInstructionRepository)
 			.to(ProposalInstructionRepository)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.VaultRepository)
+			.to(VaultRepository)
 			.inSingletonScope();
 	},
 );

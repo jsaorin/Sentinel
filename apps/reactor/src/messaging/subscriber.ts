@@ -155,9 +155,7 @@ export class Subscriber {
 		limit(async () => {
 			const { ch, logger, container } = this;
 			try {
-				const event = JSON.parse(
-					msg.content.toString(),
-				) as IntegrationEvent;
+				const event = JSON.parse(msg.content.toString()) as IntegrationEvent;
 
 				const ctx: HandlerContext = {
 					event,

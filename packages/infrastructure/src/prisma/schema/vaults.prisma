@@ -1,0 +1,14 @@
+model Vault {
+  id         String   @id @default(uuid())
+  multisigId String   @map("multisig_id")
+  vaultIndex Int      @map("vault_index")
+  pda        String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  multisig Multisig @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+
+  @@unique([multisigId, vaultIndex])
+  @@index([multisigId])
+  @@map("vault")
+}

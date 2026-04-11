@@ -38,7 +38,11 @@ export class MultisigController extends Api {
 		}
 	}
 
-	async listProposals(req: Request, res: Response, next: NextFunction): Promise<void> {
+	async listProposals(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
 		try {
 			const multisigId = req.params.multisigId as string;
 			const result = await this.listProposalsHandler.execute({ multisigId });

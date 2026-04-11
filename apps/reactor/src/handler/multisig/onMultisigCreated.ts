@@ -5,9 +5,9 @@ import {
 import type { Handler } from "../../messaging/types.js";
 import type { MultisigCreatedEvent } from "./schema.js";
 
-export const onMultisigCreated: Handler<
-	MultisigCreatedEvent["data"]
-> = async (ctx) => {
+export const onMultisigCreated: Handler<MultisigCreatedEvent["data"]> = async (
+	ctx,
+) => {
 	const { event, logger, container } = ctx;
 	const { multisigId, address } = event.data;
 

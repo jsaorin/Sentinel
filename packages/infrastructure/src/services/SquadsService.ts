@@ -30,16 +30,13 @@ export class SquadsService implements ISquadsService {
 		);
 	}
 
-	async getMultisigAccountData(
-		address: string,
-	): Promise<MultisigAccountData> {
+	async getMultisigAccountData(address: string): Promise<MultisigAccountData> {
 		const multisigPda = new PublicKey(address);
 
-		const multisigAccount =
-			await multisig.accounts.Multisig.fromAccountAddress(
-				this.connection,
-				multisigPda,
-			);
+		const multisigAccount = await multisig.accounts.Multisig.fromAccountAddress(
+			this.connection,
+			multisigPda,
+		);
 
 		const transactionIndex =
 			typeof multisigAccount.transactionIndex === "number"
@@ -47,9 +44,15 @@ export class SquadsService implements ISquadsService {
 				: Number(multisigAccount.transactionIndex);
 
 		const configAuthority =
-			multisigAccount.configAuthority.toBase58() === PublicKey.default.toBase58()
+			multisigAccount.configAuthority.toBase58() ===
+			PublicKey.default.toBase58()
 				? null
 				: multisigAccount.configAuthority.toBase58();
+
+		const [vaultPda] = multisig.getVaultPda({
+			multisigPda,
+			index: 0,
+		});
 
 		return {
 			threshold: multisigAccount.threshold,
@@ -59,6 +62,7 @@ export class SquadsService implements ISquadsService {
 			})),
 			configAuthority,
 			transactionIndex,
+			vaultPda: vaultPda.toBase58(),
 		};
 	}
 
@@ -104,8 +108,7 @@ export class SquadsService implements ISquadsService {
 				await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
 			}
 
-			const accountInfos =
-				await this.connection.getMultipleAccountsInfo(keys);
+			const accountInfos = await this.connection.getMultipleAccountsInfo(keys);
 
 			for (let j = 0; j < chunk.length; j++) {
 				const accountInfo = accountInfos[j];
@@ -116,9 +119,7 @@ export class SquadsService implements ISquadsService {
 
 				try {
 					const [proposalAccount] =
-						multisig.accounts.Proposal.fromAccountInfo(
-							accountInfo,
-						);
+						multisig.accounts.Proposal.fromAccountInfo(accountInfo);
 
 					const txIndex =
 						typeof proposalAccount.transactionIndex === "number"
@@ -139,9 +140,7 @@ export class SquadsService implements ISquadsService {
 							: new Date();
 
 					const executedAt =
-						statusData.__kind === "Executed"
-							? statusTimestamp
-							: null;
+						statusData.__kind === "Executed" ? statusTimestamp : null;
 
 					// For createdAt, use the status timestamp as best approximation
 					const createdAt = statusTimestamp;
@@ -162,13 +161,10 @@ export class SquadsService implements ISquadsService {
 						executedAt,
 					});
 				} catch (_error) {
-					this.logger.debug(
-						"Failed to deserialize proposal, skipping",
-						{
-							multisigAddress,
-							index: chunk[j].index,
-						},
-					);
+					this.logger.debug("Failed to deserialize proposal, skipping", {
+						multisigAddress,
+						index: chunk[j].index,
+					});
 				}
 			}
 		}
@@ -200,8 +196,7 @@ export class SquadsService implements ISquadsService {
 				await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
 			}
 
-			const accountInfos =
-				await this.connection.getMultipleAccountsInfo(keys);
+			const accountInfos = await this.connection.getMultipleAccountsInfo(keys);
 
 			for (let j = 0; j < chunk.length; j++) {
 				const accountInfo = accountInfos[j];
@@ -209,25 +204,18 @@ export class SquadsService implements ISquadsService {
 
 				try {
 					const [vaultTx] =
-						multisig.accounts.VaultTransaction.fromAccountInfo(
-							accountInfo,
-						);
+						multisig.accounts.VaultTransaction.fromAccountInfo(accountInfo);
 
 					// Resolve full account keys: static + ALT lookups
-					const allAccountKeys = [
-						...vaultTx.message.accountKeys,
-					];
+					const allAccountKeys = [...vaultTx.message.accountKeys];
 
-					for (const lookup of vaultTx.message
-						.addressTableLookups) {
-						const altAccount =
-							await this.connection.getAddressLookupTable(
-								lookup.accountKey,
-							);
+					for (const lookup of vaultTx.message.addressTableLookups) {
+						const altAccount = await this.connection.getAddressLookupTable(
+							lookup.accountKey,
+						);
 						if (!altAccount.value) continue;
 
-						const addresses =
-							altAccount.value.state.addresses;
+						const addresses = altAccount.value.state.addresses;
 						for (const idx of lookup.writableIndexes) {
 							allAccountKeys.push(addresses[idx]);
 						}

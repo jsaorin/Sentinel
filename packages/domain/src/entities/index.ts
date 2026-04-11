@@ -4,3 +4,4 @@ export * from "./Multisig.js";
 export * from "./Signer.js";
 export * from "./Proposal.js";
 export * from "./ProposalInstruction.js";
+export * from "./Vault.js";

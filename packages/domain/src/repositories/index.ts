@@ -5,3 +5,4 @@ export * from "./IMultisigRepository.js";
 export * from "./ISignerRepository.js";
 export * from "./IProposalRepository.js";
 export * from "./IProposalInstructionRepository.js";
+export * from "./IVaultRepository.js";

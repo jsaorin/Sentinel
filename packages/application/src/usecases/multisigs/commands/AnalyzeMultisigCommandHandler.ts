@@ -6,6 +6,7 @@ import {
 	type IProposalRepository,
 	type ISignerRepository,
 	type ISquadsService,
+	type IVaultRepository,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
@@ -41,6 +42,8 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		private proposalInstructionRepository: IProposalInstructionRepository,
 		@inject(DOMAIN_TYPES.SquadsService)
 		private squadsService: ISquadsService,
+		@inject(DOMAIN_TYPES.VaultRepository)
+		private vaultRepository: IVaultRepository,
 	) {
 		super();
 	}
@@ -62,7 +65,19 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			configAuthority: accountData.configAuthority,
 		});
 
-		// 3. Replace signers (delete + recreate for idempotency — members can change)
+		// 3. Upsert default vault (index 0)
+		await this.vaultRepository.upsert({
+			multisigId,
+			vaultIndex: 0,
+			pda: accountData.vaultPda,
+		});
+
+		this.logger.info("Vault stored", {
+			multisigId,
+			vaultPda: accountData.vaultPda,
+		});
+
+		// 4. Replace signers (delete + recreate for idempotency — members can change)
 		await this.signerRepository.deleteByMultisigId(multisigId);
 		const signers = await this.signerRepository.createMany(
 			accountData.members.map((member) => ({
@@ -80,9 +95,7 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		// 4. Incremental proposal fetch — only get new proposals
 		const lastProposal =
 			await this.proposalRepository.findLatestByMultisigId(multisigId);
-		const startIndex = lastProposal
-			? lastProposal.proposalIndex + 1
-			: 1;
+		const startIndex = lastProposal ? lastProposal.proposalIndex + 1 : 1;
 
 		const proposalData = await this.squadsService.getProposals(
 			address,
@@ -99,9 +112,7 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 					transactionIndex: p.transactionIndex,
 					pda: p.pda,
 					transactionPda: p.transactionPda,
-					status:
-						SQUADS_STATUS_MAP[p.status] ??
-						DomainProposalStatus.DRAFT,
+					status: SQUADS_STATUS_MAP[p.status] ?? DomainProposalStatus.DRAFT,
 					creator: p.creator,
 					createdAt: p.createdAt,
 					executedAt: p.executedAt,
@@ -133,9 +144,7 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			});
 
 			if (allInstructions.length > 0) {
-				await this.proposalInstructionRepository.createMany(
-					allInstructions,
-				);
+				await this.proposalInstructionRepository.createMany(allInstructions);
 			}
 
 			this.logger.info("Proposal instructions stored", {

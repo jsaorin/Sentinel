@@ -9,6 +9,7 @@ model Multisig {
 
   signers   Signer[]
   proposals Proposal[]
+  vaults    Vault[]
 
   @@map("multisig")
 }
