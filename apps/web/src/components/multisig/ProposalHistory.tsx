@@ -3,15 +3,7 @@
 import { useState } from "react";
 import { Card } from "@sentinel/ui";
 import { ProposalRow } from "./ProposalRow";
-
-type RiskLevel =
-	| "critical"
-	| "high"
-	| "medium"
-	| "low"
-	| "safe"
-	| "info"
-	| "unknown";
+import type { RiskLevel } from "@/lib/risk";
 
 type Proposal = {
 	id: string;

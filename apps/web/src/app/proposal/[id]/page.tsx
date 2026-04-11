@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Card, RiskBadge, Badge } from "@sentinel/ui";
 import { MultisigHeader, ReportCard } from "@/components/multisig";
 import { ScoreCard } from "@/components/multisig/ScoreCard";
+import { MOCK_PROPOSAL_DETAILS } from "@/lib/mock-data";
 
 export async function generateMetadata({
   params,
@@ -14,87 +15,6 @@ export async function generateMetadata({
     description: `Security analysis for Proposal #${id}. AI risk score, signer verification, and transaction action review.`,
   };
 }
-
-const MOCK_PROPOSALS: Record<
-  string,
-  {
-    id: string;
-    multisig: string;
-    multisigAddress: string;
-    description: string;
-    status: "Pending" | "Executed" | "Rejected";
-    riskLevel: "critical" | "high" | "medium" | "low" | "safe";
-    score: number;
-    created: string;
-    executed: string | null;
-    signers: Array<{
-      address: string;
-      label: string;
-      signed: boolean;
-    }>;
-    actions: string[];
-  }
-> = {
-  "1247": {
-    id: "#1247",
-    multisig: "Drift Protocol",
-    multisigAddress: "7gYJPNhRsyuiFWTr9apSUqbBHTNVV3bfya4RoHwbD6vp",
-    description: "Transfer 500 SOL to external wallet",
-    status: "Pending",
-    riskLevel: "low",
-    score: 73,
-    created: "2 min ago",
-    executed: null,
-    signers: [
-      { address: "3mQ7..zF1w", label: "Treasury Lead", signed: true },
-      { address: "9pR2..wK8e", label: "Dev Ops", signed: true },
-      { address: "5nL4..hG6y", label: "Contributor", signed: false },
-      { address: "2jM8..cD0r", label: "Founder", signed: false },
-      { address: "8tV6..pN2x", label: "Advisor", signed: false },
-    ],
-    actions: [
-      "SOL Transfer: 500 SOL → 4kR9..mN3x",
-      "Fee payer: Squads treasury",
-    ],
-  },
-  "1246": {
-    id: "#1246",
-    multisig: "Marinade Finance",
-    multisigAddress: "3mQ7dL8kR9pN2wBvT5zF1w",
-    description: "Update upgrade authority to new key",
-    status: "Executed",
-    riskLevel: "critical",
-    score: 12,
-    created: "8 min ago",
-    executed: "5 min ago",
-    signers: [
-      { address: "7xK9..aB3q", label: "Admin", signed: true },
-      { address: "3mQ7..zF1w", label: "Operator", signed: true },
-      { address: "9pR2..wK8e", label: "Security", signed: true },
-    ],
-    actions: [
-      "SetUpgradeAuthority: program 5nL4..hG6y",
-      "New authority: 8tV6..pN2x",
-    ],
-  },
-  "1245": {
-    id: "#1245",
-    multisig: "Jupiter Exchange",
-    multisigAddress: "9pR2vN5cX8hG6yL4wK8e",
-    description: "Add new signer to multisig",
-    status: "Executed",
-    riskLevel: "medium",
-    score: 51,
-    created: "15 min ago",
-    executed: "10 min ago",
-    signers: [
-      { address: "2jM8..cD0r", label: "Founder", signed: true },
-      { address: "8tV6..pN2x", label: "CTO", signed: true },
-      { address: "7xK9..aB3q", label: "Ops", signed: false },
-    ],
-    actions: ["AddMember: 4kR9..mN3x", "New threshold: 3 of 4"],
-  },
-};
 
 function getStatusVariant(status: string) {
   if (status === "Executed") return "safe" as const;
@@ -131,7 +51,7 @@ export default async function ProposalPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const proposal = MOCK_PROPOSALS[id] ?? MOCK_PROPOSALS["1247"];
+  const proposal = MOCK_PROPOSAL_DETAILS[id] ?? MOCK_PROPOSAL_DETAILS["1247"];
 
   return (
     <main className="min-h-screen pb-16">

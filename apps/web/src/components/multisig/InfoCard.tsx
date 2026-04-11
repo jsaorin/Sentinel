@@ -1,22 +1,5 @@
 import { Card, RiskBadge } from "@sentinel/ui";
-
-type RiskLevel = "critical" | "high" | "medium" | "low" | "safe";
-
-function getLevel(score: number): RiskLevel {
-	if (score < 20) return "critical";
-	if (score < 40) return "high";
-	if (score < 60) return "medium";
-	if (score < 80) return "low";
-	return "safe";
-}
-
-const LEVEL_COLORS: Record<RiskLevel, string> = {
-	critical: "#c43030",
-	high: "#d4952a",
-	medium: "#b89a30",
-	low: "#4da035",
-	safe: "#38892e",
-};
+import { getLevel, LEVEL_HEX } from "@/lib/risk";
 
 type InfoCardProps = {
 	address: string;
@@ -65,7 +48,7 @@ export function InfoCard({
 				{score !== undefined && (
 					<span
 						className="flex items-center gap-1"
-						style={{ color: LEVEL_COLORS[getLevel(score)] }}
+						style={{ color: LEVEL_HEX[getLevel(score)] }}
 					>
 						<RiskBadge level={getLevel(score)} size="sm" />
 						<span className="text-xs font-semibold tracking-wider">RISK</span>

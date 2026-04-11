@@ -1,14 +1,6 @@
 import Link from "next/link";
 import { Badge, RiskBadge } from "@sentinel/ui";
-
-type RiskLevel =
-	| "critical"
-	| "high"
-	| "medium"
-	| "low"
-	| "safe"
-	| "info"
-	| "unknown";
+import type { RiskLevel } from "@/lib/risk";
 
 type ProposalRowProps = {
 	id: string;

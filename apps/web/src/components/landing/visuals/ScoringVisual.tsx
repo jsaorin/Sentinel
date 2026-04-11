@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { getLevel, LEVEL_LABELS, LEVEL_RGB } from "@/lib/risk";
 
-type ScoreCardProps = {
-	score: number;
-};
-
+const SCORE = 73;
+const SCORE_LABEL = "LOW RISK";
+const SCORE_RGB = "56, 137, 46"; // --color-safe
 const TICK_COUNT = 60;
-const ARC_START = (Math.PI * 3) / 4;
-const ARC_SWEEP = (Math.PI * 3) / 2;
+// The arc spans 270deg (from 135deg to 405deg), leaving a gap at the bottom
+const ARC_START = (Math.PI * 3) / 4; // 135deg
+const ARC_SWEEP = (Math.PI * 3) / 2; // 270deg
 const ARC_END = ARC_START + ARC_SWEEP;
+const SCORE_ANGLE = ARC_START + (SCORE / 100) * ARC_SWEEP;
 
-export function ScoreCard({ score }: ScoreCardProps) {
+export function ScoringVisual() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -38,18 +38,14 @@ export function ScoreCard({ score }: ScoreCardProps) {
 			"(prefers-reduced-motion: reduce)",
 		).matches;
 
-		const level = getLevel(score);
-		const rgb = LEVEL_RGB[level];
-		const label = LEVEL_LABELS[level];
-		const scoreAngle = ARC_START + (score / 100) * ARC_SWEEP;
-
 		const cx = w / 2;
 		const cy = h / 2;
 		const ringR = Math.min(w, h) * 0.36;
 		const dotR = 5;
 
-		let progress = prefersReduced ? 1 : 0;
-		const fillSpeed = 0.025;
+		// Animate the green arc from 0 -> score angle
+		let progress = prefersReduced ? 1 : 0; // 0->1
+		const fillSpeed = 0.011;
 
 		let animId: number;
 		let isVisible = true;
@@ -67,13 +63,14 @@ export function ScoreCard({ score }: ScoreCardProps) {
 			if (!ctx || !isVisible) return;
 			ctx.clearRect(0, 0, w, h);
 
+			// Advance fill
 			if (!prefersReduced && progress < 1) {
 				progress = Math.min(1, progress + fillSpeed);
 			}
 
-			const currentAngle = ARC_START + progress * (scoreAngle - ARC_START);
+			const currentAngle = ARC_START + progress * (SCORE_ANGLE - ARC_START);
 
-			// Faint glow behind ring
+			// Faint green glow behind ring
 			const ringGlow = ctx.createRadialGradient(
 				cx,
 				cy,
@@ -82,14 +79,14 @@ export function ScoreCard({ score }: ScoreCardProps) {
 				cy,
 				ringR * 1.4,
 			);
-			ringGlow.addColorStop(0, `rgba(${rgb}, ${0.03 * progress})`);
-			ringGlow.addColorStop(1, `rgba(${rgb}, 0)`);
+			ringGlow.addColorStop(0, `rgba(${SCORE_RGB}, ${0.03 * progress})`);
+			ringGlow.addColorStop(1, `rgba(${SCORE_RGB}, 0)`);
 			ctx.beginPath();
 			ctx.arc(cx, cy, ringR * 1.4, 0, Math.PI * 2);
 			ctx.fillStyle = ringGlow;
 			ctx.fill();
 
-			// Background arc
+			// Background arc (full track, dim)
 			ctx.beginPath();
 			ctx.arc(cx, cy, ringR, ARC_START, ARC_END);
 			ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
@@ -122,20 +119,21 @@ export function ScoreCard({ score }: ScoreCardProps) {
 				ctx.stroke();
 			}
 
-			// Filled arc
+			// Green filled arc (0 -> current score)
 			if (progress > 0) {
 				ctx.beginPath();
 				ctx.arc(cx, cy, ringR, ARC_START, currentAngle);
-				ctx.strokeStyle = `rgba(${rgb}, 0.8)`;
+				ctx.strokeStyle = `rgba(${SCORE_RGB}, 0.8)`;
 				ctx.lineWidth = 3;
 				ctx.lineCap = "round";
 				ctx.stroke();
 			}
 
-			// Dot at end of arc
+			// Dot at the current end of the green arc
 			const dotX = cx + Math.cos(currentAngle) * ringR;
 			const dotY = cy + Math.sin(currentAngle) * ringR;
 
+			// Dot glow
 			const dotGlow = ctx.createRadialGradient(
 				dotX,
 				dotY,
@@ -144,13 +142,14 @@ export function ScoreCard({ score }: ScoreCardProps) {
 				dotY,
 				dotR * 6,
 			);
-			dotGlow.addColorStop(0, `rgba(${rgb}, 0.3)`);
-			dotGlow.addColorStop(1, `rgba(${rgb}, 0)`);
+			dotGlow.addColorStop(0, `rgba(${SCORE_RGB}, 0.3)`);
+			dotGlow.addColorStop(1, `rgba(${SCORE_RGB}, 0)`);
 			ctx.beginPath();
 			ctx.arc(dotX, dotY, dotR * 6, 0, Math.PI * 2);
 			ctx.fillStyle = dotGlow;
 			ctx.fill();
 
+			// Dot core
 			ctx.beginPath();
 			ctx.arc(dotX, dotY, dotR, 0, Math.PI * 2);
 			ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
@@ -161,13 +160,14 @@ export function ScoreCard({ score }: ScoreCardProps) {
 			ctx.textAlign = "center";
 			ctx.textBaseline = "middle";
 			ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + progress * 0.5})`;
-			ctx.fillText(String(Math.round(score * progress)), cx, cy - 8);
+			ctx.fillText(String(Math.round(SCORE * progress)), cx, cy - 8);
 
 			// Risk label
 			ctx.font = "600 10px monospace";
-			ctx.fillStyle = `rgba(${rgb}, ${progress * 0.8})`;
-			ctx.fillText(label, cx, cy + 22);
+			ctx.fillStyle = `rgba(${SCORE_RGB}, ${progress * 0.8})`;
+			ctx.fillText(SCORE_LABEL, cx, cy + 22);
 
+			// Keep animating while filling, then stop
 			if (progress < 1) {
 				animId = requestAnimationFrame(draw);
 			}
@@ -178,20 +178,15 @@ export function ScoreCard({ score }: ScoreCardProps) {
 			cancelAnimationFrame(animId);
 			visObserver.disconnect();
 		};
-	}, [score]);
+	}, []);
 
 	return (
-		<div className="flex flex-col items-center">
-			<h3 className="text-xs uppercase tracking-wider font-semibold text-text-secondary mb-2">
-				Risk Score
-			</h3>
-			<div
-				ref={containerRef}
-				className="w-full aspect-square max-w-xs mx-auto"
-				aria-hidden="true"
-			>
-				<canvas ref={canvasRef} className="w-full h-full" />
-			</div>
+		<div
+			ref={containerRef}
+			className="w-full aspect-square max-w-xs mx-auto"
+			aria-hidden="true"
+		>
+			<canvas ref={canvasRef} className="w-full h-full" />
 		</div>
 	);
 }

@@ -1,15 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { RiskBadge } from "@sentinel/ui";
-
-type RiskLevel =
-	| "critical"
-	| "high"
-	| "medium"
-	| "low"
-	| "safe"
-	| "info"
-	| "unknown";
+import type { RiskLevel } from "@/lib/risk";
 
 type StatsListRowProps = {
 	icon: ReactNode;

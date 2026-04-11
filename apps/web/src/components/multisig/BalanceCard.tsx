@@ -25,14 +25,13 @@ export function BalanceCard({ address }: BalanceCardProps) {
   const [balances, setBalances] = useState<Balances | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  console.log(balances);
+
   useEffect(() => {
     async function fetchBalances() {
       try {
         const res = await fetch(`/api/balances/${address}`);
         if (!res.ok) throw new Error("Failed");
         const data = await res.json();
-        console.log(data);
         setBalances(data);
       } catch {
         setError(true);
