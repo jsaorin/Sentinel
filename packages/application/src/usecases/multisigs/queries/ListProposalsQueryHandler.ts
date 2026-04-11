@@ -1,5 +1,7 @@
 import {
 	DOMAIN_TYPES,
+	ResourceNotFoundError,
+	type IMultisigRepository,
 	type IProposalInstructionRepository,
 	type IProposalRepository,
 } from "@sentinel/domain";
@@ -17,6 +19,8 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 	ListProposalsQueryOutputDto
 > {
 	constructor(
+		@inject(DOMAIN_TYPES.MultisigRepository)
+		private multisigRepository: IMultisigRepository,
 		@inject(DOMAIN_TYPES.ProposalRepository)
 		private proposalRepository: IProposalRepository,
 		@inject(DOMAIN_TYPES.ProposalInstructionRepository)
@@ -28,8 +32,14 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 	async execute(
 		input: ListProposalsQueryInputDto,
 	): Promise<ListProposalsQueryOutputDto> {
+		const multisig = await this.multisigRepository.findByAddress(input.address);
+
+		if (!multisig) {
+			throw new ResourceNotFoundError("Multisig", input.address);
+		}
+
 		const proposals = await this.proposalRepository.findByMultisigId(
-			input.multisigId,
+			multisig.id,
 		);
 
 		const proposalIds = proposals.map((p) => p.id);

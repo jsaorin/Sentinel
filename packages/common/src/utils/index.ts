@@ -1,1 +1,1 @@
-// Shared utilities - add as needed
+export { decodePermissionsMask, type DecodedPermissions } from "./permissions.js";

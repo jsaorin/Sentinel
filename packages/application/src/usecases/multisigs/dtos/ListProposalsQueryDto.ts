@@ -1,5 +1,5 @@
 export type ListProposalsQueryInputDto = {
-	multisigId: string;
+	address: string;
 };
 
 export type ListProposalsQueryOutputDto = {

@@ -19,7 +19,17 @@ router.post(
 );
 
 router.get(
-	"/multisigs/:multisigId/proposals",
+	"/multisigs/:address",
+	controller.getMultisig.bind(controller),
+);
+
+router.get(
+	"/multisigs/:address/signers",
+	controller.listSigners.bind(controller),
+);
+
+router.get(
+	"/multisigs/:address/proposals",
 	controller.listProposals.bind(controller),
 );
 
