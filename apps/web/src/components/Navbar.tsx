@@ -59,7 +59,7 @@ export function Navbar() {
     <>
       <nav
         className={[
-          "fixed top-0 left-0 right-0 z-[60] h-16 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-60 h-16 transition-all duration-300",
           "bg-black/80 backdrop-blur-md",
           visible
             ? "opacity-100 translate-y-0"
@@ -75,12 +75,16 @@ export function Navbar() {
           }}
         />
 
-        <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between overflow-visible">
           <Link
             href="/"
-            className="font-display text-md tracking-widest text-text-primary hover:text-white transition-colors"
+            className="flex items-center gap-2 font-display text-md tracking-widest text-text-primary hover:text-white transition-colors"
           >
-            SENTINEL
+            <img
+              src="/sentinel-logo.png"
+              alt=""
+              className="h-18 md:h-24 w-auto"
+            />
           </Link>
 
           {/* Desktop links */}
@@ -106,9 +110,9 @@ export function Navbar() {
                   {bracket && (
                     <>
                       {/* Left vertical — full height */}
-                      <span className="absolute left-0 top-1/2 bottom-0 w-px bg-[#e0e0e0]" />
+                      <span className="absolute left-0 top-1/2 bottom-0 w-px bg-primary" />
                       {/* Right vertical — full height */}
-                      <span className="absolute right-0 top-1/2 bottom-0 w-px bg-[#e0e0e0]" />
+                      <span className="absolute right-0 top-1/2 bottom-0 w-px bg-primary" />
                       {/* Left horizontal — fades toward text */}
                       <span
                         className="absolute left-0 top-1/2 w-7 h-px"
@@ -138,25 +142,25 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden flex flex-col gap-1.5 p-3"
+            className="md:hidden relative w-10 h-10 flex items-center justify-center"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
           >
             <span
               className={[
-                "block w-5 h-px bg-text-primary transition-all duration-200",
-                mobileOpen ? "rotate-45 translate-y-[3.5px]" : "",
+                "absolute w-5 h-px bg-text-primary transition-all duration-200",
+                mobileOpen ? "rotate-45" : "-translate-y-1.5",
               ].join(" ")}
             />
             <span
               className={[
-                "block w-5 h-px bg-text-primary transition-all duration-200",
+                "absolute w-5 h-px bg-text-primary transition-all duration-200",
                 mobileOpen ? "opacity-0" : "",
               ].join(" ")}
             />
             <span
               className={[
-                "block w-5 h-px bg-text-primary transition-all duration-200",
-                mobileOpen ? "-rotate-45 -translate-y-[3.5px]" : "",
+                "absolute w-5 h-px bg-text-primary transition-all duration-200",
+                mobileOpen ? "-rotate-45" : "translate-y-1.5",
               ].join(" ")}
             />
           </button>

@@ -95,8 +95,10 @@ function project(
   // Perspective projection
   const fov = 900;
   const scale = fov / (fov + z + 500);
+  // Center on mobile, offset right on desktop
+  const centerX = w < 768 ? w * 0.5 : w * 0.7;
   return {
-    sx: w * 0.7 + x * scale,
+    sx: centerX + x * scale,
     sy: h / 2 + y * scale,
     depth: z,
   };
@@ -284,7 +286,7 @@ export function HeroVisual() {
   return (
     <div
       ref={containerRef}
-      className="absolute lg:inset-0 flex items-center justify-center opacity-50 lg:opacity-100 h-full"
+      className="absolute inset-0 flex items-center justify-center opacity-30 lg:opacity-100"
     >
       <canvas ref={canvasRef} className="w-full h-full" />
     </div>

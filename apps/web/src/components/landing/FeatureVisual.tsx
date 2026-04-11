@@ -19,7 +19,7 @@ type MeshResult = {
   connections: Array<[number, number]>;
 };
 
-const NODE_COUNT_DESKTOP = 1000;
+const NODE_COUNT_DESKTOP = 2000;
 const NODE_COUNT_MOBILE = 400;
 // ~15% of nodes are "critical" (red), the rest are "safe" (green)
 const CRITICAL_RATIO = 0.15;
@@ -137,8 +137,12 @@ function NetworkVisual() {
     canvas.style.height = `${h}px`;
     ctx.scale(dpr, dpr);
 
-    const count = w < 768 ? NODE_COUNT_MOBILE : NODE_COUNT_DESKTOP;
+    const isMobile = window.innerWidth < 768;
+    const count = isMobile ? NODE_COUNT_MOBILE : NODE_COUNT_DESKTOP;
     const mesh = buildMesh(count);
+    if (isMobile) {
+      for (const n of mesh.nodes) n.r *= 0.65;
+    }
     // Recenter around centroid
     const cx = mesh.nodes.reduce((s, n) => s + n.x, 0) / mesh.nodes.length;
     const cy = mesh.nodes.reduce((s, n) => s + n.y, 0) / mesh.nodes.length;
