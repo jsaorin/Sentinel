@@ -18,4 +18,9 @@ router.post(
 	controller.create.bind(controller),
 );
 
+router.get(
+	"/multisigs/:multisigId/proposals",
+	controller.listProposals.bind(controller),
+);
+
 export default router;

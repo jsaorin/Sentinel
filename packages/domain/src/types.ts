@@ -5,6 +5,7 @@ const DOMAIN_REPOSITORY_TYPES = {
 	MultisigRepository: Symbol.for("MultisigRepository"),
 	SignerRepository: Symbol.for("SignerRepository"),
 	ProposalRepository: Symbol.for("ProposalRepository"),
+	ProposalInstructionRepository: Symbol.for("ProposalInstructionRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {

@@ -2,6 +2,7 @@ import {
 	DOMAIN_TYPES,
 	ProposalStatus as DomainProposalStatus,
 	type IMultisigRepository,
+	type IProposalInstructionRepository,
 	type IProposalRepository,
 	type ISignerRepository,
 	type ISquadsService,
@@ -36,6 +37,8 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		private signerRepository: ISignerRepository,
 		@inject(DOMAIN_TYPES.ProposalRepository)
 		private proposalRepository: IProposalRepository,
+		@inject(DOMAIN_TYPES.ProposalInstructionRepository)
+		private proposalInstructionRepository: IProposalInstructionRepository,
 		@inject(DOMAIN_TYPES.SquadsService)
 		private squadsService: ISquadsService,
 	) {
@@ -89,7 +92,7 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 
 		let newProposalsCount = 0;
 		if (proposalData.length > 0) {
-			await this.proposalRepository.createMany(
+			const newProposals = await this.proposalRepository.createMany(
 				proposalData.map((p) => ({
 					multisigId,
 					proposalIndex: p.proposalIndex,
@@ -105,6 +108,40 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 				})),
 			);
 			newProposalsCount = proposalData.length;
+
+			// 5. Fetch and store instructions for new proposals
+			const transactionPdas = newProposals.map((p) => p.transactionPda);
+			const vaultTxData =
+				await this.squadsService.getVaultTransactionInstructions(
+					transactionPdas,
+				);
+
+			const pdaToProposalId = new Map(
+				newProposals.map((p) => [p.transactionPda, p.id]),
+			);
+
+			const allInstructions = vaultTxData.flatMap((vtx) => {
+				const proposalId = pdaToProposalId.get(vtx.transactionPda);
+				if (!proposalId) return [];
+				return vtx.instructions.map((ix) => ({
+					proposalId,
+					instructionIndex: ix.instructionIndex,
+					programId: ix.programId,
+					data: ix.data,
+					accounts: ix.accounts,
+				}));
+			});
+
+			if (allInstructions.length > 0) {
+				await this.proposalInstructionRepository.createMany(
+					allInstructions,
+				);
+			}
+
+			this.logger.info("Proposal instructions stored", {
+				multisigId,
+				instructionsCount: allInstructions.length,
+			});
 		}
 
 		this.logger.info("Proposals stored", {

@@ -1,0 +1,14 @@
+model ProposalInstruction {
+  id               String   @id @default(uuid())
+  proposalId       String   @map("proposal_id")
+  instructionIndex Int      @map("instruction_index")
+  programId        String   @map("program_id")
+  data             String
+  accounts         String[]
+
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@unique([proposalId, instructionIndex])
+  @@index([proposalId])
+  @@map("proposal_instruction")
+}

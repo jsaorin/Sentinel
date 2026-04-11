@@ -19,7 +19,8 @@ model Proposal {
   createdAt        DateTime       @default(now()) @map("created_at")
   executedAt       DateTime?      @map("executed_at")
 
-  multisig Multisig @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+  multisig      Multisig               @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+  instructions  ProposalInstruction[]
 
   @@unique([multisigId, proposalIndex])
   @@index([multisigId])

@@ -81,7 +81,7 @@ jobs:
             echo "Deploy completed successfully"
 
       - name: Trigger Vercel deploy via empty commit
-        if: github.actor != '0xjsa'
+        if: github.actor != 'jsaorin'
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -89,7 +89,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/Sentinel
-            git config user.name "0xjsa"
-            git config user.email "0xjsa@users.noreply.github.com"
+            git config user.name "jsaorin"
+            git config user.email "jesusangel3471@gmail.com"
             git commit --allow-empty -m "chore: trigger vercel deploy [skip ci]"
             git push origin main

@@ -4,7 +4,9 @@ import {
 	type ISquadsService,
 	type MultisigAccountData,
 	type ProposalAccountData,
+	type VaultTransactionData,
 } from "@sentinel/domain";
+import { InstructionDecoder } from "./InstructionDecoder.js";
 import * as multisig from "@sqds/multisig";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { inject, injectable } from "inversify";
@@ -172,5 +174,86 @@ export class SquadsService implements ISquadsService {
 		}
 
 		return proposals;
+	}
+
+	async getVaultTransactionInstructions(
+		transactionPdas: string[],
+	): Promise<VaultTransactionData[]> {
+		if (transactionPdas.length === 0) {
+			return [];
+		}
+
+		const results: VaultTransactionData[] = [];
+		const BATCH_SIZE = 100;
+		const BATCH_DELAY_MS = 250;
+
+		this.logger.info("Fetching vault transactions in batches", {
+			total: transactionPdas.length,
+			totalBatches: Math.ceil(transactionPdas.length / BATCH_SIZE),
+		});
+
+		for (let batch = 0; batch < transactionPdas.length; batch += BATCH_SIZE) {
+			const chunk = transactionPdas.slice(batch, batch + BATCH_SIZE);
+			const keys = chunk.map((pda) => new PublicKey(pda));
+
+			if (batch > 0) {
+				await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+			}
+
+			const accountInfos =
+				await this.connection.getMultipleAccountsInfo(keys);
+
+			for (let j = 0; j < chunk.length; j++) {
+				const accountInfo = accountInfos[j];
+				if (!accountInfo) continue;
+
+				try {
+					const [vaultTx] =
+						multisig.accounts.VaultTransaction.fromAccountInfo(
+							accountInfo,
+						);
+
+					// Resolve full account keys: static + ALT lookups
+					const allAccountKeys = [
+						...vaultTx.message.accountKeys,
+					];
+
+					for (const lookup of vaultTx.message
+						.addressTableLookups) {
+						const altAccount =
+							await this.connection.getAddressLookupTable(
+								lookup.accountKey,
+							);
+						if (!altAccount.value) continue;
+
+						const addresses =
+							altAccount.value.state.addresses;
+						for (const idx of lookup.writableIndexes) {
+							allAccountKeys.push(addresses[idx]);
+						}
+						for (const idx of lookup.readonlyIndexes) {
+							allAccountKeys.push(addresses[idx]);
+						}
+					}
+
+					const decoded = InstructionDecoder.decode(
+						allAccountKeys,
+						vaultTx.message.instructions,
+					);
+
+					results.push({
+						transactionPda: chunk[j],
+						instructions: decoded,
+					});
+				} catch (_error) {
+					this.logger.debug(
+						"Failed to deserialize VaultTransaction, skipping",
+						{ transactionPda: chunk[j] },
+					);
+				}
+			}
+		}
+
+		return results;
 	}
 }
