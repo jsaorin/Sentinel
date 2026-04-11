@@ -4,7 +4,14 @@ import { useState } from "react";
 import { Card } from "@sentinel/ui";
 import { ProposalRow } from "./ProposalRow";
 
-type RiskLevel = "critical" | "high" | "medium" | "low" | "safe" | "info" | "unknown";
+type RiskLevel =
+	| "critical"
+	| "high"
+	| "medium"
+	| "low"
+	| "safe"
+	| "info"
+	| "unknown";
 
 type Proposal = {
 	id: string;
@@ -20,11 +27,15 @@ type ProposalHistoryProps = {
 
 const STATUSES = ["All", "Pending", "Executed", "Rejected"] as const;
 
-export function ProposalHistory({ proposals, pageSize = 10 }: ProposalHistoryProps) {
+export function ProposalHistory({
+	proposals,
+	pageSize = 10,
+}: ProposalHistoryProps) {
 	const [filter, setFilter] = useState<string>("All");
 	const [page, setPage] = useState(0);
 
-	const filtered = filter === "All" ? proposals : proposals.filter((p) => p.status === filter);
+	const filtered =
+		filter === "All" ? proposals : proposals.filter((p) => p.status === filter);
 	const totalPages = Math.ceil(filtered.length / pageSize);
 	const paginated = filtered.slice(page * pageSize, (page + 1) * pageSize);
 
@@ -57,7 +68,9 @@ export function ProposalHistory({ proposals, pageSize = 10 }: ProposalHistoryPro
 			</div>
 			<div className="mt-1">
 				{paginated.length === 0 ? (
-					<p className="py-8 text-center text-text-tertiary text-sm">No proposals found</p>
+					<p className="py-8 text-center text-text-tertiary text-sm">
+						No proposals found
+					</p>
 				) : (
 					paginated.map((p, i) => (
 						<ProposalRow
@@ -74,7 +87,9 @@ export function ProposalHistory({ proposals, pageSize = 10 }: ProposalHistoryPro
 			{totalPages > 1 && (
 				<div className="flex items-center justify-between pt-4 mt-2 border-t border-border-subtle">
 					<span className="text-xs text-text-tertiary">
-						{page * pageSize + 1}–{Math.min((page + 1) * pageSize, filtered.length)} of {filtered.length}
+						{page * pageSize + 1}–
+						{Math.min((page + 1) * pageSize, filtered.length)} of{" "}
+						{filtered.length}
 					</span>
 					<div className="flex items-center gap-2">
 						<button

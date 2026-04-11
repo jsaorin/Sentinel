@@ -9,41 +9,39 @@ type AlertBannerProps = {
 	action?: { label: string; onClick: () => void };
 };
 
-const levelConfig: Record<
-	AlertLevel,
-	{ icon: string; bg: string; border: string; text: string }
-> = {
-	critical: {
-		icon: "⛔",
-		bg: "bg-critical-subtle",
-		border: "border-l-critical",
-		text: "text-critical",
-	},
-	high: {
-		icon: "⚠",
-		bg: "bg-high-subtle",
-		border: "border-l-high",
-		text: "text-high",
-	},
-	medium: {
-		icon: "●",
-		bg: "bg-medium-subtle",
-		border: "border-l-medium",
-		text: "text-medium",
-	},
-	low: {
-		icon: "✓",
-		bg: "bg-low-subtle",
-		border: "border-l-low",
-		text: "text-low",
-	},
-	info: {
-		icon: "ℹ",
-		bg: "bg-info-subtle",
-		border: "border-l-info",
-		text: "text-info",
-	},
-};
+const levelConfig: Record<AlertLevel, { icon: string; bg: string; border: string; text: string }> =
+	{
+		critical: {
+			icon: "⛔",
+			bg: "bg-critical-subtle",
+			border: "border-l-critical",
+			text: "text-critical",
+		},
+		high: {
+			icon: "⚠",
+			bg: "bg-high-subtle",
+			border: "border-l-high",
+			text: "text-high",
+		},
+		medium: {
+			icon: "●",
+			bg: "bg-medium-subtle",
+			border: "border-l-medium",
+			text: "text-medium",
+		},
+		low: {
+			icon: "✓",
+			bg: "bg-low-subtle",
+			border: "border-l-low",
+			text: "text-low",
+		},
+		info: {
+			icon: "ℹ",
+			bg: "bg-info-subtle",
+			border: "border-l-info",
+			text: "text-info",
+		},
+	};
 
 export function AlertBanner({
 	level,
@@ -64,17 +62,12 @@ export function AlertBanner({
 			].join(" ")}
 			role="alert"
 		>
-			<span
-				className={["text-lg shrink-0 mt-0.5", config.text].join(" ")}
-				aria-hidden="true"
-			>
+			<span className={["text-lg shrink-0 mt-0.5", config.text].join(" ")} aria-hidden="true">
 				{config.icon}
 			</span>
 
 			<div className="flex-1 min-w-0">
-				<p className={["text-md font-semibold", config.text].join(" ")}>
-					{title}
-				</p>
+				<p className={["text-md font-semibold", config.text].join(" ")}>{title}</p>
 				{description && (
 					<p className="mt-1 text-base text-text-secondary">{description}</p>
 				)}

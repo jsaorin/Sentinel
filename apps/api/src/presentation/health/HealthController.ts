@@ -17,11 +17,7 @@ export class HealthController extends Api {
 		super(logger, environment);
 	}
 
-	async health(
-		_req: Request,
-		res: Response,
-		next: NextFunction,
-	): Promise<void> {
+	async health(_req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const result = await this.healthCheckQueryHandler.execute();
 			this.send(res, result);

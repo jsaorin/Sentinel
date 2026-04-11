@@ -14,7 +14,11 @@ const customConfig: Config = {
 		"^@sentinel/ui/(.*)$": "<rootDir>/../../packages/ui/src/$1",
 	},
 	testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
-	collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts", "!src/app/layout.tsx"],
+	collectCoverageFrom: [
+		"src/**/*.{ts,tsx}",
+		"!src/**/*.d.ts",
+		"!src/app/layout.tsx",
+	],
 };
 
 export default createJestConfig(customConfig);

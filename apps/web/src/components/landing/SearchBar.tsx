@@ -9,7 +9,12 @@ const PLACEHOLDERS = [
 	"Check proposal risk score...",
 ];
 
-function useTypewriter(texts: string[], typingSpeed = 60, deleteSpeed = 30, pauseMs = 2000) {
+function useTypewriter(
+	texts: string[],
+	typingSpeed = 60,
+	deleteSpeed = 30,
+	pauseMs = 2000,
+) {
 	const [display, setDisplay] = useState("");
 	const indexRef = useRef(0);
 

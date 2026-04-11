@@ -13,7 +13,9 @@ export function ScrollTimeline({ children, nodeCount }: ScrollTimelineProps) {
 	const [activeNodes, setActiveNodes] = useState<Set<number>>(new Set());
 
 	useEffect(() => {
-		const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const prefersReduced = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
 		if (prefersReduced) {
 			setScrollProgress(1);
 			setActiveNodes(new Set(Array.from({ length: nodeCount }, (_, i) => i)));
@@ -24,13 +26,14 @@ export function ScrollTimeline({ children, nodeCount }: ScrollTimelineProps) {
 		function handleScroll() {
 			rafId = requestAnimationFrame(() => {
 				const scrollY = window.scrollY;
-				const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+				const docHeight =
+					document.documentElement.scrollHeight - window.innerHeight;
 				const progress = docHeight > 0 ? Math.min(scrollY / docHeight, 1) : 0;
 				setScrollProgress(progress);
 
 				const newActive = new Set<number>();
 				for (let i = 0; i < nodeCount; i++) {
-					if (progress >= i / Math.max(nodeCount - 1, 1) * 0.85) {
+					if (progress >= (i / Math.max(nodeCount - 1, 1)) * 0.85) {
 						newActive.add(i);
 					}
 				}

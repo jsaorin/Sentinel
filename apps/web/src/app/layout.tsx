@@ -84,9 +84,14 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+	children,
+}: { children: React.ReactNode }) {
 	return (
-		<html lang="en" className={`dark ${ibmPlexSans.variable} ${orbitron.variable} ${jetbrainsMono.variable}`}>
+		<html
+			lang="en"
+			className={`dark ${ibmPlexSans.variable} ${orbitron.variable} ${jetbrainsMono.variable}`}
+		>
 			<body className="bg-bg-base text-text-primary antialiased overflow-x-hidden">
 				<Navbar />
 				{children}

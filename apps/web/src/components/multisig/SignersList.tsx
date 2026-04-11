@@ -1,7 +1,14 @@
 import { Card } from "@sentinel/ui";
 import { SignerRow } from "./SignerRow";
 
-type RiskLevel = "critical" | "high" | "medium" | "low" | "safe" | "info" | "unknown";
+type RiskLevel =
+	| "critical"
+	| "high"
+	| "medium"
+	| "low"
+	| "safe"
+	| "info"
+	| "unknown";
 
 type Signer = {
 	address: string;

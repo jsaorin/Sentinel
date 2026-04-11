@@ -1,7 +1,12 @@
 import type { OutboxEvent as PrismaOutboxEvent } from "../../generated/client/index.js";
-import { OutboxEvent, type OutboxEventStatus } from "@sentinel/domain";
+import {
+	OutboxEvent,
+	type OutboxEventStatus,
+} from "@sentinel/domain";
 
-export function mapOutboxEventToDomain(record: PrismaOutboxEvent): OutboxEvent {
+export function mapOutboxEventToDomain(
+	record: PrismaOutboxEvent,
+): OutboxEvent {
 	return new OutboxEvent({
 		id: record.id,
 		exchange: record.exchange,

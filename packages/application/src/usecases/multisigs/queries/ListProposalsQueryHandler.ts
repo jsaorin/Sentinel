@@ -40,7 +40,10 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 					)
 				: [];
 
-		const instructionsByProposal = new Map<string, typeof instructions>();
+		const instructionsByProposal = new Map<
+			string,
+			typeof instructions
+		>();
 		for (const ix of instructions) {
 			const list = instructionsByProposal.get(ix.proposalId) ?? [];
 			list.push(ix);
@@ -58,7 +61,9 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 				creator: p.creator,
 				createdAt: p.createdAt,
 				executedAt: p.executedAt,
-				instructions: (instructionsByProposal.get(p.id) ?? []).map((ix) => ({
+				instructions: (
+					instructionsByProposal.get(p.id) ?? []
+				).map((ix) => ({
 					instructionIndex: ix.instructionIndex,
 					programId: ix.programId,
 					data: ix.data,

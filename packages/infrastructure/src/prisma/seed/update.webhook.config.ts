@@ -17,11 +17,12 @@ export class UpdateWebhooksConfigService {
 
 	async updateWebhooksConfig() {
 		for (const webhookConfig of ALL_WEBHOOK_CONFIGS) {
-			const savedWebhookConfig = await this.prisma.webhookConfig.findFirst({
-				where: {
-					type: webhookConfig.type,
-				},
-			});
+			const savedWebhookConfig =
+				await this.prisma.webhookConfig.findFirst({
+					where: {
+						type: webhookConfig.type,
+					},
+				});
 
 			if (savedWebhookConfig) {
 				await this.prisma.webhookConfig.update({

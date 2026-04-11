@@ -9,7 +9,12 @@ type StatsListCardProps = {
 	viewAllHref: string;
 };
 
-export function StatsListCard({ title, children, viewAllLabel, viewAllHref }: StatsListCardProps) {
+export function StatsListCard({
+	title,
+	children,
+	viewAllLabel,
+	viewAllHref,
+}: StatsListCardProps) {
 	return (
 		<Card variant="default" padding="sm">
 			<div className="flex items-center justify-between px-3 pt-2 pb-3 border-b border-border-subtle">

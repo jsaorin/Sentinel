@@ -27,11 +27,7 @@ const levelConfig: Record<
 	RiskLevel,
 	{ label: string; icon: typeof ShieldCheckIcon; color: string }
 > = {
-	critical: {
-		label: "CRITICAL",
-		icon: ShieldExclamationIcon,
-		color: "#c43030",
-	},
+	critical: { label: "CRITICAL", icon: ShieldExclamationIcon, color: "#c43030" },
 	high: { label: "HIGH", icon: ExclamationTriangleIcon, color: "#d4952a" },
 	medium: { label: "MEDIUM", icon: ExclamationCircleIcon, color: "#b89a30" },
 	low: { label: "LOW", icon: CheckCircleIcon, color: "#4da035" },

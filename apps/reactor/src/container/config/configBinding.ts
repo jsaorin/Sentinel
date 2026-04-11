@@ -25,10 +25,12 @@ export const configModule = new ContainerModule(
 			.bind<string>(INFRASTRUCTURE_TYPES.RabbitMqUrl)
 			.toConstantValue(environment.amqpUrl);
 
-		options.bind(DOMAIN_TYPES.RedisConfig).toConstantValue({
-			host: environment.redisHost,
-			port: environment.redisPort,
-		});
+		options
+			.bind(DOMAIN_TYPES.RedisConfig)
+			.toConstantValue({
+				host: environment.redisHost,
+				port: environment.redisPort,
+			});
 
 		options
 			.bind(DOMAIN_TYPES.HeliusApiConfig)

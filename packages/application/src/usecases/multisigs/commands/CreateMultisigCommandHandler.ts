@@ -35,7 +35,9 @@ export class CreateMultisigCommandHandler extends BaseUseCase<
 	async execute(
 		input: CreateMultisigCommandInputDto,
 	): Promise<CreateMultisigCommandOutputDto> {
-		let multisig = await this.multisigRepository.findByAddress(input.address);
+		let multisig = await this.multisigRepository.findByAddress(
+			input.address,
+		);
 		const isNew = !multisig;
 
 		if (!multisig) {
@@ -56,7 +58,10 @@ export class CreateMultisigCommandHandler extends BaseUseCase<
 		);
 
 		if (isNew) {
-			const domainEvent = new MultisigCreated(multisig.id, multisig.address);
+			const domainEvent = new MultisigCreated(
+				multisig.id,
+				multisig.address,
+			);
 			const { routingKey, event } =
 				multisigCreatedToIntegrationEvent(domainEvent);
 			await this.eventPublisher.publish(event, { routingKey });

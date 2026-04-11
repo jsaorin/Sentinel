@@ -4,7 +4,10 @@ type FetchOptions = Omit<RequestInit, "body"> & {
 	body?: unknown;
 };
 
-async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
+async function apiFetch<T>(
+	path: string,
+	options: FetchOptions = {},
+): Promise<T> {
 	const { body, ...rest } = options;
 	const response = await fetch(`${API_BASE_URL}${path}`, {
 		...rest,
@@ -23,7 +26,8 @@ async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T>
 }
 
 export const apiClient = {
-	get: <T>(path: string, init?: RequestInit) => apiFetch<T>(path, { ...init, method: "GET" }),
+	get: <T>(path: string, init?: RequestInit) =>
+		apiFetch<T>(path, { ...init, method: "GET" }),
 	post: <T>(path: string, body: unknown, init?: RequestInit) =>
 		apiFetch<T>(path, { ...init, method: "POST", body }),
 	put: <T>(path: string, body: unknown, init?: RequestInit) =>
