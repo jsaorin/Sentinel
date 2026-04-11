@@ -6,3 +6,4 @@ export { SignerRow } from "./SignerRow";
 export { ReportCard } from "./ReportCard";
 export { ProposalHistory } from "./ProposalHistory";
 export { ProposalRow } from "./ProposalRow";
+export { BalanceCard } from "./BalanceCard";
