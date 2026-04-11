@@ -128,14 +128,23 @@ function NetworkVisual() {
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
-    const rect = container.getBoundingClientRect();
-    const w = Math.round(rect.width);
-    const h = Math.round(rect.height);
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
-    ctx.scale(dpr, dpr);
+    let w = 0;
+    let h = 0;
+
+    function resize() {
+      if (!canvas || !container) return;
+      const r = container.getBoundingClientRect();
+      w = Math.round(r.width);
+      h = Math.round(r.height);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+    }
+    resize();
+
+    const resizeObs = new ResizeObserver(() => resize());
+    resizeObs.observe(container);
 
     const isMobile = window.innerWidth < 768;
     const count = isMobile ? NODE_COUNT_MOBILE : NODE_COUNT_DESKTOP;
@@ -180,6 +189,7 @@ function NetworkVisual() {
     function draw() {
       if (!ctx || !isVisible) return;
       time += 0.002;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
       const rotY = prefersReduced ? 0.3 : Math.sin(time * 0.4) * 0.35;
@@ -317,6 +327,7 @@ function NetworkVisual() {
     return () => {
       cancelAnimationFrame(animId);
       visObserver.disconnect();
+      resizeObs.disconnect();
     };
   }, []);
 
