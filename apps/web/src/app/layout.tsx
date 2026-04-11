@@ -55,9 +55,18 @@ export const metadata: Metadata = {
 		description:
 			"Score every proposal. Detect signer anomalies. Catch durable nonce attacks before they drain your protocol.",
 		locale: "en_US",
+		images: [
+			{
+				url: "/OG.png",
+				width: 1200,
+				height: 630,
+				alt: "Sentinel — AI-Powered Multisig Security",
+			},
+		],
 	},
 	twitter: {
 		card: "summary_large_image",
+		images: ["/OG.png"],
 		title: "Sentinel — AI-Powered Multisig Security for Solana",
 		description:
 			"AI-powered security scoring for Solana multisigs. Score proposals, detect anomalies, catch attacks.",
