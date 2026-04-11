@@ -6,7 +6,11 @@ import {
 	type ListProposalsQueryHandler,
 } from "@sentinel/application";
 import { Api } from "@sentinel/common/api";
-import type { MultisigDto, SignerDto, ProposalDto } from "@sentinel/common/dtos";
+import type {
+	MultisigDto,
+	SignerDto,
+	ProposalDto,
+} from "@sentinel/common/dtos";
 import { decodePermissionsMask } from "@sentinel/common/utils";
 import type { NextFunction, Request, Response } from "express";
 import { inject, injectable } from "inversify";
@@ -48,7 +52,11 @@ export class MultisigController extends Api {
 		}
 	}
 
-	async getMultisig(req: Request, res: Response, next: NextFunction): Promise<void> {
+	async getMultisig(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
 		try {
 			const address = req.params.address as string;
 			const result = await this.getMultisigHandler.execute({ address });
@@ -69,7 +77,11 @@ export class MultisigController extends Api {
 		}
 	}
 
-	async listSigners(req: Request, res: Response, next: NextFunction): Promise<void> {
+	async listSigners(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
 		try {
 			const address = req.params.address as string;
 			const result = await this.listSignersHandler.execute({ address });
@@ -89,7 +101,11 @@ export class MultisigController extends Api {
 		}
 	}
 
-	async listProposals(req: Request, res: Response, next: NextFunction): Promise<void> {
+	async listProposals(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
 		try {
 			const address = req.params.address as string;
 			const result = await this.listProposalsHandler.execute({ address });

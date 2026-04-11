@@ -12,9 +12,7 @@ export class ProposalInstructionRepository
 		return getPrismaClient();
 	}
 
-	async findByProposalId(
-		proposalId: string,
-	): Promise<ProposalInstruction[]> {
+	async findByProposalId(proposalId: string): Promise<ProposalInstruction[]> {
 		const records = await this.prisma.proposalInstruction.findMany({
 			where: { proposalId },
 			orderBy: { instructionIndex: "asc" },

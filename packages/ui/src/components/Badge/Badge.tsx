@@ -1,6 +1,13 @@
 import type { HTMLAttributes } from "react";
 
-type BadgeVariant = "critical" | "high" | "medium" | "low" | "safe" | "info" | "unknown";
+type BadgeVariant =
+	| "critical"
+	| "high"
+	| "medium"
+	| "low"
+	| "safe"
+	| "info"
+	| "unknown";
 
 type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
 	variant?: BadgeVariant;
@@ -16,7 +23,12 @@ const variantClasses: Record<BadgeVariant, string> = {
 	unknown: "bg-unknown-subtle text-unknown",
 };
 
-export function Badge({ variant = "unknown", className = "", children, ...props }: BadgeProps) {
+export function Badge({
+	variant = "unknown",
+	className = "",
+	children,
+	...props
+}: BadgeProps) {
 	return (
 		<span
 			className={[

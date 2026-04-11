@@ -6,6 +6,8 @@ export const metadata: Metadata = {
 		"Explore monitored Solana multisig wallets. View security scores, signer analysis, and risk assessments.",
 };
 
-export default function MultisigsLayout({ children }: { children: React.ReactNode }) {
+export default function MultisigsLayout({
+	children,
+}: { children: React.ReactNode }) {
 	return children;
 }

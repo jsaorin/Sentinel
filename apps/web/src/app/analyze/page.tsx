@@ -49,8 +49,8 @@ export default function AnalyzePage() {
 				<div className="text-center mb-12">
 					<h1 className="font-display text-3xl font-bold">Analyze</h1>
 					<p className="text-text-secondary mt-3 text-lg">
-						Analyze any Solana multisig wallet or proposal transaction.
-						Get instant AI-powered security scoring and risk detection.
+						Analyze any Solana multisig wallet or proposal transaction. Get
+						instant AI-powered security scoring and risk detection.
 					</p>
 				</div>
 
@@ -83,8 +83,8 @@ export default function AnalyzePage() {
 							Multisig Wallet Analysis
 						</h2>
 						<p className="text-text-tertiary text-sm mt-4 mb-6">
-							Enter a Solana multisig address (Squads v4) to analyze its security
-							configuration, signer behavior, and proposal history.
+							Enter a Solana multisig address (Squads v4) to analyze its
+							security configuration, signer behavior, and proposal history.
 						</p>
 						<form onSubmit={handleMultisigSubmit} className="space-y-4">
 							<div className="flex items-center gap-2 bg-bg-surface border border-border-default rounded-md p-2 focus-within:border-border-strong transition-colors">
@@ -97,9 +97,7 @@ export default function AnalyzePage() {
 									className="flex-1 bg-transparent py-3 text-text-primary font-mono placeholder:text-text-tertiary focus:outline-none text-md"
 								/>
 							</div>
-							{error && (
-								<p className="text-critical text-sm">{error}</p>
-							)}
+							{error && <p className="text-critical text-sm">{error}</p>}
 							<button
 								type="submit"
 								className="w-full py-3 bg-primary text-text-inverse text-xs uppercase tracking-wider font-semibold rounded-md hover:bg-primary-hover transition-colors"
@@ -115,8 +113,14 @@ export default function AnalyzePage() {
 							</span>
 							<div className="flex flex-wrap gap-2 mt-3">
 								{[
-									{ label: "Drift Protocol", address: "7xK9f2qR8mNpL3wBvT5aB3qW5nR8kJ2" },
-									{ label: "Marinade Finance", address: "3mQ7dL8kR9pN2wBvT5zF1w" },
+									{
+										label: "Drift Protocol",
+										address: "7xK9f2qR8mNpL3wBvT5aB3qW5nR8kJ2",
+									},
+									{
+										label: "Marinade Finance",
+										address: "3mQ7dL8kR9pN2wBvT5zF1w",
+									},
 								].map((example) => (
 									<button
 										key={example.address}
@@ -142,21 +146,21 @@ export default function AnalyzePage() {
 							Proposal Transaction Analysis
 						</h2>
 						<p className="text-text-tertiary text-sm mt-4 mb-6">
-							Paste raw proposal transaction data (base64 or JSON) to analyze
-							it for risk factors, durable nonce usage, authority changes,
-							and known attack patterns.
+							Paste raw proposal transaction data (base64 or JSON) to analyze it
+							for risk factors, durable nonce usage, authority changes, and
+							known attack patterns.
 						</p>
 						<form onSubmit={handleProposalSubmit} className="space-y-4">
 							<textarea
 								value={rawData}
 								onChange={(e) => setRawData(e.target.value)}
-								placeholder={"Paste raw transaction data here...\n\ne.g. base64 encoded transaction, JSON proposal data,\nor Squads proposal URL"}
+								placeholder={
+									"Paste raw transaction data here...\n\ne.g. base64 encoded transaction, JSON proposal data,\nor Squads proposal URL"
+								}
 								rows={8}
 								className="w-full bg-bg-surface border border-border-default rounded-md p-4 text-text-primary font-mono text-sm placeholder:text-text-tertiary focus:outline-none focus:border-border-strong transition-colors resize-none"
 							/>
-							{error && (
-								<p className="text-critical text-sm">{error}</p>
-							)}
+							{error && <p className="text-critical text-sm">{error}</p>}
 							<button
 								type="submit"
 								className="w-full py-3 bg-primary text-text-inverse text-xs uppercase tracking-wider font-semibold rounded-md hover:bg-primary-hover transition-colors"

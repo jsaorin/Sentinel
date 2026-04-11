@@ -1,1 +1,4 @@
-export { decodePermissionsMask, type DecodedPermissions } from "./permissions.js";
+export {
+	decodePermissionsMask,
+	type DecodedPermissions,
+} from "./permissions.js";

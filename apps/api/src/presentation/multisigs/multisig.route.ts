@@ -18,10 +18,7 @@ router.post(
 	controller.create.bind(controller),
 );
 
-router.get(
-	"/multisigs/:address",
-	controller.getMultisig.bind(controller),
-);
+router.get("/multisigs/:address", controller.getMultisig.bind(controller));
 
 router.get(
 	"/multisigs/:address/signers",

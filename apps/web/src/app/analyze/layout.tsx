@@ -6,6 +6,8 @@ export const metadata: Metadata = {
 		"Analyze any Solana multisig wallet. Get instant AI-powered security scoring, signer behavior analysis, and risk detection.",
 };
 
-export default function AnalyzeLayout({ children }: { children: React.ReactNode }) {
+export default function AnalyzeLayout({
+	children,
+}: { children: React.ReactNode }) {
 	return children;
 }
