@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge, RiskBadge } from "@sentinel/ui";
 
 type RiskLevel =
@@ -31,9 +32,10 @@ export function ProposalRow({
   isLast = false,
 }: ProposalRowProps) {
   return (
-    <div
+    <Link
+      href={`/proposal/${id.replace("#", "")}`}
       className={[
-        "flex items-center justify-between py-4 px-2 hover:bg-bg-hover transition-colors",
+        "flex items-center justify-between py-4 px-2 hover:bg-bg-hover transition-colors cursor-pointer",
         !isLast ? "border-b border-border-subtle" : "",
       ].join(" ")}
     >
@@ -51,6 +53,6 @@ export function ProposalRow({
         </Badge>
         <RiskBadge level={riskLevel} size="sm" className="w-20 justify-start" />
       </div>
-    </div>
+    </Link>
   );
 }

@@ -50,6 +50,7 @@ export function StatsSection() {
 							metadata={p.multisig}
 							riskLevel={p.riskLevel}
 							isLast={i === MOCK_PROPOSALS.length - 1}
+							href={`/proposal/${p.id.replace("#", "")}`}
 						/>
 					))}
 				</StatsListCard>
@@ -68,6 +69,7 @@ export function StatsSection() {
 							metadata={w.label}
 							riskLevel={w.riskLevel}
 							isLast={i === MOCK_WALLETS.length - 1}
+							href={`/multisig/${w.address}`}
 						/>
 					))}
 				</StatsListCard>

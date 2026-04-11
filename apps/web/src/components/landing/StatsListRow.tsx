@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { RiskBadge } from "@sentinel/ui";
 
 type RiskLevel =
@@ -17,6 +18,7 @@ type StatsListRowProps = {
   metadata: string;
   riskLevel: RiskLevel;
   isLast?: boolean;
+  href?: string;
 };
 
 export function StatsListRow({
@@ -26,14 +28,10 @@ export function StatsListRow({
   metadata,
   riskLevel,
   isLast = false,
+  href,
 }: StatsListRowProps) {
-  return (
-    <div
-      className={[
-        "flex items-center justify-between py-3 px-1 hover:bg-bg-hover transition-colors",
-        !isLast ? "border-b border-border-subtle" : "",
-      ].join(" ")}
-    >
+  const content = (
+    <>
       <div className="flex items-center gap-3 min-w-0">
         <div className="shrink-0 w-9 h-9 flex items-center justify-center text-text-tertiary">
           {icon}
@@ -51,6 +49,21 @@ export function StatsListRow({
         </span>
         <RiskBadge level={riskLevel} size="sm" className="w-24 justify-start" />
       </div>
-    </div>
+    </>
   );
+
+  const className = [
+    "flex items-center justify-between py-3 px-1 hover:bg-bg-hover transition-colors cursor-pointer",
+    !isLast ? "border-b border-border-subtle" : "",
+  ].join(" ");
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
 }

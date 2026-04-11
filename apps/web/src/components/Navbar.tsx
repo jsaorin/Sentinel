@@ -89,7 +89,7 @@ export function Navbar() {
 
           {/* Desktop links */}
           <div
-            className="hidden md:flex items-center h-full"
+            className="hidden lg:flex items-center h-full"
             onMouseLeave={() => setHoveredHref(null)}
           >
             {NAV_LINKS.map((link) => {
@@ -142,7 +142,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden relative w-10 h-10 flex items-center justify-center"
+            className="lg:hidden relative w-10 h-10 flex items-center justify-center"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
           >
             <span
@@ -169,7 +169,7 @@ export function Navbar() {
 
       {/* Mobile overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md pt-24 px-8 md:hidden">
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md pt-24 px-8 lg:hidden">
           <div className="flex flex-col gap-10">
             {NAV_LINKS.map((link) => (
               <Link

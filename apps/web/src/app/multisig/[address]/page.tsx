@@ -216,6 +216,7 @@ export default function MultisigPage() {
               threshold={MOCK_MULTISIG.threshold}
               created={MOCK_MULTISIG.created}
               lastActivity={MOCK_MULTISIG.lastActivity}
+              score={MOCK_MULTISIG.score}
             />
           </div>
           <ScoreCard score={MOCK_MULTISIG.score} />
