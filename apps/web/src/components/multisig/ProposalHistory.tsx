@@ -38,19 +38,19 @@ export function ProposalHistory({
 
 	return (
 		<Card variant="default" padding="lg">
-			<div className="flex items-center justify-between pb-4 border-b border-border-subtle">
+			<div className="pb-4 border-b border-border-subtle">
 				<h3 className="text-lg font-semibold">Proposals</h3>
-				<div className="flex items-center gap-1">
+				<div className="flex flex-wrap items-center gap-2 mt-3">
 					{STATUSES.map((status) => (
 						<button
 							key={status}
 							type="button"
 							onClick={() => handleFilterChange(status)}
 							className={[
-								"px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors border-b-2",
+								"px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors rounded-md border",
 								filter === status
-									? "border-text-primary text-text-primary"
-									: "border-white/15 text-text-tertiary hover:text-text-secondary",
+									? "bg-bg-raised text-text-primary border-border-default"
+									: "text-text-tertiary hover:text-text-secondary border-transparent",
 							].join(" ")}
 						>
 							{status}

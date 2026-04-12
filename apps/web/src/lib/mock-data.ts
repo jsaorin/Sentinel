@@ -13,7 +13,14 @@ export const MOCK_MULTISIG = {
   score: 73,
 };
 
-export const MOCK_SIGNERS = [
+type MockSigner = {
+	address: string;
+	label: string;
+	status: string;
+	riskLevel: RiskLevel;
+};
+
+export const MOCK_SIGNERS: MockSigner[] = [
   {
     address: "3mQ7dL..zF1w",
     label: "Treasury Lead",
@@ -46,7 +53,14 @@ export const MOCK_SIGNERS = [
   },
 ];
 
-export const MOCK_PROPOSALS = [
+type MockProposal = {
+	id: string;
+	description: string;
+	status: "Pending" | "Executed" | "Rejected";
+	riskLevel: RiskLevel;
+};
+
+export const MOCK_PROPOSALS: MockProposal[] = [
   {
     id: "#1247",
     description: "Transfer 500 SOL to external",

@@ -77,10 +77,10 @@ export default function MultisigsPage() {
                 type="button"
                 onClick={() => handleRiskFilter(f)}
                 className={[
-                  "px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors rounded-md",
+                  "px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors rounded-md border",
                   riskFilter === f
-                    ? "bg-bg-raised text-text-primary border border-border-default"
-                    : "text-text-tertiary hover:text-text-secondary",
+                    ? "bg-bg-raised text-text-primary border-border-default"
+                    : "text-text-tertiary hover:text-text-secondary border-transparent",
                 ].join(" ")}
               >
                 {f}
