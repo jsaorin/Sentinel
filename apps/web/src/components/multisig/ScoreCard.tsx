@@ -187,7 +187,7 @@ export function ScoreCard({ score }: ScoreCardProps) {
 			</h3>
 			<div
 				ref={containerRef}
-				className="w-full aspect-square max-w-xs mx-auto"
+				className="w-full aspect-square max-w-[250px] md:max-w-xs mx-auto"
 				aria-hidden="true"
 			>
 				<canvas ref={canvasRef} className="w-full h-full" />

@@ -22,13 +22,16 @@ export function TimelineSection({ children }: TimelineSectionProps) {
 			return;
 		}
 
+		const isMobile = window.innerWidth < 768;
+
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				if (entry.isIntersecting) {
-					// Delay: nothing until 25% visible, then ramp to full by 70%
 					const ratio = entry.intersectionRatio;
-					const progress =
-						ratio < 0.25 ? 0 : Math.min((ratio - 0.25) / 0.45, 1);
+					// Mobile: fade in quickly; Desktop: delay until 25% visible
+					const progress = isMobile
+						? Math.min(ratio / 0.15, 1)
+						: ratio < 0.25 ? 0 : Math.min((ratio - 0.25) / 0.45, 1);
 					setOpacity(progress);
 				}
 			},
@@ -47,7 +50,7 @@ export function TimelineSection({ children }: TimelineSectionProps) {
 				transform: `translateY(${1 - opacity}px)`,
 				transition: "opacity 300ms ease-out, transform 300ms ease-out",
 			}}
-			className="mt-8 lg:mt-0"
+			className="mt-4 md:mt-8 lg:mt-0"
 		>
 			{children}
 		</div>

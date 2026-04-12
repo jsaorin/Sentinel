@@ -4,9 +4,9 @@ import { ScrollIndicator } from "./ScrollIndicator";
 
 export function HeroSection() {
 	return (
-		<section className="relative min-h-screen flex flex-col overflow-hidden">
-			<div className="flex-1 max-w-7xl w-full mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-				<div className="relative z-10 py-20 md:py-0">
+		<section className="relative min-h-[70vh] md:min-h-screen flex flex-col overflow-hidden">
+			<div className="flex-1 max-w-7xl w-full mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start md:items-center">
+				<div className="relative z-10 pt-24 md:pt-0 md:py-0">
 					<h1 className="mt-3 leading-tight">
 						<span
 							className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent block font-display"
