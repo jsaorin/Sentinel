@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
+import { createMultisig } from "@/lib/api";
 
 const TABS = [
 	{ id: "multisig", label: "Multisig Address" },
@@ -19,13 +20,18 @@ export default function AnalyzePage() {
 	const [rawData, setRawData] = useState("");
 	const [error, setError] = useState("");
 
-	function handleMultisigSubmit(e: React.FormEvent) {
+	async function handleMultisigSubmit(e: React.FormEvent) {
 		e.preventDefault();
 		setError("");
 		const trimmed = address.trim();
 		if (!trimmed) {
 			setError("Please enter a multisig address");
 			return;
+		}
+		try {
+			await createMultisig(trimmed);
+		} catch {
+			// API may be unavailable — still navigate to the page (it will show mock data)
 		}
 		router.push(`/multisig/${trimmed}`);
 	}
