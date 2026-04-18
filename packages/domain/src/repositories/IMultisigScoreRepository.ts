@@ -16,4 +16,8 @@ export interface UpsertMultisigScoreInput {
 export interface IMultisigScoreRepository {
 	findByMultisigId(multisigId: string): Promise<MultisigScore | null>;
 	upsert(input: UpsertMultisigScoreInput): Promise<MultisigScore>;
+	updateAISummary(
+		multisigId: string,
+		aiSummary: string,
+	): Promise<MultisigScore>;
 }

@@ -11,6 +11,11 @@ export class ProposalRepository implements IProposalRepository {
 		return getPrismaClient();
 	}
 
+	async findById(id: string): Promise<Proposal | null> {
+		const record = await this.prisma.proposal.findUnique({ where: { id } });
+		return record ? mapPrismaProposalToDomain(record) : null;
+	}
+
 	async findByMultisigId(multisigId: string): Promise<Proposal[]> {
 		const records = await this.prisma.proposal.findMany({
 			where: { multisigId },

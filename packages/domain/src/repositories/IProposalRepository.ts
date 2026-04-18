@@ -1,6 +1,7 @@
 import type { Proposal, ProposalStatus } from "../entities/Proposal.js";
 
 export interface IProposalRepository {
+	findById(id: string): Promise<Proposal | null>;
 	findByMultisigId(multisigId: string): Promise<Proposal[]>;
 	findLatestByMultisigId(multisigId: string): Promise<Proposal | null>;
 	createMany(

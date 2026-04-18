@@ -1,3 +1,4 @@
+import { AI_USE_CASE_TYPES } from "./ai/types.js";
 import { HEALTH_USE_CASE_TYPES } from "./health/types.js";
 import { INSTRUCTION_USE_CASE_TYPES } from "./instructions/types.js";
 import { MULTISIG_USE_CASE_TYPES } from "./multisigs/types.js";
@@ -11,6 +12,7 @@ export const USECASES_TYPES = {
 	...MULTISIG_USE_CASE_TYPES,
 	...INSTRUCTION_USE_CASE_TYPES,
 	...SCORING_USE_CASE_TYPES,
+	...AI_USE_CASE_TYPES,
 };
 
 export type UseCasesTypes = typeof USECASES_TYPES;

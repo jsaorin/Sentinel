@@ -19,11 +19,13 @@ export const DOMAIN_SERVICE_TYPES = {
 	SquadsService: Symbol.for("SquadsService"),
 	InstructionDecoderService: Symbol.for("InstructionDecoderService"),
 	ScoringService: Symbol.for("ScoringService"),
+	AIAnalysisService: Symbol.for("AIAnalysisService"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {
 	HeliusApiConfig: Symbol.for("HeliusApiConfig"),
 	RedisConfig: Symbol.for("RedisConfig"),
+	GroqApiConfig: Symbol.for("GroqApiConfig"),
 };
 
 export const DOMAIN_TYPES = {

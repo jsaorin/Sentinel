@@ -2,6 +2,7 @@ import type { Prisma } from "../../generated/client/index.js";
 import type {
 	IProposalScoreRepository,
 	ProposalScore,
+	UpdateProposalAIFieldsInput,
 	UpsertProposalScoreInput,
 } from "@sentinel/domain";
 import { injectable } from "inversify";
@@ -58,5 +59,19 @@ export class ProposalScoreRepository implements IProposalScoreRepository {
 		}
 
 		return results;
+	}
+
+	async updateAIFields(
+		proposalId: string,
+		input: UpdateProposalAIFieldsInput,
+	): Promise<ProposalScore> {
+		const record = await this.prisma.proposalScore.update({
+			where: { proposalId },
+			data: {
+				aiAnalysis: input.aiAnalysis,
+				recommendation: input.recommendation,
+			},
+		});
+		return mapPrismaProposalScoreToDomain(record);
 	}
 }

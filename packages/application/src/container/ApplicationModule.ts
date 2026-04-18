@@ -10,6 +10,8 @@ import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/Sa
 import { DecodeInstructionsCommandHandler } from "../usecases/instructions/commands/DecodeInstructionsCommandHandler.js";
 import { ScoreMultisigHealthCommandHandler } from "../usecases/scoring/commands/ScoreMultisigHealthCommandHandler.js";
 import { ScoreProposalsCommandHandler } from "../usecases/scoring/commands/ScoreProposalsCommandHandler.js";
+import { SummarizeMultisigAICommandHandler } from "../usecases/ai/commands/SummarizeMultisigAICommandHandler.js";
+import { AnalyzeProposalAICommandHandler } from "../usecases/ai/commands/AnalyzeProposalAICommandHandler.js";
 
 export const applicationModule = new ContainerModule(
 	(options: ContainerModuleLoadOptions) => {
@@ -53,6 +55,14 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.ScoreProposalsCommandHandler)
 			.to(ScoreProposalsCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.SummarizeMultisigAICommandHandler)
+			.to(SummarizeMultisigAICommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.AnalyzeProposalAICommandHandler)
+			.to(AnalyzeProposalAICommandHandler)
 			.inSingletonScope();
 	},
 );

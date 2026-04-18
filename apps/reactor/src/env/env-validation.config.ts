@@ -10,6 +10,8 @@ const envValidationConfig = {
 	REDIS_PORT: num({ default: 6379 }),
 	REACTOR_PORT: num({ default: 3001 }),
 	HELIUS_API_KEY: str(),
+	GROQ_API_KEY: str({ default: "" }),
+	GROQ_MODEL: str({ default: "llama-3.3-70b-versatile" }),
 };
 
 export default envValidationConfig;

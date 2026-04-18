@@ -7,8 +7,17 @@ export interface UpsertProposalScoreInput {
 	summary: string;
 }
 
+export interface UpdateProposalAIFieldsInput {
+	aiAnalysis: string;
+	recommendation: string;
+}
+
 export interface IProposalScoreRepository {
 	findByProposalId(proposalId: string): Promise<ProposalScore | null>;
 	findByMultisigId(multisigId: string): Promise<ProposalScore[]>;
 	upsertMany(scores: UpsertProposalScoreInput[]): Promise<ProposalScore[]>;
+	updateAIFields(
+		proposalId: string,
+		input: UpdateProposalAIFieldsInput,
+	): Promise<ProposalScore>;
 }
