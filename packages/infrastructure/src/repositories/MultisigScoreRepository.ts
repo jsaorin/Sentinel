@@ -50,4 +50,15 @@ export class MultisigScoreRepository implements IMultisigScoreRepository {
 
 		return mapPrismaMultisigScoreToDomain(record);
 	}
+
+	async updateAISummary(
+		multisigId: string,
+		aiSummary: string,
+	): Promise<MultisigScore> {
+		const record = await this.prisma.multisigScore.update({
+			where: { multisigId },
+			data: { aiSummary },
+		});
+		return mapPrismaMultisigScoreToDomain(record);
+	}
 }

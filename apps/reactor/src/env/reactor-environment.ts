@@ -8,6 +8,8 @@ class ReactorEnvironment extends Environment {
 	private _redisHost!: string;
 	private _redisPort!: number;
 	private _heliusApiKey!: string;
+	private _groqApiKey!: string;
+	private _groqModel!: string;
 
 	constructor() {
 		super();
@@ -22,6 +24,8 @@ class ReactorEnvironment extends Environment {
 		this.redisHost = env.REDIS_HOST;
 		this.redisPort = env.REDIS_PORT;
 		this.heliusApiKey = env.HELIUS_API_KEY;
+		this.groqApiKey = env.GROQ_API_KEY;
+		this.groqModel = env.GROQ_MODEL;
 	}
 
 	get amqpUrl() {
@@ -62,6 +66,22 @@ class ReactorEnvironment extends Environment {
 
 	set heliusApiKey(value) {
 		this._heliusApiKey = value;
+	}
+
+	get groqApiKey() {
+		return this._groqApiKey;
+	}
+
+	set groqApiKey(value) {
+		this._groqApiKey = value;
+	}
+
+	get groqModel() {
+		return this._groqModel;
+	}
+
+	set groqModel(value) {
+		this._groqModel = value;
 	}
 }
 

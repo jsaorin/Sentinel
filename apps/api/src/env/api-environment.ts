@@ -9,6 +9,8 @@ class ApiEnvironment extends Environment {
 	private _basePath!: string;
 	private _solanaRpcUrl!: string;
 	private _heliusApiKey!: string;
+	private _groqApiKey!: string;
+	private _groqModel!: string;
 	private _amqpUrl!: string;
 
 	constructor() {
@@ -25,6 +27,8 @@ class ApiEnvironment extends Environment {
 		this.basePath = env.BASE_PATH;
 		this.solanaRpcUrl = env.SOLANA_RPC_URL;
 		this.heliusApiKey = env.HELIUS_API_KEY;
+		this.groqApiKey = env.GROQ_API_KEY;
+		this.groqModel = env.GROQ_MODEL;
 		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
 	}
 
@@ -74,6 +78,22 @@ class ApiEnvironment extends Environment {
 
 	set heliusApiKey(value) {
 		this._heliusApiKey = value;
+	}
+
+	get groqApiKey() {
+		return this._groqApiKey;
+	}
+
+	set groqApiKey(value) {
+		this._groqApiKey = value;
+	}
+
+	get groqModel() {
+		return this._groqModel;
+	}
+
+	set groqModel(value) {
+		this._groqModel = value;
 	}
 
 	get amqpUrl() {
