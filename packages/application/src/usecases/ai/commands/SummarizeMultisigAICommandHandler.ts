@@ -82,10 +82,7 @@ export class SummarizeMultisigAICommandHandler extends BaseUseCase<
 		try {
 			const { aiSummary } =
 				await this.aiAnalysisService.summarizeMultisig(context);
-			await this.multisigScoreRepository.updateAISummary(
-				multisigId,
-				aiSummary,
-			);
+			await this.multisigScoreRepository.updateAISummary(multisigId, aiSummary);
 			this.logger.info("AI summary stored", { multisigId });
 			return { multisigId, aiSummary };
 		} catch (error) {
