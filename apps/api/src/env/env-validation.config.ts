@@ -1,4 +1,4 @@
-import { num, str } from "envalid";
+import { bool, num, str } from "envalid";
 
 const envValidationConfig = {
 	API_PORT: num({ default: 3000 }),
@@ -8,6 +8,7 @@ const envValidationConfig = {
 	HELIUS_API_KEY: str(),
 	GROQ_API_KEY: str({ default: "" }),
 	GROQ_MODEL: str({ default: "llama-3.3-70b-versatile" }),
+	GROQ_DRY_RUN: bool({ default: false }),
 	RABBITMQ_PROTOCOL: str({ default: "amqp" }),
 	RABBITMQ_HOST: str({ default: "localhost" }),
 	RABBITMQ_PORT: num({ default: 5672 }),

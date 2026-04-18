@@ -28,6 +28,7 @@ export const configBindings = new ContainerModule(
 		options.bind(DOMAIN_TYPES.GroqApiConfig).toConstantValue({
 			apiKey: environment.groqApiKey,
 			model: environment.groqModel,
+			dryRun: environment.groqDryRun,
 		});
 	},
 );

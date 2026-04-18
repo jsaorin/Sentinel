@@ -11,6 +11,7 @@ class ApiEnvironment extends Environment {
 	private _heliusApiKey!: string;
 	private _groqApiKey!: string;
 	private _groqModel!: string;
+	private _groqDryRun!: boolean;
 	private _amqpUrl!: string;
 
 	constructor() {
@@ -29,6 +30,7 @@ class ApiEnvironment extends Environment {
 		this.heliusApiKey = env.HELIUS_API_KEY;
 		this.groqApiKey = env.GROQ_API_KEY;
 		this.groqModel = env.GROQ_MODEL;
+		this.groqDryRun = env.GROQ_DRY_RUN;
 		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
 	}
 
@@ -94,6 +96,14 @@ class ApiEnvironment extends Environment {
 
 	set groqModel(value) {
 		this._groqModel = value;
+	}
+
+	get groqDryRun() {
+		return this._groqDryRun;
+	}
+
+	set groqDryRun(value) {
+		this._groqDryRun = value;
 	}
 
 	get amqpUrl() {

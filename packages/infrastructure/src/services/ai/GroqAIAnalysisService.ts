@@ -21,6 +21,7 @@ import {
 export interface GroqApiConfig {
 	apiKey: string;
 	model: string;
+	dryRun?: boolean;
 }
 
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
@@ -29,6 +30,17 @@ const VALID_RECOMMENDATIONS: ReadonlySet<Recommendation> = new Set([
 	"VERIFY",
 	"DO_NOT_SIGN",
 ]);
+
+const DRY_RUN_MULTISIG_SUMMARY: MultisigAISummary = {
+	aiSummary:
+		"[DRY RUN] Groq AI disabled. Static multisig summary returned for local development.",
+};
+
+const DRY_RUN_PROPOSAL_ANALYSIS: ProposalAIAnalysis = {
+	aiAnalysis:
+		"[DRY RUN] Groq AI disabled. Static proposal analysis returned for local development.",
+	recommendation: "VERIFY",
+};
 
 @injectable()
 export class GroqAIAnalysisService implements IAIAnalysisService {
@@ -42,6 +54,11 @@ export class GroqAIAnalysisService implements IAIAnalysisService {
 	async summarizeMultisig(
 		context: MultisigAnalysisContext,
 	): Promise<MultisigAISummary> {
+		if (this.config.dryRun) {
+			this.logger.info("groq:dry-run", { operation: "summarizeMultisig" });
+			return DRY_RUN_MULTISIG_SUMMARY;
+		}
+
 		const raw = await this.callChatCompletion({
 			systemPrompt: MULTISIG_SUMMARY_SYSTEM_PROMPT,
 			userPrompt: buildMultisigSummaryUserPrompt(context),
@@ -55,6 +72,11 @@ export class GroqAIAnalysisService implements IAIAnalysisService {
 	async analyzeProposal(
 		context: ProposalAnalysisContext,
 	): Promise<ProposalAIAnalysis> {
+		if (this.config.dryRun) {
+			this.logger.info("groq:dry-run", { operation: "analyzeProposal" });
+			return DRY_RUN_PROPOSAL_ANALYSIS;
+		}
+
 		const raw = await this.callChatCompletion({
 			systemPrompt: PROPOSAL_ANALYSIS_SYSTEM_PROMPT,
 			userPrompt: buildProposalAnalysisUserPrompt(context),
