@@ -10,6 +10,8 @@ import {
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
+import { APPLICATION_TYPES } from "../../../types.js";
+import type { DecodeInstructionsCommandHandler } from "../../instructions/commands/DecodeInstructionsCommandHandler.js";
 import type {
 	AnalyzeMultisigCommandInputDto,
 	AnalyzeMultisigCommandOutputDto,
@@ -44,6 +46,8 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		private squadsService: ISquadsService,
 		@inject(DOMAIN_TYPES.VaultRepository)
 		private vaultRepository: IVaultRepository,
+		@inject(APPLICATION_TYPES.DecodeInstructionsCommandHandler)
+		private decodeInstructionsHandler: DecodeInstructionsCommandHandler,
 	) {
 		super();
 	}
@@ -92,7 +96,7 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			count: signers.length,
 		});
 
-		// 4. Incremental proposal fetch — only get new proposals
+		// 5. Incremental proposal fetch — only get new proposals
 		const lastProposal =
 			await this.proposalRepository.findLatestByMultisigId(multisigId);
 		const startIndex = lastProposal ? lastProposal.proposalIndex + 1 : 1;
@@ -120,7 +124,7 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			);
 			newProposalsCount = proposalData.length;
 
-			// 5. Fetch and store instructions for new proposals
+			// 6. Fetch and store instructions for new proposals
 			const transactionPdas = newProposals.map((p) => p.transactionPda);
 			const vaultTxData =
 				await this.squadsService.getVaultTransactionInstructions(
@@ -144,13 +148,14 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			});
 
 			if (allInstructions.length > 0) {
-				await this.proposalInstructionRepository.createMany(allInstructions);
-			}
+				const savedInstructions =
+					await this.proposalInstructionRepository.createMany(allInstructions);
 
-			this.logger.info("Proposal instructions stored", {
-				multisigId,
-				instructionsCount: allInstructions.length,
-			});
+				// 7. Decode instructions via reusable handler
+				await this.decodeInstructionsHandler.execute({
+					instructions: savedInstructions,
+				});
+			}
 		}
 
 		this.logger.info("Proposals stored", {
@@ -160,7 +165,7 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			transactionIndex: accountData.transactionIndex,
 		});
 
-		// 5. Get total proposals count
+		// 8. Get total proposals count
 		const allProposals =
 			await this.proposalRepository.findByMultisigId(multisigId);
 

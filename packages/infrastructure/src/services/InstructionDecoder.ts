@@ -1,5 +1,5 @@
 import type { PublicKey } from "@solana/web3.js";
-import type { DecodedInstruction } from "@sentinel/domain";
+import type { RawInstructionData } from "@sentinel/domain";
 
 interface CompiledInstruction {
 	programIdIndex: number;
@@ -11,7 +11,7 @@ export class InstructionDecoder {
 	static decode(
 		allAccountKeys: PublicKey[],
 		instructions: CompiledInstruction[],
-	): DecodedInstruction[] {
+	): RawInstructionData[] {
 		return instructions.map((ix: CompiledInstruction, index: number) => {
 			const programId =
 				ix.programIdIndex < allAccountKeys.length

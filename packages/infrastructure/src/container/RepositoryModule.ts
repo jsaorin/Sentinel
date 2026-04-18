@@ -6,6 +6,7 @@ import { ProposalInstructionRepository } from "../repositories/ProposalInstructi
 import { ProposalRepository } from "../repositories/ProposalRepository.js";
 import { SignerRepository } from "../repositories/SignerRepository.js";
 import { VaultRepository } from "../repositories/VaultRepository.js";
+import { DecodedInstructionRepository } from "../repositories/DecodedInstructionRepository.js";
 import { WebhookConfigRepository } from "../repositories/WebhookConfigRepository.js";
 
 export const repositoryModule = new ContainerModule(
@@ -43,6 +44,11 @@ export const repositoryModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.VaultRepository)
 			.to(VaultRepository)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.DecodedInstructionRepository)
+			.to(DecodedInstructionRepository)
 			.inSingletonScope();
 	},
 );

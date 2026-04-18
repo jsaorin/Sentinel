@@ -7,6 +7,7 @@ const DOMAIN_REPOSITORY_TYPES = {
 	ProposalRepository: Symbol.for("ProposalRepository"),
 	ProposalInstructionRepository: Symbol.for("ProposalInstructionRepository"),
 	VaultRepository: Symbol.for("VaultRepository"),
+	DecodedInstructionRepository: Symbol.for("DecodedInstructionRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {
@@ -14,6 +15,7 @@ export const DOMAIN_SERVICE_TYPES = {
 	CacheService: Symbol.for("CacheService"),
 	HeliusWebhookService: Symbol.for("HeliusWebhookService"),
 	SquadsService: Symbol.for("SquadsService"),
+	InstructionDecoderService: Symbol.for("InstructionDecoderService"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {
