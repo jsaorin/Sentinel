@@ -4,8 +4,12 @@ import {
 	type IMultisigScoreRepository,
 	type IScoringService,
 	type ISignerRepository,
+	MultisigScored,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
+import { multisigScoredToIntegrationEvent } from "../../../mappers/events/multisigScoredToIntegration.js";
+import type { IOutboxEventPublisher } from "../../../ports/IOutboxEventPublisher.js";
+import { APPLICATION_TYPES } from "../../../types.js";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
 import type {
 	ScoreMultisigHealthCommandInputDto,
@@ -27,6 +31,8 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 		private multisigScoreRepository: IMultisigScoreRepository,
 		@inject(DOMAIN_TYPES.ScoringService)
 		private scoringService: IScoringService,
+		@inject(APPLICATION_TYPES.OutboxEventPublisher)
+		private eventPublisher: IOutboxEventPublisher,
 	) {
 		super();
 	}
@@ -64,6 +70,10 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 			overallScore: data.overallScore,
 			warnings: data.warnings.length,
 		});
+
+		const domainEvent = new MultisigScored(multisigId, data.overallScore);
+		const { routingKey, event } = multisigScoredToIntegrationEvent(domainEvent);
+		await this.eventPublisher.publish(event, { routingKey });
 
 		return {
 			multisigId,
