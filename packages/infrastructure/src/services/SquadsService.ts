@@ -1,6 +1,7 @@
 import type { ILogger } from "@sentinel/common/logger";
 import {
 	DOMAIN_TYPES,
+	type ISquadsHistoryService,
 	type ISquadsService,
 	type MultisigAccountData,
 	type ProposalAccountData,
@@ -18,12 +19,16 @@ interface HeliusApiConfig {
 @injectable()
 export class SquadsService implements ISquadsService {
 	private readonly connection: Connection;
+	private reconstructedVaultTransactions: Map<string, VaultTransactionData> =
+		new Map();
 
 	constructor(
 		@inject(DOMAIN_TYPES.HeliusApiConfig)
 		private config: HeliusApiConfig,
 		@inject(DOMAIN_TYPES.Logger)
 		private logger: ILogger,
+		@inject(DOMAIN_TYPES.SquadsHistoryService)
+		private historyService: ISquadsHistoryService,
 	) {
 		this.connection = new Connection(
 			`https://mainnet.helius-rpc.com/?api-key=${this.config.apiKey}`,
@@ -73,6 +78,7 @@ export class SquadsService implements ISquadsService {
 	): Promise<ProposalAccountData[]> {
 		const multisigPda = new PublicKey(multisigAddress);
 		const proposals: ProposalAccountData[] = [];
+		const closedIndices: number[] = [];
 
 		// Derive all proposal PDAs upfront
 		const pdaEntries: Array<{ index: number; pda: PublicKey }> = [];
@@ -113,7 +119,9 @@ export class SquadsService implements ISquadsService {
 			for (let j = 0; j < chunk.length; j++) {
 				const accountInfo = accountInfos[j];
 				if (!accountInfo) {
-					// No proposal exists for this transaction index
+					// PDA closed (rent reclaimed after execution) or never created.
+					// Defer to history reconstruction at the end of the batch sweep.
+					closedIndices.push(chunk[j].index);
 					continue;
 				}
 
@@ -169,6 +177,19 @@ export class SquadsService implements ISquadsService {
 			}
 		}
 
+		if (closedIndices.length > 0) {
+			const reconstructed =
+				await this.historyService.reconstructClosedProposals(
+					multisigAddress,
+					closedIndices,
+				);
+			proposals.push(...reconstructed.proposals);
+			for (const vtx of reconstructed.vaultTransactions) {
+				this.reconstructedVaultTransactions.set(vtx.transactionPda, vtx);
+			}
+		}
+
+		proposals.sort((a, b) => a.proposalIndex - b.proposalIndex);
 		return proposals;
 	}
 
@@ -200,7 +221,16 @@ export class SquadsService implements ISquadsService {
 
 			for (let j = 0; j < chunk.length; j++) {
 				const accountInfo = accountInfos[j];
-				if (!accountInfo) continue;
+				if (!accountInfo) {
+					// VaultTransaction PDA closed — use reconstructed data if available.
+					const reconstructed = this.reconstructedVaultTransactions.get(
+						chunk[j],
+					);
+					if (reconstructed) {
+						results.push(reconstructed);
+					}
+					continue;
+				}
 
 				try {
 					const [vaultTx] =

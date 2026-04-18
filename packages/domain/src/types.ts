@@ -17,6 +17,7 @@ export const DOMAIN_SERVICE_TYPES = {
 	CacheService: Symbol.for("CacheService"),
 	HeliusWebhookService: Symbol.for("HeliusWebhookService"),
 	SquadsService: Symbol.for("SquadsService"),
+	SquadsHistoryService: Symbol.for("SquadsHistoryService"),
 	InstructionDecoderService: Symbol.for("InstructionDecoderService"),
 	ScoringService: Symbol.for("ScoringService"),
 	AIAnalysisService: Symbol.for("AIAnalysisService"),
