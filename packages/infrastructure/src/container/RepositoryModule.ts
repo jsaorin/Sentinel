@@ -7,6 +7,8 @@ import { ProposalRepository } from "../repositories/ProposalRepository.js";
 import { SignerRepository } from "../repositories/SignerRepository.js";
 import { VaultRepository } from "../repositories/VaultRepository.js";
 import { DecodedInstructionRepository } from "../repositories/DecodedInstructionRepository.js";
+import { MultisigScoreRepository } from "../repositories/MultisigScoreRepository.js";
+import { ProposalScoreRepository } from "../repositories/ProposalScoreRepository.js";
 import { WebhookConfigRepository } from "../repositories/WebhookConfigRepository.js";
 
 export const repositoryModule = new ContainerModule(
@@ -49,6 +51,16 @@ export const repositoryModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.DecodedInstructionRepository)
 			.to(DecodedInstructionRepository)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.MultisigScoreRepository)
+			.to(MultisigScoreRepository)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.ProposalScoreRepository)
+			.to(ProposalScoreRepository)
 			.inSingletonScope();
 	},
 );

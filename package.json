@@ -27,7 +27,10 @@
 		"prepare": "husky"
 	},
 	"packageManager": "pnpm@10.33.0",
-	"workspaces": ["packages/*", "apps/*"],
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@types/node": "^22.13.5",
@@ -41,6 +44,7 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
+		"@solana/spl-token": "^0.4.14",
 		"@solana/web3.js": "^1.98.4",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.7",

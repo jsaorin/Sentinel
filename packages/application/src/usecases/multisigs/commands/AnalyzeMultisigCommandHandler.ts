@@ -12,6 +12,8 @@ import { inject, injectFromBase, injectable } from "inversify";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
 import { APPLICATION_TYPES } from "../../../types.js";
 import type { DecodeInstructionsCommandHandler } from "../../instructions/commands/DecodeInstructionsCommandHandler.js";
+import type { ScoreMultisigHealthCommandHandler } from "../../scoring/commands/ScoreMultisigHealthCommandHandler.js";
+import type { ScoreProposalsCommandHandler } from "../../scoring/commands/ScoreProposalsCommandHandler.js";
 import type {
 	AnalyzeMultisigCommandInputDto,
 	AnalyzeMultisigCommandOutputDto,
@@ -48,6 +50,10 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		private vaultRepository: IVaultRepository,
 		@inject(APPLICATION_TYPES.DecodeInstructionsCommandHandler)
 		private decodeInstructionsHandler: DecodeInstructionsCommandHandler,
+		@inject(APPLICATION_TYPES.ScoreMultisigHealthCommandHandler)
+		private scoreMultisigHealthHandler: ScoreMultisigHealthCommandHandler,
+		@inject(APPLICATION_TYPES.ScoreProposalsCommandHandler)
+		private scoreProposalsHandler: ScoreProposalsCommandHandler,
 	) {
 		super();
 	}
@@ -168,6 +174,13 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		// 8. Get total proposals count
 		const allProposals =
 			await this.proposalRepository.findByMultisigId(multisigId);
+
+		// 9. Score multisig health and all its proposals
+		await this.scoreMultisigHealthHandler.execute({ multisigId });
+		await this.scoreProposalsHandler.execute({
+			multisigId,
+			proposals: allProposals,
+		});
 
 		return {
 			multisigId,

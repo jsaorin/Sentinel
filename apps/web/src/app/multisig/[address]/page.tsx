@@ -9,11 +9,7 @@ import {
 	BalanceCard,
 	MultisigNotFound,
 } from "@/components/multisig";
-import {
-	getMultisig,
-	getSigners,
-	getProposals,
-} from "@/lib/api";
+import { getMultisig, getSigners, getProposals } from "@/lib/api";
 import type { RiskLevel } from "@/lib/risk";
 
 export async function generateMetadata({
@@ -28,7 +24,11 @@ export async function generateMetadata({
 	};
 }
 
-function permissionsLabel(p: { initiate: boolean; vote: boolean; execute: boolean }): string {
+function permissionsLabel(p: {
+	initiate: boolean;
+	vote: boolean;
+	execute: boolean;
+}): string {
 	const parts: string[] = [];
 	if (p.initiate) parts.push("Initiate");
 	if (p.vote) parts.push("Vote");
@@ -46,8 +46,20 @@ const STATUS_MAP: Record<string, "Pending" | "Executed" | "Rejected"> = {
 };
 
 // Mock risk levels until AI scoring is implemented
-const MOCK_SIGNER_RISKS: RiskLevel[] = ["safe", "safe", "medium", "safe", "low"];
-const MOCK_PROPOSAL_RISKS: RiskLevel[] = ["high", "safe", "low", "safe", "critical"];
+const MOCK_SIGNER_RISKS: RiskLevel[] = [
+	"safe",
+	"safe",
+	"medium",
+	"safe",
+	"low",
+];
+const MOCK_PROPOSAL_RISKS: RiskLevel[] = [
+	"high",
+	"safe",
+	"low",
+	"safe",
+	"critical",
+];
 const MOCK_SCORE = 73;
 
 export default async function MultisigPage({
@@ -69,9 +81,13 @@ export default async function MultisigPage({
 		console.log("[MultisigPage] Signers:", JSON.stringify(signers, null, 2));
 		console.log("[MultisigPage] Proposals count:", proposals.length);
 
-		const latestProposal = proposals.length > 0
-			? proposals.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
-			: null;
+		const latestProposal =
+			proposals.length > 0
+				? proposals.sort(
+						(a, b) =>
+							new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+					)[0]
+				: null;
 
 		const multisigData = {
 			address: multisig.address,
@@ -94,11 +110,14 @@ export default async function MultisigPage({
 
 		const proposalsData = proposals.map((p, i) => ({
 			id: `#${p.proposalIndex}`,
-			description: p.instructions.length > 0
-				? `${p.instructions.length} instruction${p.instructions.length > 1 ? "s" : ""} — ${p.instructions[0].programId.slice(0, 8)}...`
-				: "Empty proposal",
+			description:
+				p.instructions.length > 0
+					? `${p.instructions.length} instruction${p.instructions.length > 1 ? "s" : ""} — ${p.instructions[0].programId.slice(0, 8)}...`
+					: "Empty proposal",
 			status: STATUS_MAP[p.status] ?? ("Pending" as const),
-			riskLevel: MOCK_PROPOSAL_RISKS[i % MOCK_PROPOSAL_RISKS.length] as RiskLevel,
+			riskLevel: MOCK_PROPOSAL_RISKS[
+				i % MOCK_PROPOSAL_RISKS.length
+			] as RiskLevel,
 		}));
 
 		return (

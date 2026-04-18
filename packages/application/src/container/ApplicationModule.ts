@@ -8,6 +8,8 @@ import { ListSignersQueryHandler } from "../usecases/multisigs/queries/ListSigne
 import { ListProposalsQueryHandler } from "../usecases/multisigs/queries/ListProposalsQueryHandler.js";
 import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
 import { DecodeInstructionsCommandHandler } from "../usecases/instructions/commands/DecodeInstructionsCommandHandler.js";
+import { ScoreMultisigHealthCommandHandler } from "../usecases/scoring/commands/ScoreMultisigHealthCommandHandler.js";
+import { ScoreProposalsCommandHandler } from "../usecases/scoring/commands/ScoreProposalsCommandHandler.js";
 
 export const applicationModule = new ContainerModule(
 	(options: ContainerModuleLoadOptions) => {
@@ -43,6 +45,14 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.DecodeInstructionsCommandHandler)
 			.to(DecodeInstructionsCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.ScoreMultisigHealthCommandHandler)
+			.to(ScoreMultisigHealthCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.ScoreProposalsCommandHandler)
+			.to(ScoreProposalsCommandHandler)
 			.inSingletonScope();
 	},
 );

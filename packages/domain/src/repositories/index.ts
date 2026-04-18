@@ -7,3 +7,5 @@ export * from "./IProposalRepository.js";
 export * from "./IProposalInstructionRepository.js";
 export * from "./IVaultRepository.js";
 export * from "./IDecodedInstructionRepository.js";
+export * from "./IMultisigScoreRepository.js";
+export * from "./IProposalScoreRepository.js";

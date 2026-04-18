@@ -22,7 +22,9 @@ export function MultisigNotFound({ address }: MultisigNotFoundProps) {
 			await createMultisig(address);
 			router.refresh();
 		} catch {
-			setError("Failed to analyze this address. Please check it is a valid Squads v4 multisig.");
+			setError(
+				"Failed to analyze this address. Please check it is a valid Squads v4 multisig.",
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -31,9 +33,7 @@ export function MultisigNotFound({ address }: MultisigNotFoundProps) {
 	return (
 		<div className="max-w-2xl mx-auto px-6 py-16 text-center">
 			<Card variant="default" padding="lg">
-				<h2 className="font-display text-2xl font-bold">
-					Multisig Not Found
-				</h2>
+				<h2 className="font-display text-2xl font-bold">Multisig Not Found</h2>
 				<p className="text-text-secondary mt-3 text-md">
 					The address has not been analyzed yet.
 				</p>
@@ -41,9 +41,7 @@ export function MultisigNotFound({ address }: MultisigNotFoundProps) {
 					{address}
 				</p>
 
-				{error && (
-					<p className="text-critical text-sm mt-4">{error}</p>
-				)}
+				{error && <p className="text-critical text-sm mt-4">{error}</p>}
 
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
 					<button

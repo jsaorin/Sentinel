@@ -1,0 +1,19 @@
+model MultisigScore {
+  id                       String   @id @default(uuid())
+  multisigId               String   @unique @map("multisig_id")
+  overallScore             Int      @map("overall_score")
+  thresholdScore           Int      @map("threshold_score")
+  configAuthorityScore     Int      @map("config_authority_score")
+  signerConcentrationScore Int      @map("signer_concentration_score")
+  signerCountScore         Int      @map("signer_count_score")
+  warnings                 Json     @default("[]")
+  aiSummary                String?  @map("ai_summary")
+  calculatedAt             DateTime @default(now()) @map("calculated_at")
+  createdAt                DateTime @default(now()) @map("created_at")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  multisig Multisig @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+
+  @@index([multisigId])
+  @@map("multisig_score")
+}

@@ -18,7 +18,9 @@ async function getTokenMap() {
 		const res = await fetch("https://token.jup.ag/strict");
 		const list: Array<{ address: string; symbol: string; name: string }> =
 			await res.json();
-		tokenMap = new Map(list.map((t) => [t.address, { symbol: t.symbol, name: t.name }]));
+		tokenMap = new Map(
+			list.map((t) => [t.address, { symbol: t.symbol, name: t.name }]),
+		);
 	} catch {
 		tokenMap = new Map();
 	}

@@ -31,7 +31,9 @@ export function TimelineSection({ children }: TimelineSectionProps) {
 					// Mobile: fade in quickly; Desktop: delay until 25% visible
 					const progress = isMobile
 						? Math.min(ratio / 0.15, 1)
-						: ratio < 0.25 ? 0 : Math.min((ratio - 0.25) / 0.45, 1);
+						: ratio < 0.25
+							? 0
+							: Math.min((ratio - 0.25) / 0.45, 1);
 					setOpacity(progress);
 				}
 			},
