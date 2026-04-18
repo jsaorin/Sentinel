@@ -1,3 +1,10 @@
 export { MultisigDto } from "./MultisigDto.js";
+export { MultisigScoreDto } from "./MultisigScoreDto.js";
+export { MultisigWarningDto } from "./MultisigWarningDto.js";
+export { MultisigListItemDto } from "./MultisigListItemDto.js";
 export { SignerDto } from "./SignerDto.js";
 export { ProposalDto } from "./ProposalDto.js";
+export { ProposalDetailDto } from "./ProposalDetailDto.js";
+export { ProposalFlagDto } from "./ProposalFlagDto.js";
+export { ProposalSignerDto } from "./ProposalSignerDto.js";
+export { DecodedInstructionDto } from "./DecodedInstructionDto.js";

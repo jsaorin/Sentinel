@@ -4,8 +4,10 @@ import { HealthCheckQueryHandler } from "../usecases/health/queries/HealthCheckQ
 import { AnalyzeMultisigCommandHandler } from "../usecases/multisigs/commands/AnalyzeMultisigCommandHandler.js";
 import { CreateMultisigCommandHandler } from "../usecases/multisigs/commands/CreateMultisigCommandHandler.js";
 import { GetMultisigQueryHandler } from "../usecases/multisigs/queries/GetMultisigQueryHandler.js";
+import { ListMultisigsQueryHandler } from "../usecases/multisigs/queries/ListMultisigsQueryHandler.js";
 import { ListSignersQueryHandler } from "../usecases/multisigs/queries/ListSignersQueryHandler.js";
 import { ListProposalsQueryHandler } from "../usecases/multisigs/queries/ListProposalsQueryHandler.js";
+import { GetProposalDetailQueryHandler } from "../usecases/proposals/queries/GetProposalDetailQueryHandler.js";
 import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
 import { DecodeInstructionsCommandHandler } from "../usecases/instructions/commands/DecodeInstructionsCommandHandler.js";
 import { ScoreMultisigHealthCommandHandler } from "../usecases/scoring/commands/ScoreMultisigHealthCommandHandler.js";
@@ -37,12 +39,20 @@ export const applicationModule = new ContainerModule(
 			.to(GetMultisigQueryHandler)
 			.inSingletonScope();
 
+		bind(APPLICATION_TYPES.ListMultisigsQueryHandler)
+			.to(ListMultisigsQueryHandler)
+			.inSingletonScope();
+
 		bind(APPLICATION_TYPES.ListSignersQueryHandler)
 			.to(ListSignersQueryHandler)
 			.inSingletonScope();
 
 		bind(APPLICATION_TYPES.ListProposalsQueryHandler)
 			.to(ListProposalsQueryHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.GetProposalDetailQueryHandler)
+			.to(GetProposalDetailQueryHandler)
 			.inSingletonScope();
 
 		bind(APPLICATION_TYPES.DecodeInstructionsCommandHandler)

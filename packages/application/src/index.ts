@@ -11,6 +11,7 @@ export * from "./usecases/multisigs/index.js";
 export * from "./usecases/instructions/index.js";
 export * from "./usecases/scoring/index.js";
 export * from "./usecases/ai/index.js";
+export * from "./usecases/proposals/index.js";
 
 export * from "./ports/index.js";
 
