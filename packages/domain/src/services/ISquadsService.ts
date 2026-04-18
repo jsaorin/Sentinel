@@ -17,7 +17,7 @@ export interface ProposalAccountData {
 	executedAt: Date | null;
 }
 
-export interface DecodedInstruction {
+export interface RawInstructionData {
 	instructionIndex: number;
 	programId: string;
 	data: string;
@@ -26,7 +26,7 @@ export interface DecodedInstruction {
 
 export interface VaultTransactionData {
 	transactionPda: string;
-	instructions: DecodedInstruction[];
+	instructions: RawInstructionData[];
 }
 
 export interface ISquadsService {

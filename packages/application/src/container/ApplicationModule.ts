@@ -7,6 +7,7 @@ import { GetMultisigQueryHandler } from "../usecases/multisigs/queries/GetMultis
 import { ListSignersQueryHandler } from "../usecases/multisigs/queries/ListSignersQueryHandler.js";
 import { ListProposalsQueryHandler } from "../usecases/multisigs/queries/ListProposalsQueryHandler.js";
 import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
+import { DecodeInstructionsCommandHandler } from "../usecases/instructions/commands/DecodeInstructionsCommandHandler.js";
 
 export const applicationModule = new ContainerModule(
 	(options: ContainerModuleLoadOptions) => {
@@ -38,6 +39,10 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.ListProposalsQueryHandler)
 			.to(ListProposalsQueryHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.DecodeInstructionsCommandHandler)
+			.to(DecodeInstructionsCommandHandler)
 			.inSingletonScope();
 	},
 );

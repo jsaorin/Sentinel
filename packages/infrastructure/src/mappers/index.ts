@@ -4,3 +4,4 @@ export { mapPrismaWebhookConfigToDomain } from "./WebhookConfigMapper.js";
 export { mapPrismaSignerToDomain } from "./SignerMapper.js";
 export { mapPrismaProposalToDomain } from "./ProposalMapper.js";
 export { mapPrismaVaultToDomain } from "./VaultMapper.js";
+export { mapPrismaDecodedInstructionToDomain } from "./DecodedInstructionMapper.js";

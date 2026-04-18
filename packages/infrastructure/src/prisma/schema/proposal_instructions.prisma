@@ -6,7 +6,8 @@ model ProposalInstruction {
   data             String
   accounts         String[]
 
-  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposal            Proposal              @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  decodedInstruction  DecodedInstruction?
 
   @@unique([proposalId, instructionIndex])
   @@index([proposalId])

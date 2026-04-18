@@ -1,0 +1,18 @@
+model DecodedInstruction {
+  id                    String   @id @default(uuid())
+  proposalInstructionId String   @unique @map("proposal_instruction_id")
+  programName           String   @map("program_name")
+  action                String
+  params                Json     @default("{}")
+  accounts              Json     @default("[]")
+  summary               String
+  isKnown               Boolean  @default(false) @map("is_known")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  proposalInstruction ProposalInstruction @relation(fields: [proposalInstructionId], references: [id], onDelete: Cascade)
+
+  @@index([proposalInstructionId])
+  @@index([isKnown])
+  @@map("decoded_instruction")
+}
