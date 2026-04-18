@@ -6,3 +6,5 @@ export * from "./Proposal.js";
 export * from "./ProposalInstruction.js";
 export * from "./Vault.js";
 export * from "./DecodedInstruction.js";
+export * from "./MultisigScore.js";
+export * from "./ProposalScore.js";

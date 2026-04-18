@@ -1,10 +1,7 @@
 import { ProposalIcon, WalletIcon } from "@/components/icons";
 import { StatsListCard } from "./StatsListCard";
 import { StatsListRow } from "./StatsListRow";
-import {
-	MOCK_LANDING_PROPOSALS,
-	MOCK_LANDING_WALLETS,
-} from "@/lib/mock-data";
+import { MOCK_LANDING_PROPOSALS, MOCK_LANDING_WALLETS } from "@/lib/mock-data";
 
 export function StatsSection() {
 	return (

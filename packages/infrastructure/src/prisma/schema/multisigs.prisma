@@ -10,6 +10,7 @@ model Multisig {
   signers   Signer[]
   proposals Proposal[]
   vaults    Vault[]
+  score     MultisigScore?
 
   @@map("multisig")
 }

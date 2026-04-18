@@ -21,6 +21,7 @@ model Proposal {
 
   multisig      Multisig               @relation(fields: [multisigId], references: [id], onDelete: Cascade)
   instructions  ProposalInstruction[]
+  score         ProposalScore?
 
   @@unique([multisigId, proposalIndex])
   @@index([multisigId])

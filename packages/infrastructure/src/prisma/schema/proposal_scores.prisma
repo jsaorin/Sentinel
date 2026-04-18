@@ -1,0 +1,17 @@
+model ProposalScore {
+  id             String   @id @default(uuid())
+  proposalId     String   @unique @map("proposal_id")
+  riskScore      Int      @map("risk_score")
+  flags          Json     @default("[]")
+  summary        String
+  aiAnalysis     String?  @map("ai_analysis")
+  recommendation String?
+  calculatedAt   DateTime @default(now()) @map("calculated_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@index([proposalId])
+  @@map("proposal_score")
+}
