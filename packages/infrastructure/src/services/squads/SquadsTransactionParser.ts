@@ -1,6 +1,7 @@
 import * as multisig from "@sqds/multisig";
 
-export const SQUADS_V4_PROGRAM_ID = "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf";
+export const SQUADS_V4_PROGRAM_ID =
+	"SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf";
 
 export type SquadsInstructionKind =
 	| "proposalCreate"
@@ -53,7 +54,8 @@ const DISCRIMINATORS: Array<{ kind: SquadsInstructionKind; disc: number[] }> = [
 	},
 	{
 		kind: "vaultTransactionAccountsClose",
-		disc: multisig.generated.vaultTransactionAccountsCloseInstructionDiscriminator,
+		disc: multisig.generated
+			.vaultTransactionAccountsCloseInstructionDiscriminator,
 	},
 	{
 		kind: "configTransactionCreate",
@@ -65,7 +67,8 @@ const DISCRIMINATORS: Array<{ kind: SquadsInstructionKind; disc: number[] }> = [
 	},
 	{
 		kind: "configTransactionAccountsClose",
-		disc: multisig.generated.configTransactionAccountsCloseInstructionDiscriminator,
+		disc: multisig.generated
+			.configTransactionAccountsCloseInstructionDiscriminator,
 	},
 	{
 		kind: "batchExecuteTransaction",
@@ -81,9 +84,7 @@ export function isSquadsInstruction(programId: string): boolean {
 	return programId === SQUADS_V4_PROGRAM_ID;
 }
 
-export function classifySquadsInstruction(
-	data: Buffer,
-): SquadsInstructionKind {
+export function classifySquadsInstruction(data: Buffer): SquadsInstructionKind {
 	if (data.length < 8) return "unknown";
 	const disc = data.subarray(0, 8);
 	for (const entry of DISCRIMINATORS) {

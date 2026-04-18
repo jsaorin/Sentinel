@@ -50,7 +50,9 @@ export class GetProposalDetailQueryHandler extends BaseUseCase<
 			throw new ResourceNotFoundError("Proposal", proposalId);
 		}
 
-		const multisig = await this.multisigRepository.findById(proposal.multisigId);
+		const multisig = await this.multisigRepository.findById(
+			proposal.multisigId,
+		);
 		if (!multisig) {
 			throw new ResourceNotFoundError("Multisig", proposal.multisigId);
 		}
@@ -127,8 +129,6 @@ export class GetProposalDetailQueryHandler extends BaseUseCase<
 			await this.decodedInstructionRepository.findByProposalInstructionIds(
 				instructionIds,
 			);
-		return new Map(
-			decoded.map((d) => [d.proposalInstructionId, d] as const),
-		);
+		return new Map(decoded.map((d) => [d.proposalInstructionId, d] as const));
 	}
 }

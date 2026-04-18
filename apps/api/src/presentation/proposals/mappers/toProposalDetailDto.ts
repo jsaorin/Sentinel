@@ -1,8 +1,5 @@
 import type { GetProposalDetailQueryOutputDto } from "@sentinel/application";
-import type {
-	ProposalDetailDto,
-	ProposalFlagDto,
-} from "@sentinel/common/dtos";
+import type { ProposalDetailDto, ProposalFlagDto } from "@sentinel/common/dtos";
 import { toDecodedInstructionDto } from "./toDecodedInstructionDto.js";
 import { toProposalSignerDto } from "./toProposalSignerDto.js";
 

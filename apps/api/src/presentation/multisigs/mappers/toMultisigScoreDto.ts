@@ -1,4 +1,7 @@
-import type { MultisigScoreDto, MultisigWarningDto } from "@sentinel/common/dtos";
+import type {
+	MultisigScoreDto,
+	MultisigWarningDto,
+} from "@sentinel/common/dtos";
 import type { MultisigScore } from "@sentinel/domain";
 
 export function toMultisigScoreDto(score: MultisigScore): MultisigScoreDto {
