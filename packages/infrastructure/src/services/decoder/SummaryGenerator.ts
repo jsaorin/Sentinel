@@ -12,14 +12,12 @@ function truncateAddress(address: string): string {
 
 function formatSol(lamports: string): string {
 	const value = Number(lamports) / LAMPORTS_PER_SOL;
-	if (value >= 1) return `${value.toLocaleString("en-US", { maximumFractionDigits: 4 })} SOL`;
+	if (value >= 1)
+		return `${value.toLocaleString("en-US", { maximumFractionDigits: 4 })} SOL`;
 	return `${lamports} lamports`;
 }
 
-function findAccount(
-	accounts: LabeledAccount[],
-	label: string,
-): string | null {
+function findAccount(accounts: LabeledAccount[], label: string): string | null {
 	const account = accounts.find((a) => a.label === label);
 	return account ? truncateAddress(account.address) : null;
 }

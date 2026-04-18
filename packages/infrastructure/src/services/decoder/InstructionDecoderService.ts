@@ -21,12 +21,7 @@ export class InstructionDecoderService implements IInstructionDecoderService {
 			const accounts = isKnown
 				? labelAccounts(programName, action, ix.accounts)
 				: ix.accounts.map((a, i) => ({ address: a, label: `account_${i}` }));
-			const summary = generateSummary(
-				programName,
-				action,
-				params,
-				accounts,
-			);
+			const summary = generateSummary(programName, action, params, accounts);
 
 			return {
 				proposalInstructionId: ix.id,

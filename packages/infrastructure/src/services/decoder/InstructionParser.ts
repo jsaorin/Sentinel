@@ -188,7 +188,8 @@ function parseTokenProgram(buffer: Buffer): ParsedInstruction | null {
 				action: "SetAuthority",
 				params: {
 					authorityType: readAuthorityType(buffer, 1),
-					newAuthority: buffer.length > 3 && buffer[2] === 1 ? "present" : "none",
+					newAuthority:
+						buffer.length > 3 && buffer[2] === 1 ? "present" : "none",
 				},
 			};
 		case 7: // MintTo

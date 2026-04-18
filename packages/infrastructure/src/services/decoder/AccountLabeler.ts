@@ -25,7 +25,15 @@ const ACCOUNT_LABELS: Record<string, Record<string, AccountLabels>> = {
 		],
 	},
 	"BPF Upgradeable Loader": {
-		Upgrade: ["programData", "program", "buffer", "spillAccount", "rent", "clock", "authority"],
+		Upgrade: [
+			"programData",
+			"program",
+			"buffer",
+			"spillAccount",
+			"rent",
+			"clock",
+			"authority",
+		],
 		SetAuthority: ["account", "currentAuthority", "newAuthority"],
 		Close: ["account", "recipient", "authority", "program"],
 	},
