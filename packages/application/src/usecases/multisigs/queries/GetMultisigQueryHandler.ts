@@ -1,8 +1,10 @@
 import {
 	DOMAIN_TYPES,
-	ResourceNotFoundError,
 	type IMultisigRepository,
+	type IMultisigScoreRepository,
+	type ISignerRepository,
 	type IVaultRepository,
+	ResourceNotFoundError,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
@@ -22,6 +24,10 @@ export class GetMultisigQueryHandler extends BaseUseCase<
 		private multisigRepository: IMultisigRepository,
 		@inject(DOMAIN_TYPES.VaultRepository)
 		private vaultRepository: IVaultRepository,
+		@inject(DOMAIN_TYPES.SignerRepository)
+		private signerRepository: ISignerRepository,
+		@inject(DOMAIN_TYPES.MultisigScoreRepository)
+		private multisigScoreRepository: IMultisigScoreRepository,
 	) {
 		super();
 	}
@@ -35,7 +41,11 @@ export class GetMultisigQueryHandler extends BaseUseCase<
 			throw new ResourceNotFoundError("Multisig", input.address);
 		}
 
-		const vaults = await this.vaultRepository.findByMultisigId(multisig.id);
+		const [vaults, signers, healthScore] = await Promise.all([
+			this.vaultRepository.findByMultisigId(multisig.id),
+			this.signerRepository.findByMultisigId(multisig.id),
+			this.multisigScoreRepository.findByMultisigId(multisig.id),
+		]);
 
 		return {
 			id: multisig.id,
@@ -43,10 +53,12 @@ export class GetMultisigQueryHandler extends BaseUseCase<
 			label: multisig.label,
 			threshold: multisig.threshold,
 			configAuthority: multisig.configAuthority,
+			totalSigners: signers.length,
 			vaults: vaults.map((v) => ({
 				vaultIndex: v.vaultIndex,
 				pda: v.pda,
 			})),
+			healthScore,
 			createdAt: multisig.createdAt,
 		};
 	}

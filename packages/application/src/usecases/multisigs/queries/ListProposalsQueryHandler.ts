@@ -1,9 +1,10 @@
 import {
 	DOMAIN_TYPES,
-	ResourceNotFoundError,
 	type IMultisigRepository,
 	type IProposalInstructionRepository,
 	type IProposalRepository,
+	type IProposalScoreRepository,
+	ResourceNotFoundError,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
@@ -25,6 +26,8 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 		private proposalRepository: IProposalRepository,
 		@inject(DOMAIN_TYPES.ProposalInstructionRepository)
 		private proposalInstructionRepository: IProposalInstructionRepository,
+		@inject(DOMAIN_TYPES.ProposalScoreRepository)
+		private proposalScoreRepository: IProposalScoreRepository,
 	) {
 		super();
 	}
@@ -43,12 +46,12 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 		);
 
 		const proposalIds = proposals.map((p) => p.id);
-		const instructions =
+		const [instructions, scores] = await Promise.all([
 			proposalIds.length > 0
-				? await this.proposalInstructionRepository.findByProposalIds(
-						proposalIds,
-					)
-				: [];
+				? this.proposalInstructionRepository.findByProposalIds(proposalIds)
+				: Promise.resolve([]),
+			this.proposalScoreRepository.findByMultisigId(multisig.id),
+		]);
 
 		const instructionsByProposal = new Map<string, typeof instructions>();
 		for (const ix of instructions) {
@@ -57,24 +60,33 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 			instructionsByProposal.set(ix.proposalId, list);
 		}
 
+		const scoresByProposal = new Map(
+			scores.map((s) => [s.proposalId, s] as const),
+		);
+
 		return {
-			proposals: proposals.map((p) => ({
-				id: p.id,
-				proposalIndex: p.proposalIndex,
-				transactionIndex: p.transactionIndex,
-				pda: p.pda,
-				transactionPda: p.transactionPda,
-				status: p.status,
-				creator: p.creator,
-				createdAt: p.createdAt,
-				executedAt: p.executedAt,
-				instructions: (instructionsByProposal.get(p.id) ?? []).map((ix) => ({
-					instructionIndex: ix.instructionIndex,
-					programId: ix.programId,
-					data: ix.data,
-					accounts: ix.accounts,
-				})),
-			})),
+			proposals: proposals.map((p) => {
+				const score = scoresByProposal.get(p.id);
+				return {
+					id: p.id,
+					proposalIndex: p.proposalIndex,
+					transactionIndex: p.transactionIndex,
+					pda: p.pda,
+					transactionPda: p.transactionPda,
+					status: p.status,
+					creator: p.creator,
+					createdAt: p.createdAt,
+					executedAt: p.executedAt,
+					riskScore: score?.riskScore ?? null,
+					summary: score?.summary ?? null,
+					instructions: (instructionsByProposal.get(p.id) ?? []).map((ix) => ({
+						instructionIndex: ix.instructionIndex,
+						programId: ix.programId,
+						data: ix.data,
+						accounts: ix.accounts,
+					})),
+				};
+			}),
 		};
 	}
 }

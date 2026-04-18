@@ -8,6 +8,8 @@ export class ProposalDto {
 	creator: string | null;
 	createdAt: string;
 	executedAt: string | null;
+	riskScore: number | null;
+	summary: string | null;
 	instructions: Array<{
 		instructionIndex: number;
 		programId: string;
