@@ -6,9 +6,13 @@ import {
 	type IProposalRepository,
 	type IProposalScoreRepository,
 	type IScoringService,
+	ProposalScored,
 	type UpsertProposalScoreInput,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
+import { proposalScoredToIntegrationEvent } from "../../../mappers/events/proposalScoredToIntegration.js";
+import type { IOutboxEventPublisher } from "../../../ports/IOutboxEventPublisher.js";
+import { APPLICATION_TYPES } from "../../../types.js";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
 import type {
 	ScoreProposalsCommandInputDto,
@@ -32,6 +36,8 @@ export class ScoreProposalsCommandHandler extends BaseUseCase<
 		private proposalScoreRepository: IProposalScoreRepository,
 		@inject(DOMAIN_TYPES.ScoringService)
 		private scoringService: IScoringService,
+		@inject(APPLICATION_TYPES.OutboxEventPublisher)
+		private eventPublisher: IOutboxEventPublisher,
 	) {
 		super();
 	}
@@ -94,6 +100,17 @@ export class ScoreProposalsCommandHandler extends BaseUseCase<
 		}
 
 		await this.proposalScoreRepository.upsertMany(upsertInputs);
+
+		for (const score of upsertInputs) {
+			const domainEvent = new ProposalScored(
+				multisigId,
+				score.proposalId,
+				score.riskScore,
+			);
+			const { routingKey, event } =
+				proposalScoredToIntegrationEvent(domainEvent);
+			await this.eventPublisher.publish(event, { routingKey });
+		}
 
 		this.logger.info("Proposals scored", {
 			multisigId,
