@@ -2,9 +2,7 @@ import type { GetMultisigQueryOutputDto } from "@sentinel/application";
 import type { MultisigDto } from "@sentinel/common/dtos";
 import { toMultisigScoreDto } from "./toMultisigScoreDto.js";
 
-export function toMultisigDto(
-	output: GetMultisigQueryOutputDto,
-): MultisigDto {
+export function toMultisigDto(output: GetMultisigQueryOutputDto): MultisigDto {
 	return {
 		id: output.id,
 		address: output.address,
@@ -13,7 +11,9 @@ export function toMultisigDto(
 		configAuthority: output.configAuthority,
 		totalSigners: output.totalSigners,
 		vaults: output.vaults,
-		healthScore: output.healthScore ? toMultisigScoreDto(output.healthScore) : null,
+		healthScore: output.healthScore
+			? toMultisigScoreDto(output.healthScore)
+			: null,
 		createdAt: output.createdAt.toISOString(),
 	};
 }
