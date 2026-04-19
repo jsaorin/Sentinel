@@ -3,7 +3,7 @@ type AlertLevel = "critical" | "high" | "medium" | "low" | "info";
 type AlertBannerProps = {
 	level: AlertLevel;
 	title: string;
-	description?: string;
+	description?: React.ReactNode;
 	dismissible?: boolean;
 	onDismiss?: () => void;
 	action?: { label: string; onClick: () => void };

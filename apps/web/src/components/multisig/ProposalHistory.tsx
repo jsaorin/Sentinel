@@ -7,9 +7,10 @@ import type { RiskLevel } from "@/lib/risk";
 
 type Proposal = {
 	id: string;
+	linkId: string;
 	description: string;
 	status: "Pending" | "Executed" | "Rejected";
-	riskLevel: RiskLevel;
+	riskLevel: RiskLevel | null;
 };
 
 type ProposalHistoryProps = {
@@ -66,8 +67,9 @@ export function ProposalHistory({
 				) : (
 					paginated.map((p, i) => (
 						<ProposalRow
-							key={p.id}
+							key={p.linkId}
 							id={p.id}
+							linkId={p.linkId}
 							description={p.description}
 							status={p.status}
 							riskLevel={p.riskLevel}

@@ -1,21 +1,23 @@
-import { Badge, RiskBadge } from "@sentinel/ui";
-import type { RiskLevel } from "@/lib/risk";
+import { Badge } from "@sentinel/ui";
 
 type SignerRowProps = {
 	address: string;
-	label: string;
-	status: string;
-	riskLevel: RiskLevel;
+	permissions: { initiate: boolean; vote: boolean; execute: boolean };
 	isLast?: boolean;
 };
 
 export function SignerRow({
 	address,
-	label,
-	status,
-	riskLevel,
+	permissions,
 	isLast = false,
 }: SignerRowProps) {
+	const truncated = `${address.slice(0, 4)}...${address.slice(-4)}`;
+	const pills = [
+		permissions.initiate && "Initiate",
+		permissions.vote && "Vote",
+		permissions.execute && "Execute",
+	].filter(Boolean) as string[];
+
 	return (
 		<div
 			className={[
@@ -23,19 +25,23 @@ export function SignerRow({
 				!isLast ? "border-b border-border-subtle" : "",
 			].join(" ")}
 		>
-			<div className="flex items-center gap-4 min-w-0">
-				<span className="font-mono text-md text-text-primary">{address}</span>
-				<span className="text-md text-text-secondary hidden sm:block">
-					{label}
-				</span>
-			</div>
-			<div className="flex items-center gap-4 shrink-0">
-				<Badge
-					className={`w-24 justify-start text-xs font-semibold tracking-wider uppercase ${status === "Active" ? "text-text-primary" : "text-text-secondary"}`}
-				>
-					{status}
-				</Badge>
-				<RiskBadge level={riskLevel} size="sm" className="w-20 justify-start" />
+			<a
+				href={`https://solscan.io/account/${address}`}
+				target="_blank"
+				rel="noopener noreferrer"
+				className="font-mono text-md text-text-link underline underline-offset-2 truncate min-w-0"
+			>
+				{truncated}
+			</a>
+			<div className="flex items-center gap-2 shrink-0">
+				{pills.map((p) => (
+					<Badge key={p} className="text-xs font-semibold tracking-wider uppercase text-text-secondary">
+						{p}
+					</Badge>
+				))}
+				{pills.length === 0 && (
+					<span className="text-xs text-text-tertiary uppercase tracking-wider">None</span>
+				)}
 			</div>
 		</div>
 	);

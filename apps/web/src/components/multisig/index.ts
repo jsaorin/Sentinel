@@ -8,3 +8,6 @@ export { ProposalHistory } from "./ProposalHistory";
 export { ProposalRow } from "./ProposalRow";
 export { BalanceCard } from "./BalanceCard";
 export { MultisigNotFound } from "./MultisigNotFound";
+export { MultisigTabs } from "./MultisigTabs";
+export { VaultsTab } from "./VaultsTab";
+export { VaultCard } from "./VaultCard";

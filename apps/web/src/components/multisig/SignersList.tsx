@@ -1,12 +1,9 @@
 import { Card } from "@sentinel/ui";
 import { SignerRow } from "./SignerRow";
-import type { RiskLevel } from "@/lib/risk";
 
 type Signer = {
 	address: string;
-	label: string;
-	status: string;
-	riskLevel: RiskLevel;
+	permissions: { initiate: boolean; vote: boolean; execute: boolean };
 };
 
 type SignersListProps = {
@@ -24,9 +21,7 @@ export function SignersList({ signers }: SignersListProps) {
 					<SignerRow
 						key={signer.address}
 						address={signer.address}
-						label={signer.label}
-						status={signer.status}
-						riskLevel={signer.riskLevel}
+						permissions={signer.permissions}
 						isLast={i === signers.length - 1}
 					/>
 				))}

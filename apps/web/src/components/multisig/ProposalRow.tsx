@@ -4,9 +4,10 @@ import type { RiskLevel } from "@/lib/risk";
 
 type ProposalRowProps = {
 	id: string;
+	linkId: string;
 	description: string;
 	status: "Pending" | "Executed" | "Rejected";
-	riskLevel: RiskLevel;
+	riskLevel: RiskLevel | null;
 	isLast?: boolean;
 };
 
@@ -18,6 +19,7 @@ const statusVariant: Record<string, "medium" | "safe" | "critical"> = {
 
 export function ProposalRow({
 	id,
+	linkId,
 	description,
 	status,
 	riskLevel,
@@ -25,7 +27,7 @@ export function ProposalRow({
 }: ProposalRowProps) {
 	return (
 		<Link
-			href={`/proposal/${id.replace("#", "")}`}
+			href={`/proposal/${linkId}`}
 			className={[
 				"flex items-center justify-between py-4 px-2 hover:bg-bg-hover transition-colors cursor-pointer",
 				!isLast ? "border-b border-border-subtle" : "",
@@ -43,7 +45,7 @@ export function ProposalRow({
 				<Badge variant={statusVariant[status]} className="w-24 justify-start">
 					{status}
 				</Badge>
-				<RiskBadge level={riskLevel} size="sm" className="w-20 justify-start" />
+				<RiskBadge level={riskLevel ?? "unknown"} size="sm" className="w-20 justify-start" />
 			</div>
 		</Link>
 	);

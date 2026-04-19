@@ -7,7 +7,8 @@ type InfoCardProps = {
 	threshold: { current: number; total: number };
 	created: string;
 	lastActivity: string;
-	score?: number;
+	score?: number | null;
+	configAuthority?: string | null;
 };
 
 function InfoRow({
@@ -38,6 +39,7 @@ export function InfoCard({
 	created,
 	lastActivity,
 	score,
+	configAuthority,
 }: InfoCardProps) {
 	const truncated = `${address.slice(0, 8)}...${address.slice(-6)}`;
 
@@ -45,7 +47,7 @@ export function InfoCard({
 		<Card variant="default" padding="lg">
 			<div className="flex items-center justify-between pb-4 border-b border-border-subtle">
 				<h3 className="text-lg font-semibold">Multisig Info</h3>
-				{score !== undefined && (
+				{score != null && (
 					<span
 						className="flex items-center gap-1"
 						style={{ color: LEVEL_HEX[getLevel(score)] }}
@@ -64,6 +66,9 @@ export function InfoCard({
 				/>
 				<InfoRow label="Created" value={created} mono />
 				<InfoRow label="Last Activity" value={lastActivity} />
+				{configAuthority && (
+					<InfoRow label="Config Authority" value={`${configAuthority.slice(0, 8)}...${configAuthority.slice(-4)}`} mono />
+				)}
 			</div>
 		</Card>
 	);
