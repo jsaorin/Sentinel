@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Card, AlertBanner, ProgressBar } from "@sentinel/ui";
 import {
 	MultisigHeader,
 	InfoCard,
@@ -6,11 +8,12 @@ import {
 	SignersList,
 	ReportCard,
 	ProposalHistory,
-	BalanceCard,
 	MultisigNotFound,
+	MultisigTabs,
+	VaultsTab,
 } from "@/components/multisig";
 import { getMultisig, getSigners, getProposals } from "@/lib/api";
-import type { RiskLevel } from "@/lib/risk";
+import { getRiskLevel } from "@/lib/risk";
 
 export async function generateMetadata({
 	params,
@@ -24,18 +27,6 @@ export async function generateMetadata({
 	};
 }
 
-function permissionsLabel(p: {
-	initiate: boolean;
-	vote: boolean;
-	execute: boolean;
-}): string {
-	const parts: string[] = [];
-	if (p.initiate) parts.push("Initiate");
-	if (p.vote) parts.push("Vote");
-	if (p.execute) parts.push("Execute");
-	return parts.join(", ") || "None";
-}
-
 const STATUS_MAP: Record<string, "Pending" | "Executed" | "Rejected"> = {
 	DRAFT: "Pending",
 	ACTIVE: "Pending",
@@ -45,30 +36,18 @@ const STATUS_MAP: Record<string, "Pending" | "Executed" | "Rejected"> = {
 	CANCELLED: "Rejected",
 };
 
-// Mock risk levels until AI scoring is implemented
-const MOCK_SIGNER_RISKS: RiskLevel[] = [
-	"safe",
-	"safe",
-	"medium",
-	"safe",
-	"low",
-];
-const MOCK_PROPOSAL_RISKS: RiskLevel[] = [
-	"high",
-	"safe",
-	"low",
-	"safe",
-	"critical",
-];
-const MOCK_SCORE = 73;
+const WARNING_SEVERITY: Record<string, "critical" | "high" | "medium" | "low"> = {
+	CRITICAL_THRESHOLD_ONE: "critical",
+	LOW_THRESHOLD: "high",
+	EXTERNAL_CONFIG_AUTHORITY: "high",
+	CONCENTRATED_SIGNER: "medium",
+	LOW_SIGNER_COUNT: "medium",
+};
 
 export default async function MultisigPage({
 	params,
 }: { params: Promise<{ address: string }> }) {
 	const { address } = await params;
-
-	console.log("[MultisigPage] Fetching data for address:", address);
-	console.log("[MultisigPage] API_BASE:", process.env.NEXT_PUBLIC_API_URL);
 
 	try {
 		const [multisig, signers, proposals] = await Promise.all([
@@ -76,10 +55,6 @@ export default async function MultisigPage({
 			getSigners(address),
 			getProposals(address),
 		]);
-
-		console.log("[MultisigPage] Multisig:", JSON.stringify(multisig, null, 2));
-		console.log("[MultisigPage] Signers:", JSON.stringify(signers, null, 2));
-		console.log("[MultisigPage] Proposals count:", proposals.length);
 
 		const latestProposal =
 			proposals.length > 0
@@ -89,11 +64,13 @@ export default async function MultisigPage({
 					)[0]
 				: null;
 
+		const score = multisig.healthScore?.overall ?? null;
+
 		const multisigData = {
 			address: multisig.address,
 			threshold: {
 				current: multisig.threshold ?? 0,
-				total: signers.length,
+				total: multisig.totalSigners,
 			},
 			created: new Date(multisig.createdAt).toLocaleDateString(),
 			lastActivity: latestProposal
@@ -101,24 +78,88 @@ export default async function MultisigPage({
 				: "No activity",
 		};
 
-		const signersData = signers.map((s, i) => ({
-			address: `${s.address.slice(0, 6)}..${s.address.slice(-4)}`,
-			label: permissionsLabel(s.permissions),
-			status: "Active",
-			riskLevel: MOCK_SIGNER_RISKS[i % MOCK_SIGNER_RISKS.length] as RiskLevel,
+		const signersData = signers.map((s) => ({
+			address: s.address,
+			permissions: s.permissions,
 		}));
 
-		const proposalsData = proposals.map((p, i) => ({
+		const proposalsData = proposals.map((p) => ({
 			id: `#${p.proposalIndex}`,
-			description:
+			linkId: p.id,
+			description: p.summary ?? (
 				p.instructions.length > 0
-					? `${p.instructions.length} instruction${p.instructions.length > 1 ? "s" : ""} — ${p.instructions[0].programId.slice(0, 8)}...`
-					: "Empty proposal",
+					? `${p.instructions.length} instruction${p.instructions.length > 1 ? "s" : ""}`
+					: "Empty proposal"
+			),
 			status: STATUS_MAP[p.status] ?? ("Pending" as const),
-			riskLevel: MOCK_PROPOSAL_RISKS[
-				i % MOCK_PROPOSAL_RISKS.length
-			] as RiskLevel,
+			riskLevel: p.riskScore != null ? getRiskLevel(p.riskScore) : null,
 		}));
+
+		const breakdown = multisig.healthScore?.breakdown;
+		const warnings = multisig.healthScore?.warnings ?? [];
+		const aiSummary = multisig.healthScore?.aiSummary ?? null;
+
+		const overviewContent = (
+			<div className="space-y-6">
+				{/* Warnings */}
+				{warnings.length > 0 && (
+					<div className="space-y-3">
+						{warnings.map((w, i) => (
+							<AlertBanner
+								key={`${w.code}-${i}`}
+								level={WARNING_SEVERITY[w.code] ?? "medium"}
+								title={w.code.replace(/_/g, " ")}
+								description={linkifyAddresses(w.message)}
+							/>
+						))}
+					</div>
+				)}
+
+				{/* Score Breakdown */}
+				{breakdown && (
+					<Card variant="default" padding="lg">
+						<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">
+							Score Breakdown
+						</h3>
+						<div className="mt-4 space-y-4">
+							<ProgressBar value={breakdown.threshold} label="Threshold" showValue size="sm" />
+							<ProgressBar value={breakdown.configAuthority} label="Config Authority" showValue size="sm" />
+							<ProgressBar value={breakdown.signerConcentration} label="Signer Concentration" showValue size="sm" />
+							<ProgressBar value={breakdown.signerCount} label="Signer Count" showValue size="sm" />
+						</div>
+						{multisig.healthScore?.calculatedAt && (
+							<p className="text-xs text-text-tertiary mt-4">
+								Last scored: {timeAgo(new Date(multisig.healthScore.calculatedAt))}
+							</p>
+						)}
+					</Card>
+				)}
+
+				<ReportCard title="AI Security Summary" content={aiSummary} />
+			</div>
+		);
+
+		const signersContent = (
+			<SignersList signers={signersData} />
+		);
+
+		const proposalsContent = (
+			<ProposalHistory proposals={proposalsData} />
+		);
+
+		const tabs = [
+			{ id: "overview", label: "Overview", content: overviewContent },
+			{ id: "signers", label: `Signers (${signers.length})`, content: signersContent },
+			{ id: "proposals", label: `Proposals (${proposals.length})`, content: proposalsContent },
+		];
+
+		if (multisig.vaults.length > 0) {
+			tabs.push({
+				id: "vaults",
+				label: `Vaults (${multisig.vaults.length})`,
+				content: <VaultsTab vaults={multisig.vaults} />,
+			});
+		}
 
 		return (
 			<main className="min-h-screen pb-16">
@@ -133,19 +174,14 @@ export default async function MultisigPage({
 								threshold={multisigData.threshold}
 								created={multisigData.created}
 								lastActivity={multisigData.lastActivity}
-								score={MOCK_SCORE}
+								score={score}
+								configAuthority={multisig.configAuthority}
 							/>
 						</div>
-						<ScoreCard score={MOCK_SCORE} />
+						<ScoreCard score={score ?? 0} />
 					</div>
 
-					<BalanceCard address={address} />
-
-					<SignersList signers={signersData} />
-
-					<ReportCard />
-
-					<ProposalHistory proposals={proposalsData} />
+					<MultisigTabs tabs={tabs} />
 				</div>
 			</main>
 		);
@@ -170,4 +206,34 @@ function timeAgo(date: Date): string {
 	if (diffHr < 24) return `${diffHr} hr ago`;
 	const diffDays = Math.floor(diffHr / 24);
 	return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+}
+
+const SOLANA_ADDRESS_RE = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g;
+
+function linkifyAddresses(text: string): ReactNode {
+	const segments = text.split(SOLANA_ADDRESS_RE);
+	const addresses = text.match(SOLANA_ADDRESS_RE);
+
+	if (!addresses || addresses.length === 0) return text;
+
+	const parts: ReactNode[] = [];
+	for (let i = 0; i < segments.length; i++) {
+		if (segments[i]) parts.push(segments[i]);
+		if (i < addresses.length) {
+			const addr = addresses[i];
+			parts.push(
+				<a
+					key={i}
+					href={`https://solscan.io/account/${addr}`}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="font-mono text-text-link underline underline-offset-2"
+				>
+					{addr.slice(0, 4)}...{addr.slice(-4)}
+				</a>,
+			);
+		}
+	}
+
+	return <>{parts}</>;
 }
