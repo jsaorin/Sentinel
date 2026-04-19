@@ -28,7 +28,6 @@ export function Navbar() {
 			setVisible(true);
 			return;
 		}
-		window.scrollTo(0, 0);
 		setVisible(false);
 		function handleScroll() {
 			setVisible(window.scrollY > 200);

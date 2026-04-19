@@ -48,14 +48,21 @@ export function ScoringVisual() {
 		const fillSpeed = 0.011;
 
 		let animId: number;
-		let isVisible = true;
+		let isVisible = false;
+		let hasStarted = false;
 
 		const visObserver = new IntersectionObserver(
 			([entry]) => {
 				isVisible = entry.isIntersecting;
-				if (isVisible) draw();
+				if (isVisible && !hasStarted) {
+					hasStarted = true;
+					progress = prefersReduced ? 1 : 0;
+					draw();
+				} else if (isVisible && progress < 1) {
+					draw();
+				}
 			},
-			{ threshold: 0 },
+			{ threshold: 0.3 },
 		);
 		visObserver.observe(container);
 
@@ -173,7 +180,6 @@ export function ScoringVisual() {
 			}
 		}
 
-		draw();
 		return () => {
 			cancelAnimationFrame(animId);
 			visObserver.disconnect();
