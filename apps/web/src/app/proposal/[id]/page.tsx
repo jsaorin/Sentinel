@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Card, RiskBadge, Badge, AlertBanner } from "@sentinel/ui";
 import { MultisigHeader, ReportCard } from "@/components/multisig";
 import { ScoreCard } from "@/components/multisig/ScoreCard";
 import { getProposalDetail } from "@/lib/api";
 import { getRiskLevel } from "@/lib/risk";
-import type { RiskLevel } from "@/lib/risk";
 import { notFound } from "next/navigation";
+import {
+	STATUS_VARIANT,
+	STATUS_LABEL,
+	FLAG_SEVERITY_LEVEL,
+	RECOMMENDATION_VARIANT,
+	RECOMMENDATION_LABEL,
+} from "@/lib/constants";
 
 export async function generateMetadata({
 	params,
@@ -19,43 +24,6 @@ export async function generateMetadata({
 		description: "Security analysis for proposal. AI risk score, signer verification, and transaction action review.",
 	};
 }
-
-const STATUS_VARIANT: Record<string, "medium" | "safe" | "critical"> = {
-	DRAFT: "medium",
-	ACTIVE: "medium",
-	APPROVED: "medium",
-	REJECTED: "critical",
-	EXECUTED: "safe",
-	CANCELLED: "critical",
-};
-
-const STATUS_LABEL: Record<string, string> = {
-	DRAFT: "Draft",
-	ACTIVE: "Active",
-	APPROVED: "Approved",
-	REJECTED: "Rejected",
-	EXECUTED: "Executed",
-	CANCELLED: "Cancelled",
-};
-
-const FLAG_SEVERITY_LEVEL: Record<string, RiskLevel> = {
-	LOW: "low",
-	MEDIUM: "medium",
-	HIGH: "high",
-	CRITICAL: "critical",
-};
-
-const RECOMMENDATION_VARIANT: Record<string, "critical" | "high" | "medium" | "low" | "info"> = {
-	SIGN: "low",
-	VERIFY: "medium",
-	DO_NOT_SIGN: "critical",
-};
-
-const RECOMMENDATION_LABEL: Record<string, string> = {
-	SIGN: "Safe to Sign",
-	VERIFY: "Verify Before Signing",
-	DO_NOT_SIGN: "Do Not Sign",
-};
 
 function InfoRow({
 	label,

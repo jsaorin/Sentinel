@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card } from "@sentinel/ui";
 import { ProposalRow } from "./ProposalRow";
 import type { RiskLevel } from "@/lib/risk";
+import { PROPOSAL_STATUSES, PAGE_SIZE } from "@/lib/constants";
 
 type Proposal = {
 	id: string;
@@ -18,11 +19,9 @@ type ProposalHistoryProps = {
 	pageSize?: number;
 };
 
-const STATUSES = ["All", "Pending", "Executed", "Rejected"] as const;
-
 export function ProposalHistory({
 	proposals,
-	pageSize = 10,
+	pageSize = PAGE_SIZE,
 }: ProposalHistoryProps) {
 	const [filter, setFilter] = useState<string>("All");
 	const [page, setPage] = useState(0);
@@ -42,7 +41,7 @@ export function ProposalHistory({
 			<div className="pb-4 border-b border-border-subtle">
 				<h3 className="text-lg font-semibold">Proposals</h3>
 				<div className="flex flex-wrap items-center gap-2 mt-3">
-					{STATUSES.map((status) => (
+					{PROPOSAL_STATUSES.map((status) => (
 						<button
 							key={status}
 							type="button"

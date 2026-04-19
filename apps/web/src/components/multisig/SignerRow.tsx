@@ -1,3 +1,5 @@
+import { SOLSCAN_BASE } from "@/lib/constants";
+
 type SignerRowProps = {
 	address: string;
 	permissions: { initiate: boolean; vote: boolean; execute: boolean };
@@ -24,7 +26,7 @@ export function SignerRow({
 			].join(" ")}
 		>
 			<a
-				href={`https://solscan.io/account/${address}`}
+				href={`${SOLSCAN_BASE}/${address}`}
 				target="_blank"
 				rel="noopener noreferrer"
 				className="font-mono text-md text-text-link hover:text-primary transition-colors truncate min-w-0"

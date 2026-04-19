@@ -15,6 +15,12 @@ import {
 } from "@/components/multisig";
 import { getMultisig, getSigners, getProposals } from "@/lib/api";
 import { getRiskLevel } from "@/lib/risk";
+import {
+	STATUS_DISPLAY,
+	WARNING_SEVERITY,
+	SOLANA_ADDRESS_RE,
+	SOLSCAN_BASE,
+} from "@/lib/constants";
 
 export async function generateMetadata({
 	params,
@@ -27,23 +33,6 @@ export async function generateMetadata({
 		description: `Security report for Solana multisig ${address}. Risk score, signer analysis, and proposal history.`,
 	};
 }
-
-const STATUS_MAP: Record<string, "Pending" | "Executed" | "Rejected"> = {
-	DRAFT: "Pending",
-	ACTIVE: "Pending",
-	APPROVED: "Pending",
-	REJECTED: "Rejected",
-	EXECUTED: "Executed",
-	CANCELLED: "Rejected",
-};
-
-const WARNING_SEVERITY: Record<string, "critical" | "high" | "medium" | "low"> = {
-	CRITICAL_THRESHOLD_ONE: "critical",
-	LOW_THRESHOLD: "high",
-	EXTERNAL_CONFIG_AUTHORITY: "high",
-	CONCENTRATED_SIGNER: "medium",
-	LOW_SIGNER_COUNT: "medium",
-};
 
 export default async function MultisigPage({
 	params,
@@ -92,7 +81,7 @@ export default async function MultisigPage({
 					? `${p.instructions.length} instruction${p.instructions.length > 1 ? "s" : ""}`
 					: "Empty proposal"
 			),
-			status: STATUS_MAP[p.status] ?? ("Pending" as const),
+			status: STATUS_DISPLAY[p.status] ?? ("Pending" as const),
 			riskLevel: p.riskScore != null ? getRiskLevel(p.riskScore) : null,
 		}));
 
@@ -203,8 +192,6 @@ function timeAgo(date: Date): string {
 	return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
 }
 
-const SOLANA_ADDRESS_RE = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g;
-
 function linkifyAddresses(text: string): ReactNode {
 	const segments = text.split(SOLANA_ADDRESS_RE);
 	const addresses = text.match(SOLANA_ADDRESS_RE);
@@ -219,7 +206,7 @@ function linkifyAddresses(text: string): ReactNode {
 			parts.push(
 				<a
 					key={i}
-					href={`https://solscan.io/account/${addr}`}
+					href={`${SOLSCAN_BASE}/${addr}`}
 					target="_blank"
 					rel="noopener noreferrer"
 					className="font-mono text-text-link hover:text-primary transition-colors"

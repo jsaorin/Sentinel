@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Badge, RiskBadge } from "@sentinel/ui";
 import type { RiskLevel } from "@/lib/risk";
+import { STATUS_DISPLAY_VARIANT } from "@/lib/constants";
 
 type ProposalRowProps = {
 	id: string;
@@ -9,12 +10,6 @@ type ProposalRowProps = {
 	status: "Pending" | "Executed" | "Rejected";
 	riskLevel: RiskLevel | null;
 	isLast?: boolean;
-};
-
-const statusVariant: Record<string, "medium" | "safe" | "critical"> = {
-	Pending: "medium",
-	Executed: "safe",
-	Rejected: "critical",
 };
 
 export function ProposalRow({
@@ -42,7 +37,7 @@ export function ProposalRow({
 				</span>
 			</div>
 			<div className="flex items-center gap-4 shrink-0">
-				<Badge variant={statusVariant[status]} className="w-24 justify-start">
+				<Badge variant={STATUS_DISPLAY_VARIANT[status]} className="w-24 justify-start">
 					{status}
 				</Badge>
 				<RiskBadge level={riskLevel ?? "unknown"} size="sm" className="w-20 justify-start" />

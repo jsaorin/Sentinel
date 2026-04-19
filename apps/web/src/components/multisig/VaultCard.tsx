@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@sentinel/ui";
-
-const SOL_LOGO = "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png";
+import { SOL_LOGO, SOLSCAN_BASE } from "@/lib/constants";
 
 type TokenBalance = {
 	mint: string;
@@ -86,7 +85,7 @@ export function VaultCard({ vaultIndex, pda }: VaultCardProps) {
 					Vault {vaultIndex}
 				</h3>
 				<a
-					href={`https://solscan.io/account/${pda}`}
+					href={`${SOLSCAN_BASE}/${pda}`}
 					target="_blank"
 					rel="noopener noreferrer"
 					className="font-mono text-sm text-text-link hover:text-primary transition-colors"

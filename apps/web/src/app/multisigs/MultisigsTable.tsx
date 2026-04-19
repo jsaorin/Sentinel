@@ -6,16 +6,7 @@ import { Card, RiskBadge } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
 import { getLevel } from "@/lib/risk";
 import type { MultisigListItemResponse } from "@/lib/api";
-
-const RISK_FILTERS = [
-	"All",
-	"Critical",
-	"High",
-	"Medium",
-	"Low",
-	"Safe",
-] as const;
-const PAGE_SIZE = 10;
+import { RISK_FILTERS, PAGE_SIZE } from "@/lib/constants";
 
 type MultisigsTableProps = {
 	multisigs: MultisigListItemResponse[];
