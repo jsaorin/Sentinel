@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
 	HeroSection,
 	StatsSection,
@@ -15,7 +16,18 @@ export default function HomePage() {
 			</TimelineSection>
 
 			<TimelineSection>
-				<StatsSection />
+				<Suspense
+					fallback={
+						<section className="max-w-6xl mx-auto px-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<div className="h-96 bg-bg-card rounded-md animate-pulse" />
+								<div className="h-96 bg-bg-card rounded-md animate-pulse" />
+							</div>
+						</section>
+					}
+				>
+					<StatsSection />
+				</Suspense>
 			</TimelineSection>
 
 			<SectionDivider />
