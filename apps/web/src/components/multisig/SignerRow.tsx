@@ -1,5 +1,3 @@
-import { Badge } from "@sentinel/ui";
-
 type SignerRowProps = {
 	address: string;
 	permissions: { initiate: boolean; vote: boolean; execute: boolean };
@@ -29,18 +27,21 @@ export function SignerRow({
 				href={`https://solscan.io/account/${address}`}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="font-mono text-md text-text-link underline underline-offset-2 truncate min-w-0"
+				className="font-mono text-md text-text-link hover:text-primary transition-colors truncate min-w-0"
 			>
 				{truncated}
 			</a>
 			<div className="flex items-center gap-2 shrink-0">
 				{pills.map((p) => (
-					<Badge key={p} className="text-xs font-semibold tracking-wider uppercase text-text-secondary">
+					<span
+						key={p}
+						className="px-2.5 py-1 text-xs font-semibold tracking-wider uppercase text-text-secondary bg-bg-raised border border-border-default rounded-md"
+					>
 						{p}
-					</Badge>
+					</span>
 				))}
 				{pills.length === 0 && (
-					<span className="text-xs text-text-tertiary uppercase tracking-wider">None</span>
+					<span className="px-2.5 py-1 text-xs font-semibold tracking-wider uppercase text-text-tertiary bg-bg-raised border border-border-subtle rounded-md">None</span>
 				)}
 			</div>
 		</div>

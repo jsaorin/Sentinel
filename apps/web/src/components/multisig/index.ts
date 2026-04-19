@@ -9,5 +9,6 @@ export { ProposalRow } from "./ProposalRow";
 export { BalanceCard } from "./BalanceCard";
 export { MultisigNotFound } from "./MultisigNotFound";
 export { MultisigTabs } from "./MultisigTabs";
+export { ScoreBreakdown } from "./ScoreBreakdown";
 export { VaultsTab } from "./VaultsTab";
 export { VaultCard } from "./VaultCard";

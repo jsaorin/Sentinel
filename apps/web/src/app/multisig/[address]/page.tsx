@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Card, AlertBanner, ProgressBar } from "@sentinel/ui";
+import { Card, AlertBanner } from "@sentinel/ui";
 import {
 	MultisigHeader,
 	InfoCard,
@@ -11,6 +11,7 @@ import {
 	MultisigNotFound,
 	MultisigTabs,
 	VaultsTab,
+	ScoreBreakdown,
 } from "@/components/multisig";
 import { getMultisig, getSigners, getProposals } from "@/lib/api";
 import { getRiskLevel } from "@/lib/risk";
@@ -103,36 +104,29 @@ export default async function MultisigPage({
 			<div className="space-y-6">
 				{/* Warnings */}
 				{warnings.length > 0 && (
-					<div className="space-y-3">
-						{warnings.map((w, i) => (
-							<AlertBanner
-								key={`${w.code}-${i}`}
-								level={WARNING_SEVERITY[w.code] ?? "medium"}
-								title={w.code.replace(/_/g, " ")}
-								description={linkifyAddresses(w.message)}
-							/>
-						))}
-					</div>
+					<Card variant="default" padding="lg">
+						<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">
+							Warnings ({warnings.length})
+						</h3>
+						<div className="mt-3 space-y-3">
+							{warnings.map((w, i) => (
+								<AlertBanner
+									key={`${w.code}-${i}`}
+									level={WARNING_SEVERITY[w.code] ?? "medium"}
+									title={w.code.replace(/_/g, " ")}
+									description={linkifyAddresses(w.message)}
+								/>
+							))}
+						</div>
+					</Card>
 				)}
 
 				{/* Score Breakdown */}
 				{breakdown && (
-					<Card variant="default" padding="lg">
-						<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">
-							Score Breakdown
-						</h3>
-						<div className="mt-4 space-y-4">
-							<ProgressBar value={breakdown.threshold} label="Threshold" showValue size="sm" />
-							<ProgressBar value={breakdown.configAuthority} label="Config Authority" showValue size="sm" />
-							<ProgressBar value={breakdown.signerConcentration} label="Signer Concentration" showValue size="sm" />
-							<ProgressBar value={breakdown.signerCount} label="Signer Count" showValue size="sm" />
-						</div>
-						{multisig.healthScore?.calculatedAt && (
-							<p className="text-xs text-text-tertiary mt-4">
-								Last scored: {timeAgo(new Date(multisig.healthScore.calculatedAt))}
-							</p>
-						)}
-					</Card>
+					<ScoreBreakdown
+						breakdown={breakdown}
+						calculatedAt={multisig.healthScore?.calculatedAt}
+					/>
 				)}
 
 				<ReportCard title="AI Security Summary" content={aiSummary} />
@@ -149,14 +143,15 @@ export default async function MultisigPage({
 
 		const tabs = [
 			{ id: "overview", label: "Overview", content: overviewContent },
-			{ id: "signers", label: `Signers (${signers.length})`, content: signersContent },
-			{ id: "proposals", label: `Proposals (${proposals.length})`, content: proposalsContent },
+			{ id: "signers", label: `Signers (${signers.length})`, shortLabel: "Signers", content: signersContent },
+			{ id: "proposals", label: `Proposals (${proposals.length})`, shortLabel: "Proposals", content: proposalsContent },
 		];
 
 		if (multisig.vaults.length > 0) {
 			tabs.push({
 				id: "vaults",
 				label: `Vaults (${multisig.vaults.length})`,
+				shortLabel: "Vaults",
 				content: <VaultsTab vaults={multisig.vaults} />,
 			});
 		}
@@ -227,7 +222,7 @@ function linkifyAddresses(text: string): ReactNode {
 					href={`https://solscan.io/account/${addr}`}
 					target="_blank"
 					rel="noopener noreferrer"
-					className="font-mono text-text-link underline underline-offset-2"
+					className="font-mono text-text-link hover:text-primary transition-colors"
 				>
 					{addr.slice(0, 4)}...{addr.slice(-4)}
 				</a>,

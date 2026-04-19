@@ -85,9 +85,14 @@ export function VaultCard({ vaultIndex, pda }: VaultCardProps) {
 				<h3 className="text-lg font-semibold">
 					Vault {vaultIndex}
 				</h3>
-				<span className="font-mono text-sm text-text-tertiary">
+				<a
+					href={`https://solscan.io/account/${pda}`}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="font-mono text-sm text-text-link hover:text-primary transition-colors"
+				>
 					{truncatedPda}
-				</span>
+				</a>
 			</div>
 
 			{/* Loading state */}
