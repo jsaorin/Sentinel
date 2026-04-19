@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getMultisigList } from "@/lib/api";
 import { MultisigsTable } from "./MultisigsTable";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
 	title: "Multisigs",
 	description:
