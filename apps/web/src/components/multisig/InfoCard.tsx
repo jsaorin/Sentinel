@@ -21,11 +21,11 @@ function InfoRow({
 	mono?: boolean;
 }) {
 	return (
-		<div className="flex items-center justify-between py-3 border-b border-border-subtle last:border-b-0">
-			<span className="text-text-tertiary text-sm uppercase tracking-wider font-semibold">
+		<div className="flex items-center justify-between py-2.5 border-b border-border-subtle last:border-b-0">
+			<span className="text-text-tertiary text-xs uppercase tracking-wider font-semibold">
 				{label}
 			</span>
-			<span className={`text-text-primary text-md ${mono ? "font-mono" : ""}`}>
+			<span className={`text-text-primary text-sm ${mono ? "font-mono" : ""}`}>
 				{value}
 			</span>
 		</div>
@@ -41,12 +41,12 @@ export function InfoCard({
 	score,
 	configAuthority,
 }: InfoCardProps) {
-	const truncated = `${address.slice(0, 8)}...${address.slice(-6)}`;
+	const truncated = `${address.slice(0, 4)}...${address.slice(-4)}`;
 
 	return (
 		<Card variant="default" padding="lg">
-			<div className="flex items-center justify-between pb-4 border-b border-border-subtle">
-				<h3 className="text-lg font-semibold">Multisig Info</h3>
+			<div className="flex items-center justify-between pb-3 border-b border-border-subtle">
+				<h3 className="text-md sm:text-lg font-semibold">Multisig Info</h3>
 				{score != null && (
 					<span
 						className="flex items-center gap-1"
