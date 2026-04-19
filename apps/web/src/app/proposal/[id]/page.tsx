@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { Card, RiskBadge, Badge } from "@sentinel/ui";
+import Link from "next/link";
+import { Card, RiskBadge, Badge, AlertBanner } from "@sentinel/ui";
 import { MultisigHeader, ReportCard } from "@/components/multisig";
 import { ScoreCard } from "@/components/multisig/ScoreCard";
-import { MOCK_PROPOSAL_DETAILS } from "@/lib/mock-data";
+import { getProposalDetail } from "@/lib/api";
+import { getRiskLevel } from "@/lib/risk";
+import type { RiskLevel } from "@/lib/risk";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
 	params,
@@ -11,16 +15,47 @@ export async function generateMetadata({
 }): Promise<Metadata> {
 	const { id } = await params;
 	return {
-		title: `Proposal #${id}`,
-		description: `Security analysis for Proposal #${id}. AI risk score, signer verification, and transaction action review.`,
+		title: `Proposal ${id.slice(0, 8)}...`,
+		description: "Security analysis for proposal. AI risk score, signer verification, and transaction action review.",
 	};
 }
 
-function getStatusVariant(status: string) {
-	if (status === "Executed") return "safe" as const;
-	if (status === "Rejected") return "critical" as const;
-	return "medium" as const;
-}
+const STATUS_VARIANT: Record<string, "medium" | "safe" | "critical"> = {
+	DRAFT: "medium",
+	ACTIVE: "medium",
+	APPROVED: "medium",
+	REJECTED: "critical",
+	EXECUTED: "safe",
+	CANCELLED: "critical",
+};
+
+const STATUS_LABEL: Record<string, string> = {
+	DRAFT: "Draft",
+	ACTIVE: "Active",
+	APPROVED: "Approved",
+	REJECTED: "Rejected",
+	EXECUTED: "Executed",
+	CANCELLED: "Cancelled",
+};
+
+const FLAG_SEVERITY_LEVEL: Record<string, RiskLevel> = {
+	LOW: "low",
+	MEDIUM: "medium",
+	HIGH: "high",
+	CRITICAL: "critical",
+};
+
+const RECOMMENDATION_VARIANT: Record<string, "critical" | "high" | "medium" | "low" | "info"> = {
+	SIGN: "low",
+	VERIFY: "medium",
+	DO_NOT_SIGN: "critical",
+};
+
+const RECOMMENDATION_LABEL: Record<string, string> = {
+	SIGN: "Safe to Sign",
+	VERIFY: "Verify Before Signing",
+	DO_NOT_SIGN: "Do Not Sign",
+};
 
 function InfoRow({
 	label,
@@ -45,13 +80,36 @@ function InfoRow({
 	);
 }
 
+function permissionsLabel(p: {
+	initiate: boolean;
+	vote: boolean;
+	execute: boolean;
+}): string {
+	const parts: string[] = [];
+	if (p.initiate) parts.push("Initiate");
+	if (p.vote) parts.push("Vote");
+	if (p.execute) parts.push("Execute");
+	return parts.join(", ") || "None";
+}
+
 export default async function ProposalPage({
 	params,
 }: {
 	params: Promise<{ id: string }>;
 }) {
 	const { id } = await params;
-	const proposal = MOCK_PROPOSAL_DETAILS[id] ?? MOCK_PROPOSAL_DETAILS["1247"];
+
+	let proposal: Awaited<ReturnType<typeof getProposalDetail>>;
+	try {
+		proposal = await getProposalDetail(id);
+	} catch {
+		notFound();
+	}
+
+	const riskScore = proposal.scoring?.riskScore ?? null;
+	const riskLevel = riskScore != null ? getRiskLevel(riskScore) : "unknown";
+	const flags = proposal.scoring?.flags ?? [];
+	const summary = proposal.scoring?.summary ?? null;
 
 	return (
 		<main className="min-h-screen pb-16">
@@ -64,34 +122,109 @@ export default async function ProposalPage({
 						<Card variant="default" padding="lg">
 							<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border-subtle">
 								<h3 className="text-lg font-semibold">
-									<span className="font-mono">{proposal.id}</span> Proposal
+									<span className="font-mono">#{proposal.proposalIndex}</span>{" "}
+									Proposal
 								</h3>
 								<div className="flex items-center gap-3">
-									<Badge variant={getStatusVariant(proposal.status)}>
-										{proposal.status}
+									<Badge
+										variant={
+											STATUS_VARIANT[proposal.status] ?? "medium"
+										}
+									>
+										{STATUS_LABEL[proposal.status] ?? proposal.status}
 									</Badge>
-									<RiskBadge level={proposal.riskLevel} size="sm" />
+									<RiskBadge level={riskLevel} size="sm" />
 								</div>
 							</div>
 							<div className="mt-1">
-								<InfoRow label="Description" value={proposal.description} />
-								<InfoRow label="Multisig" value={proposal.multisig} />
+								{summary && (
+									<InfoRow label="Summary" value={summary} />
+								)}
+								<InfoRow
+									label="Multisig"
+									value={proposal.multisig.label ?? proposal.multisig.address}
+								/>
 								<InfoRow
 									label="Address"
-									value={`${proposal.multisigAddress.slice(0, 8)}...${proposal.multisigAddress.slice(-4)}`}
+									value={`${proposal.multisig.address.slice(0, 8)}...${proposal.multisig.address.slice(-4)}`}
 									mono
 								/>
-								<InfoRow label="Created" value={proposal.created} />
+								<InfoRow
+									label="Threshold"
+									value={`${proposal.multisig.threshold ?? "?"} of ${proposal.multisig.totalSigners}`}
+								/>
+								{proposal.creator && (
+									<InfoRow
+										label="Creator"
+										value={`${proposal.creator.slice(0, 8)}...${proposal.creator.slice(-4)}`}
+										mono
+									/>
+								)}
+								<InfoRow
+									label="Created"
+									value={new Date(proposal.createdAt).toLocaleString()}
+								/>
 								<InfoRow
 									label="Executed"
-									value={proposal.executed ?? "Pending"}
+									value={
+										proposal.executedAt
+											? new Date(proposal.executedAt).toLocaleString()
+											: "Pending"
+									}
 								/>
 							</div>
 						</Card>
 					</div>
 
-					<ScoreCard score={proposal.score} />
+					<ScoreCard score={riskScore ?? 0} />
 				</div>
+
+				{/* AI Recommendation */}
+				{proposal.ai && (
+					<AlertBanner
+						level={RECOMMENDATION_VARIANT[proposal.ai.recommendation] ?? "medium"}
+						title={RECOMMENDATION_LABEL[proposal.ai.recommendation] ?? proposal.ai.recommendation}
+						description={proposal.ai.analysis}
+					/>
+				)}
+
+				{/* Risk Flags */}
+				{flags.length > 0 && (
+					<Card variant="default" padding="lg">
+						<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">
+							Risk Flags ({flags.length})
+						</h3>
+						<div className="mt-1">
+							{flags.map((flag, i) => (
+								<div
+									key={flag.type}
+									className={[
+										"flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-4 px-2",
+										i < flags.length - 1
+											? "border-b border-border-subtle"
+											: "",
+									].join(" ")}
+								>
+									<div className="flex items-center gap-3 min-w-0">
+										<Badge
+											variant={
+												FLAG_SEVERITY_LEVEL[flag.severity] ?? "medium"
+											}
+										>
+											{flag.severity}
+										</Badge>
+										<span className="text-md text-text-primary">
+											{flag.detail}
+										</span>
+									</div>
+									<span className="font-mono text-sm text-text-tertiary shrink-0">
+										+{flag.points} pts
+									</span>
+								</div>
+							))}
+						</div>
+					</Card>
+				)}
 
 				{/* Signers */}
 				<Card variant="default" padding="lg">
@@ -111,47 +244,101 @@ export default async function ProposalPage({
 							>
 								<div className="flex items-center gap-4 min-w-0">
 									<span className="font-mono text-md text-text-primary">
-										{signer.address}
+										{signer.address.slice(0, 6)}..{signer.address.slice(-4)}
 									</span>
 									<span className="text-md text-text-secondary hidden sm:block">
-										{signer.label}
+										{permissionsLabel(signer.permissions)}
 									</span>
 								</div>
-								<Badge
-									className={`w-24 justify-start text-xs font-semibold tracking-wider uppercase ${signer.signed ? "text-text-primary" : "text-text-secondary"}`}
-								>
-									{signer.signed ? "Signed" : "Pending"}
-								</Badge>
-							</div>
-						))}
-					</div>
-				</Card>
-
-				{/* Transaction Actions */}
-				<Card variant="default" padding="lg">
-					<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">
-						Transaction Actions
-					</h3>
-					<div className="mt-1">
-						{proposal.actions.map((action, i) => (
-							<div
-								key={action}
-								className={[
-									"py-3 px-2",
-									i < proposal.actions.length - 1
-										? "border-b border-border-subtle"
-										: "",
-								].join(" ")}
-							>
-								<span className="font-mono text-sm text-text-secondary">
-									{action}
+								<span className="font-mono text-sm text-text-tertiary shrink-0">
+									{signer.totalProposalsInMultisig} proposal{signer.totalProposalsInMultisig !== 1 ? "s" : ""}
 								</span>
 							</div>
 						))}
 					</div>
 				</Card>
 
-				<ReportCard />
+				{/* Decoded Instructions */}
+				<Card variant="default" padding="lg">
+					<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">
+						Instructions ({proposal.instructions.length})
+					</h3>
+					<div className="mt-1 space-y-4">
+						{proposal.instructions.map((ix) => (
+							<div
+								key={ix.instructionIndex}
+								className="border border-border-subtle rounded-md p-4"
+							>
+								<div className="flex items-center justify-between mb-3">
+									<div className="flex items-center gap-2">
+										<span className="font-mono text-sm text-text-tertiary">
+											#{ix.instructionIndex}
+										</span>
+										<span className="text-md font-semibold text-text-primary">
+											{ix.programName}
+										</span>
+										<span className="text-md text-text-secondary">
+											:: {ix.action}
+										</span>
+									</div>
+									{!ix.isKnown && (
+										<Badge variant="unknown">Unknown</Badge>
+									)}
+								</div>
+
+								{/* Params */}
+								{Object.keys(ix.params).length > 0 && (
+									<div className="mb-3">
+										<span className="text-xs uppercase tracking-wider font-semibold text-text-tertiary">
+											Parameters
+										</span>
+										<div className="mt-1 space-y-1">
+											{Object.entries(ix.params).map(([key, val]) => (
+												<div key={key} className="flex items-center gap-2">
+													<span className="text-sm text-text-secondary">
+														{key}:
+													</span>
+													<span className="font-mono text-sm text-text-primary">
+														{val}
+													</span>
+												</div>
+											))}
+										</div>
+									</div>
+								)}
+
+								{/* Accounts */}
+								{ix.accounts.length > 0 && (
+									<div>
+										<span className="text-xs uppercase tracking-wider font-semibold text-text-tertiary">
+											Accounts
+										</span>
+										<div className="mt-1 space-y-1">
+											{ix.accounts.map((acc) => (
+												<div
+													key={`${acc.label}-${acc.address}`}
+													className="flex items-center gap-2"
+												>
+													<span className="text-sm text-text-secondary">
+														{acc.label}:
+													</span>
+													<span className="font-mono text-sm text-text-primary">
+														{acc.address.slice(0, 8)}...{acc.address.slice(-4)}
+													</span>
+												</div>
+											))}
+										</div>
+									</div>
+								)}
+							</div>
+						))}
+					</div>
+				</Card>
+
+				<ReportCard
+					title="AI Analysis"
+					content={proposal.ai?.analysis ?? null}
+				/>
 			</div>
 		</main>
 	);
