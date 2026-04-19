@@ -11,7 +11,12 @@ export const metadata: Metadata = {
 };
 
 export default async function MultisigsPage() {
-	const multisigs = await getMultisigList();
+	let multisigs: Awaited<ReturnType<typeof getMultisigList>> = [];
+	try {
+		multisigs = await getMultisigList();
+	} catch {
+		/* API unavailable — render empty table */
+	}
 
 	return (
 		<main className="min-h-screen">
