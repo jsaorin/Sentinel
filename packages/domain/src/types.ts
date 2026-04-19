@@ -10,6 +10,7 @@ const DOMAIN_REPOSITORY_TYPES = {
 	DecodedInstructionRepository: Symbol.for("DecodedInstructionRepository"),
 	MultisigScoreRepository: Symbol.for("MultisigScoreRepository"),
 	ProposalScoreRepository: Symbol.for("ProposalScoreRepository"),
+	ProgramRepository: Symbol.for("ProgramRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {
@@ -21,6 +22,7 @@ export const DOMAIN_SERVICE_TYPES = {
 	InstructionDecoderService: Symbol.for("InstructionDecoderService"),
 	ScoringService: Symbol.for("ScoringService"),
 	AIAnalysisService: Symbol.for("AIAnalysisService"),
+	IdlResolverService: Symbol.for("IdlResolverService"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {

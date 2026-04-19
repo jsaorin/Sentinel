@@ -11,5 +11,7 @@ export interface DecodedInstructionData {
 }
 
 export interface IInstructionDecoderService {
-	decode(instructions: ProposalInstruction[]): DecodedInstructionData[];
+	decode(
+		instructions: ProposalInstruction[],
+	): Promise<DecodedInstructionData[]>;
 }

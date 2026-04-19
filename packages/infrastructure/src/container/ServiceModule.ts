@@ -5,6 +5,7 @@ import { SquadsHistoryService } from "../services/SquadsHistoryService.js";
 import { SquadsService } from "../services/SquadsService.js";
 import { GroqAIAnalysisService } from "../services/ai/GroqAIAnalysisService.js";
 import { InstructionDecoderService } from "../services/decoder/InstructionDecoderService.js";
+import { OnChainIdlResolverService } from "../services/idl/OnChainIdlResolverService.js";
 import { ScoringService } from "../services/scoring/ScoringService.js";
 
 export const serviceModule = new ContainerModule(
@@ -37,6 +38,11 @@ export const serviceModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.AIAnalysisService)
 			.to(GroqAIAnalysisService)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.IdlResolverService)
+			.to(OnChainIdlResolverService)
 			.inSingletonScope();
 	},
 );

@@ -9,3 +9,4 @@ export * from "./IVaultRepository.js";
 export * from "./IDecodedInstructionRepository.js";
 export * from "./IMultisigScoreRepository.js";
 export * from "./IProposalScoreRepository.js";
+export * from "./IProgramRepository.js";

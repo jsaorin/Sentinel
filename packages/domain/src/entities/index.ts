@@ -8,3 +8,4 @@ export * from "./Vault.js";
 export * from "./DecodedInstruction.js";
 export * from "./MultisigScore.js";
 export * from "./ProposalScore.js";
+export * from "./Program.js";

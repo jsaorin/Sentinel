@@ -1,0 +1,15 @@
+model Program {
+  id           String    @id @default(uuid())
+  programId    String    @unique @map("program_id")
+  name         String?
+  idlJson      Json?     @map("idl_json")
+  idlVersion   String?   @map("idl_version")
+  idlSource    String    @map("idl_source")
+  idlChecksum  String?   @map("idl_checksum")
+  idlFetchedAt DateTime? @map("idl_fetched_at")
+  firstSeenAt  DateTime  @default(now()) @map("first_seen_at")
+  lastSeenAt   DateTime  @updatedAt      @map("last_seen_at")
+
+  @@index([programId])
+  @@map("program")
+}

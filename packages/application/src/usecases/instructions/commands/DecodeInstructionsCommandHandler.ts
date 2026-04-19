@@ -39,7 +39,8 @@ export class DecodeInstructionsCommandHandler extends BaseUseCase<
 		});
 
 		// 1. Decode all instructions
-		const decodedData = this.instructionDecoderService.decode(instructions);
+		const decodedData =
+			await this.instructionDecoderService.decode(instructions);
 
 		// 2. Upsert — creates new or replaces existing decoded data
 		await this.decodedInstructionRepository.upsertMany(decodedData);

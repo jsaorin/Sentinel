@@ -30,11 +30,13 @@
 		"seed": "tsx src/prisma/seed/index.ts"
 	},
 	"dependencies": {
+		"@coral-xyz/anchor": "0.29.0",
 		"@prisma/adapter-pg": "^7.7.0",
 		"@prisma/client": "^7.4.2",
 		"@sentinel/application": "workspace:*",
 		"@sentinel/common": "workspace:*",
 		"@sentinel/domain": "workspace:*",
+		"@solana/web3.js": "^1.98.4",
 		"@sqds/multisig": "^2.1.4",
 		"amqplib": "^0.10.3",
 		"dotenv": "^16.4.7",
