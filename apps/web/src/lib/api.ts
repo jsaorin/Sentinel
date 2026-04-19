@@ -6,25 +6,87 @@ type ApiResponse<T> = {
 	data: T;
 };
 
+/* ── Shared sub-types ────────────────────────────────────── */
+
+export type PermissionsResponse = {
+	mask: number;
+	initiate: boolean;
+	vote: boolean;
+	execute: boolean;
+};
+
+export type MultisigWarningResponse = {
+	code: string;
+	message: string;
+};
+
+export type MultisigScoreResponse = {
+	overall: number;
+	breakdown: {
+		threshold: number;
+		configAuthority: number;
+		signerConcentration: number;
+		signerCount: number;
+	};
+	warnings: MultisigWarningResponse[];
+	aiSummary: string | null;
+	calculatedAt: string;
+};
+
+export type ProposalFlagResponse = {
+	type: string;
+	severity: string;
+	points: number;
+	detail: string;
+};
+
+export type DecodedInstructionResponse = {
+	instructionIndex: number;
+	programId: string;
+	programName: string;
+	action: string;
+	params: Record<string, string>;
+	accounts: Array<{ address: string; label: string }>;
+	rawData: string;
+	isKnown: boolean;
+};
+
+export type ProposalSignerResponse = {
+	address: string;
+	permissions: PermissionsResponse;
+	totalProposalsInMultisig: number;
+};
+
+/* ── Endpoint response types ─────────────────────────────── */
+
 export type MultisigResponse = {
 	id: string;
 	address: string;
 	label: string | null;
 	threshold: number | null;
 	configAuthority: string | null;
+	totalSigners: number;
 	vaults: Array<{ vaultIndex: number; pda: string }>;
+	healthScore: MultisigScoreResponse | null;
+	createdAt: string;
+};
+
+export type MultisigListItemResponse = {
+	id: string;
+	address: string;
+	label: string | null;
+	threshold: number | null;
+	totalSigners: number;
+	healthScore: number | null;
+	activeProposals: number;
+	lastActivity: string | null;
 	createdAt: string;
 };
 
 export type SignerResponse = {
 	id: string;
 	address: string;
-	permissions: {
-		mask: number;
-		initiate: boolean;
-		vote: boolean;
-		execute: boolean;
-	};
+	permissions: PermissionsResponse;
 };
 
 export type ProposalResponse = {
@@ -37,6 +99,8 @@ export type ProposalResponse = {
 	creator: string | null;
 	createdAt: string;
 	executedAt: string | null;
+	riskScore: number | null;
+	summary: string | null;
 	instructions: Array<{
 		instructionIndex: number;
 		programId: string;
@@ -44,6 +108,36 @@ export type ProposalResponse = {
 		accounts: string[];
 	}>;
 };
+
+export type ProposalDetailResponse = {
+	id: string;
+	proposalIndex: number;
+	transactionIndex: number;
+	status: string;
+	creator: string | null;
+	createdAt: string;
+	executedAt: string | null;
+	multisig: {
+		address: string;
+		label: string | null;
+		threshold: number | null;
+		totalSigners: number;
+	};
+	scoring: {
+		riskScore: number;
+		flags: ProposalFlagResponse[];
+		summary: string;
+		calculatedAt: string;
+	} | null;
+	ai: {
+		analysis: string;
+		recommendation: string;
+	} | null;
+	signers: ProposalSignerResponse[];
+	instructions: DecodedInstructionResponse[];
+};
+
+/* ── Fetch helper ────────────────────────────────────────── */
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 	const res = await fetch(`${API_BASE}${path}`, {
@@ -61,6 +155,12 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 	return json.data;
 }
 
+/* ── API functions ───────────────────────────────────────── */
+
+export async function getMultisigList(): Promise<MultisigListItemResponse[]> {
+	return apiFetch<MultisigListItemResponse[]>("/multisigs");
+}
+
 export async function getMultisig(address: string): Promise<MultisigResponse> {
 	return apiFetch<MultisigResponse>(`/multisigs/${address}`);
 }
@@ -73,6 +173,12 @@ export async function getProposals(
 	address: string,
 ): Promise<ProposalResponse[]> {
 	return apiFetch<ProposalResponse[]>(`/multisigs/${address}/proposals`);
+}
+
+export async function getProposalDetail(
+	id: string,
+): Promise<ProposalDetailResponse> {
+	return apiFetch<ProposalDetailResponse>(`/proposals/${id}`);
 }
 
 export async function createMultisig(

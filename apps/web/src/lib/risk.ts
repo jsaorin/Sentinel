@@ -7,12 +7,22 @@ export type RiskLevel =
 	| "info"
 	| "unknown";
 
+/** Map a health score (0–100, higher = safer) to a risk level. */
 export function getLevel(score: number): RiskLevel {
 	if (score < 20) return "critical";
 	if (score < 40) return "high";
 	if (score < 60) return "medium";
 	if (score < 80) return "low";
 	return "safe";
+}
+
+/** Map a proposal risk score (0–100, higher = riskier) to a risk level. */
+export function getRiskLevel(score: number): RiskLevel {
+	if (score <= 20) return "safe";
+	if (score <= 40) return "low";
+	if (score <= 60) return "medium";
+	if (score <= 80) return "high";
+	return "critical";
 }
 
 export const LEVEL_LABELS: Record<RiskLevel, string> = {
