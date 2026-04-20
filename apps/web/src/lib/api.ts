@@ -169,10 +169,30 @@ export async function getSigners(address: string): Promise<SignerResponse[]> {
 	return apiFetch<SignerResponse[]>(`/multisigs/${address}/signers`);
 }
 
+export type PaginationResponse = {
+	page: number;
+	pageSize: number;
+	total: number;
+	totalPages: number;
+};
+
+export type PaginatedProposalsResponse = {
+	proposals: ProposalResponse[];
+	pagination: PaginationResponse;
+};
+
 export async function getProposals(
 	address: string,
-): Promise<ProposalResponse[]> {
-	return apiFetch<ProposalResponse[]>(`/multisigs/${address}/proposals`);
+	page?: number,
+	pageSize?: number,
+): Promise<PaginatedProposalsResponse> {
+	const params = new URLSearchParams();
+	if (page != null) params.set("page", String(page));
+	if (pageSize != null) params.set("pageSize", String(pageSize));
+	const qs = params.toString();
+	return apiFetch<PaginatedProposalsResponse>(
+		`/multisigs/${address}/proposals${qs ? `?${qs}` : ""}`,
+	);
 }
 
 export async function getProposalDetail(

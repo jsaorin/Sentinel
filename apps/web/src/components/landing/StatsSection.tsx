@@ -56,7 +56,7 @@ export async function StatsSection() {
   try {
     const results = await Promise.all(
       multisigsWithActivity.map(async (m) => {
-        const props = await getProposals(m.address);
+        const { proposals: props } = await getProposals(m.address, 1, 6);
         return props.map((p) => ({
           id: `#${p.proposalIndex}`,
           linkId: p.id,

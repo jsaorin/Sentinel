@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Card } from "@sentinel/ui";
 import { ProposalRow } from "./ProposalRow";
 import type { RiskLevel } from "@/lib/risk";
-import { PROPOSAL_STATUSES, PAGE_SIZE } from "@/lib/constants";
+import { getRiskLevel } from "@/lib/risk";
+import { PROPOSAL_STATUSES, PAGE_SIZE, STATUS_DISPLAY } from "@/lib/constants";
+import type { PaginatedProposalsResponse } from "@/lib/api";
 
 type Proposal = {
 	id: string;
@@ -15,26 +17,77 @@ type Proposal = {
 };
 
 type ProposalHistoryProps = {
-	proposals: Proposal[];
-	pageSize?: number;
+	address: string;
+	initialProposals: Proposal[];
+	totalProposals: number;
+	totalPages: number;
 };
 
-export function ProposalHistory({
-	proposals,
-	pageSize = PAGE_SIZE,
-}: ProposalHistoryProps) {
-	const [filter, setFilter] = useState<string>("All");
-	const [page, setPage] = useState(0);
+function mapProposals(
+	raw: PaginatedProposalsResponse["proposals"],
+): Proposal[] {
+	return raw.map((p) => ({
+		id: `#${p.proposalIndex}`,
+		linkId: p.id,
+		description:
+			p.summary ??
+			(p.instructions.length > 0
+				? `${p.instructions.length} instruction${p.instructions.length > 1 ? "s" : ""}`
+				: "Empty proposal"),
+		status: (STATUS_DISPLAY[p.status] ?? "Pending") as
+			| "Pending"
+			| "Executed"
+			| "Rejected",
+		riskLevel: p.riskScore != null ? getRiskLevel(p.riskScore) : null,
+	}));
+}
 
-	const filtered =
-		filter === "All" ? proposals : proposals.filter((p) => p.status === filter);
-	const totalPages = Math.ceil(filtered.length / pageSize);
-	const paginated = filtered.slice(page * pageSize, (page + 1) * pageSize);
+export function ProposalHistory({
+	address,
+	initialProposals,
+	totalProposals,
+	totalPages: initialTotalPages,
+}: ProposalHistoryProps) {
+	const [proposals, setProposals] = useState<Proposal[]>(initialProposals);
+	const [page, setPage] = useState(1);
+	const [total, setTotal] = useState(totalProposals);
+	const [totalPages, setTotalPages] = useState(initialTotalPages);
+	const [filter, setFilter] = useState<string>("All");
+	const [loading, setLoading] = useState(false);
+
+	const fetchPage = useCallback(
+		async (newPage: number) => {
+			setLoading(true);
+			try {
+				const API_BASE =
+					process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
+				const res = await fetch(
+					`${API_BASE}/multisigs/${address}/proposals?page=${newPage}&pageSize=${PAGE_SIZE}`,
+				);
+				if (!res.ok) throw new Error("Failed");
+				const json = await res.json();
+				const data: PaginatedProposalsResponse = json.data;
+				setProposals(mapProposals(data.proposals));
+				setTotal(data.pagination.total);
+				setTotalPages(data.pagination.totalPages);
+				setPage(newPage);
+			} catch {
+				/* keep current data on error */
+			} finally {
+				setLoading(false);
+			}
+		},
+		[address],
+	);
 
 	function handleFilterChange(status: string) {
 		setFilter(status);
-		setPage(0);
 	}
+
+	const filtered =
+		filter === "All"
+			? proposals
+			: proposals.filter((p) => p.status === filter);
 
 	return (
 		<Card variant="default" padding="lg">
@@ -58,13 +111,13 @@ export function ProposalHistory({
 					))}
 				</div>
 			</div>
-			<div className="mt-1">
-				{paginated.length === 0 ? (
+			<div className={`mt-1 ${loading ? "opacity-50 pointer-events-none" : ""}`}>
+				{filtered.length === 0 ? (
 					<p className="py-8 text-center text-text-tertiary text-sm">
 						No proposals found
 					</p>
 				) : (
-					paginated.map((p, i) => (
+					filtered.map((p, i) => (
 						<ProposalRow
 							key={p.linkId}
 							id={p.id}
@@ -72,7 +125,7 @@ export function ProposalHistory({
 							description={p.description}
 							status={p.status}
 							riskLevel={p.riskLevel}
-							isLast={i === paginated.length - 1}
+							isLast={i === filtered.length - 1}
 						/>
 					))
 				)}
@@ -80,26 +133,24 @@ export function ProposalHistory({
 			{totalPages > 1 && (
 				<div className="flex items-center justify-between pt-4 mt-2 border-t border-border-subtle">
 					<span className="text-xs text-text-tertiary">
-						{page * pageSize + 1}–
-						{Math.min((page + 1) * pageSize, filtered.length)} of{" "}
-						{filtered.length}
+						Page {page} of {totalPages} ({total} total)
 					</span>
 					<div className="flex items-center gap-2">
 						<button
 							type="button"
-							onClick={() => setPage((p) => Math.max(0, p - 1))}
-							disabled={page === 0}
+							onClick={() => fetchPage(page - 1)}
+							disabled={page <= 1 || loading}
 							className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-text-secondary disabled:text-text-disabled transition-colors"
 						>
 							Prev
 						</button>
 						<span className="text-xs text-text-secondary font-mono">
-							{page + 1}/{totalPages}
+							{page}/{totalPages}
 						</span>
 						<button
 							type="button"
-							onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-							disabled={page === totalPages - 1}
+							onClick={() => fetchPage(page + 1)}
+							disabled={page >= totalPages || loading}
 							className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-text-secondary disabled:text-text-disabled transition-colors"
 						>
 							Next

@@ -40,11 +40,13 @@ export default async function MultisigPage({
 	const { address } = await params;
 
 	try {
-		const [multisig, signers, proposals] = await Promise.all([
+		const [multisig, signers, proposalsResult] = await Promise.all([
 			getMultisig(address),
 			getSigners(address),
 			getProposals(address),
 		]);
+
+		const { proposals, pagination } = proposalsResult;
 
 		const latestProposal =
 			proposals.length > 0
@@ -127,13 +129,18 @@ export default async function MultisigPage({
 		);
 
 		const proposalsContent = (
-			<ProposalHistory proposals={proposalsData} />
+			<ProposalHistory
+				address={address}
+				initialProposals={proposalsData}
+				totalProposals={pagination.total}
+				totalPages={pagination.totalPages}
+			/>
 		);
 
 		const tabs = [
 			{ id: "overview", label: "Overview", content: overviewContent },
 			{ id: "signers", label: `Signers (${signers.length})`, shortLabel: "Signers", content: signersContent },
-			{ id: "proposals", label: `Proposals (${proposals.length})`, shortLabel: "Proposals", content: proposalsContent },
+			{ id: "proposals", label: `Proposals (${pagination.total})`, shortLabel: "Proposals", content: proposalsContent },
 		];
 
 		if (multisig.vaults.length > 0) {
