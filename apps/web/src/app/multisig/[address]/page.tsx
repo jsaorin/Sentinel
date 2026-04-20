@@ -93,6 +93,16 @@ export default async function MultisigPage({
 
 		const overviewContent = (
 			<div className="space-y-6">
+				{/* Score Breakdown */}
+				{breakdown && (
+					<ScoreBreakdown
+						breakdown={breakdown}
+						calculatedAt={multisig.healthScore?.calculatedAt}
+					/>
+				)}
+
+				<ReportCard title="AI Security Summary" content={aiSummary} />
+
 				{/* Warnings */}
 				{warnings.length > 0 && (
 					<Card variant="default" padding="lg">
@@ -111,16 +121,6 @@ export default async function MultisigPage({
 						</div>
 					</Card>
 				)}
-
-				{/* Score Breakdown */}
-				{breakdown && (
-					<ScoreBreakdown
-						breakdown={breakdown}
-						calculatedAt={multisig.healthScore?.calculatedAt}
-					/>
-				)}
-
-				<ReportCard title="AI Security Summary" content={aiSummary} />
 			</div>
 		);
 
