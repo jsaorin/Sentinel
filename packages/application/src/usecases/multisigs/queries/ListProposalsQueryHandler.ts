@@ -41,16 +41,22 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 			throw new ResourceNotFoundError("Multisig", input.address);
 		}
 
-		const proposals = await this.proposalRepository.findByMultisigId(
-			multisig.id,
-		);
+		const [proposals, total] = await Promise.all([
+			this.proposalRepository.findByMultisigIdPaginated(multisig.id, {
+				skip: (input.page - 1) * input.pageSize,
+				take: input.pageSize,
+			}),
+			this.proposalRepository.countByMultisigId(multisig.id),
+		]);
 
 		const proposalIds = proposals.map((p) => p.id);
 		const [instructions, scores] = await Promise.all([
 			proposalIds.length > 0
 				? this.proposalInstructionRepository.findByProposalIds(proposalIds)
 				: Promise.resolve([]),
-			this.proposalScoreRepository.findByMultisigId(multisig.id),
+			proposalIds.length > 0
+				? this.proposalScoreRepository.findByMultisigId(multisig.id)
+				: Promise.resolve([]),
 		]);
 
 		const instructionsByProposal = new Map<string, typeof instructions>();
@@ -87,6 +93,12 @@ export class ListProposalsQueryHandler extends BaseUseCase<
 					})),
 				};
 			}),
+			pagination: {
+				page: input.page,
+				pageSize: input.pageSize,
+				total,
+				totalPages: Math.max(1, Math.ceil(total / input.pageSize)),
+			},
 		};
 	}
 }

@@ -110,9 +110,17 @@ export class MultisigController extends Api {
 	): Promise<void> {
 		try {
 			const address = req.params.address as string;
-			const result = await this.listProposalsHandler.execute({ address });
-			const dto: ProposalDto[] = result.proposals.map(toProposalDto);
-			this.send(res, dto, 200);
+			const { page, pageSize } = req.query as unknown as {
+				page: number;
+				pageSize: number;
+			};
+			const result = await this.listProposalsHandler.execute({
+				address,
+				page,
+				pageSize,
+			});
+			const proposals: ProposalDto[] = result.proposals.map(toProposalDto);
+			this.send(res, { proposals, pagination: result.pagination }, 200);
 		} catch (e) {
 			next(e);
 		}

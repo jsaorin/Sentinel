@@ -24,6 +24,23 @@ export class ProposalRepository implements IProposalRepository {
 		return records.map(mapPrismaProposalToDomain);
 	}
 
+	async findByMultisigIdPaginated(
+		multisigId: string,
+		options: { skip: number; take: number },
+	): Promise<Proposal[]> {
+		const records = await this.prisma.proposal.findMany({
+			where: { multisigId },
+			orderBy: { proposalIndex: "desc" },
+			skip: options.skip,
+			take: options.take,
+		});
+		return records.map(mapPrismaProposalToDomain);
+	}
+
+	async countByMultisigId(multisigId: string): Promise<number> {
+		return this.prisma.proposal.count({ where: { multisigId } });
+	}
+
 	async findLatestByMultisigId(multisigId: string): Promise<Proposal | null> {
 		const record = await this.prisma.proposal.findFirst({
 			where: { multisigId },

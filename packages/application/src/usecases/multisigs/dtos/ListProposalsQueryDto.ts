@@ -1,5 +1,14 @@
 export type ListProposalsQueryInputDto = {
 	address: string;
+	page: number;
+	pageSize: number;
+};
+
+export type ListProposalsQueryPagination = {
+	page: number;
+	pageSize: number;
+	total: number;
+	totalPages: number;
 };
 
 export type ListProposalsQueryOutputProposal = {
@@ -24,4 +33,5 @@ export type ListProposalsQueryOutputProposal = {
 
 export type ListProposalsQueryOutputDto = {
 	proposals: ListProposalsQueryOutputProposal[];
+	pagination: ListProposalsQueryPagination;
 };
