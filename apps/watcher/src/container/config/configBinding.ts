@@ -1,0 +1,38 @@
+import { APPLICATION_TYPES } from "@sentinel/application";
+import type { EventPublisherConfig } from "@sentinel/application";
+import type { ILogger } from "@sentinel/common/logger";
+import { DOMAIN_TYPES } from "@sentinel/domain";
+import {
+	INFRASTRUCTURE_TYPES,
+	type TelegramWatcherConfig,
+} from "@sentinel/infrastructure";
+import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
+import environment from "../../env/watcher-environment.js";
+import { logger } from "../../logger/logger.js";
+
+export const configModule = new ContainerModule(
+	(options: ContainerModuleLoadOptions) => {
+		options.bind<ILogger>(APPLICATION_TYPES.Logger).toConstantValue(logger);
+
+		options
+			.bind<EventPublisherConfig>(APPLICATION_TYPES.EventPublisherConfig)
+			.toConstantValue({
+				url: environment.amqpUrl,
+				exchangeName: "reactor.events",
+				exchangeType: "topic",
+				confirmTimeoutMs: 5000,
+				appId: "watcher",
+			});
+
+		options
+			.bind<string>(INFRASTRUCTURE_TYPES.RabbitMqUrl)
+			.toConstantValue(environment.amqpUrl);
+
+		options
+			.bind<TelegramWatcherConfig>(DOMAIN_TYPES.TelegramWatcherConfig)
+			.toConstantValue({
+				botToken: environment.telegramBotToken,
+				channels: environment.telegramChannels,
+			});
+	},
+);

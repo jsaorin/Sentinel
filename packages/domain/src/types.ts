@@ -29,6 +29,7 @@ export const DOMAIN_CONFIG_TYPES = {
 	HeliusApiConfig: Symbol.for("HeliusApiConfig"),
 	RedisConfig: Symbol.for("RedisConfig"),
 	GroqApiConfig: Symbol.for("GroqApiConfig"),
+	TelegramWatcherConfig: Symbol.for("TelegramWatcherConfig"),
 };
 
 export const DOMAIN_TYPES = {
