@@ -173,39 +173,59 @@ Signers of a multisig with their permission bits decoded.
 
 ### `GET /multisigs/:address/proposals`
 
-List of proposals under a multisig, each carrying its deterministic risk score and a short text summary. Use this endpoint for the proposals table on the multisig detail page. For the full detail of a single proposal (flags, AI analysis, decoded instructions) call [`GET /proposals/:proposalId`](#get-proposalsproposalid).
+Paginated list of proposals under a multisig, each carrying its deterministic risk score and a short text summary. Use this endpoint for the proposals table on the multisig detail page. For the full detail of a single proposal (flags, AI analysis, decoded instructions) call [`GET /proposals/:proposalId`](#get-proposalsproposalid).
 
 - **Path params:** `address`.
-- **Response `200 OK`:** array of [`ProposalDto`](#proposaldto), ordered by `proposalIndex` ascending.
-- **Example:**
+- **Query params:**
+  - `page` *(optional, default `1`)*: 1-based page number. Must be a positive integer.
+  - `pageSize` *(optional, default `20`, max `100`)*: number of items per page. Must be a positive integer.
+  - Invalid values respond with `422 Unprocessable Entity` (Zod validation via `QueryValidator`).
+- **Response `200 OK`:** object with `proposals` (array of [`ProposalDto`](#proposaldto), ordered by `proposalIndex` **descending** — newest first) and `pagination` metadata.
+- **Example (unwrapped `data`):**
   ```json
-  [
-    {
-      "id": "df4de64a-a22f-453d-9b81-60872ccb1cf3",
-      "proposalIndex": 1,
-      "transactionIndex": 1,
-      "pda": "GZuxJf68WxNB8nrx5bmNNAsDcV8gUE8r4tP7nu9qTr9v",
-      "transactionPda": "5YnJPq5aSKWy9En73vaQ8Vc7QpqUWtyEtDT2mAYZyhA1",
-      "status": "APPROVED",
-      "creator": "d7A3xgXuC18zHpRNFgUKeuuQbRTe1dbpiyGBz3HDhAc",
-      "createdAt": "2026-04-10T23:36:24.000Z",
-      "executedAt": null,
-      "riskScore": 20,
-      "summary": "1 instruction(s) — flags: first-time action",
-      "instructions": [
-        {
-          "instructionIndex": 0,
-          "programId": "11111111111111111111111111111111",
-          "data": "AgAAAKCGAQAAAAAA",
-          "accounts": [
-            "5yQkbvJk64Zx76jEk6UZsPMxJdR4oquKDbbsXEmbnoyT",
-            "d7A3xgXuC18zHpRNFgUKeuuQbRTe1dbpiyGBz3HDhAc"
-          ]
-        }
-      ]
+  {
+    "proposals": [
+      {
+        "id": "df4de64a-a22f-453d-9b81-60872ccb1cf3",
+        "proposalIndex": 1,
+        "transactionIndex": 1,
+        "pda": "GZuxJf68WxNB8nrx5bmNNAsDcV8gUE8r4tP7nu9qTr9v",
+        "transactionPda": "5YnJPq5aSKWy9En73vaQ8Vc7QpqUWtyEtDT2mAYZyhA1",
+        "status": "APPROVED",
+        "creator": "d7A3xgXuC18zHpRNFgUKeuuQbRTe1dbpiyGBz3HDhAc",
+        "createdAt": "2026-04-10T23:36:24.000Z",
+        "executedAt": null,
+        "riskScore": 20,
+        "summary": "1 instruction(s) — flags: first-time action",
+        "instructions": [
+          {
+            "instructionIndex": 0,
+            "programId": "11111111111111111111111111111111",
+            "data": "AgAAAKCGAQAAAAAA",
+            "accounts": [
+              "5yQkbvJk64Zx76jEk6UZsPMxJdR4oquKDbbsXEmbnoyT",
+              "d7A3xgXuC18zHpRNFgUKeuuQbRTe1dbpiyGBz3HDhAc"
+            ]
+          }
+        ]
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "pageSize": 20,
+      "total": 137,
+      "totalPages": 7
     }
-  ]
+  }
   ```
+- **Pagination object:**
+
+  | Field | Type | Description |
+  |---|---|---|
+  | `page` | `number` | Current page returned (echoes the query param after defaults/validation). |
+  | `pageSize` | `number` | Items per page returned (echoes the query param after defaults/validation). |
+  | `total` | `number` | Total number of proposals for this multisig across all pages. |
+  | `totalPages` | `number` | `ceil(total / pageSize)`, minimum `1` even when `total` is `0`. |
 
 ---
 
