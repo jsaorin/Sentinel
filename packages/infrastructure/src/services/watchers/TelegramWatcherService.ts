@@ -47,16 +47,13 @@ export class TelegramWatcherService {
 		if (this.bot) return;
 
 		if (!this.config.botToken) {
-			throw new Error(
-				"TelegramWatcherService: TELEGRAM_BOT_TOKEN is required",
-			);
+			throw new Error("TelegramWatcherService: TELEGRAM_BOT_TOKEN is required");
 		}
 
 		if (this.config.channels.length === 0) {
-			this.logger.warning(
-				"telegram:no-channels-configured",
-				{ hint: "Set TELEGRAM_CHANNELS to a non-empty JSON array" },
-			);
+			this.logger.warning("telegram:no-channels-configured", {
+				hint: "Set TELEGRAM_CHANNELS to a non-empty JSON array",
+			});
 		}
 
 		const bot = new Bot(this.config.botToken);
