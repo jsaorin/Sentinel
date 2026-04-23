@@ -1,0 +1,99 @@
+import type {
+	AffectedEntity,
+	IThreatSignalRepository,
+	ThreatSignal as DomainThreatSignal,
+	ThreatSource,
+} from "@sentinel/domain";
+import { injectable } from "inversify";
+import type { Prisma } from "../../generated/client/index.js";
+import { mapPrismaThreatSignalToDomain } from "../mappers/ThreatSignalMapper.js";
+import { getPrismaClient } from "../prisma/prisma-client-factory.js";
+
+@injectable()
+export class ThreatSignalRepository implements IThreatSignalRepository {
+	private get prisma() {
+		return getPrismaClient();
+	}
+
+	async findByExternalRef(
+		source: ThreatSource,
+		externalId: string,
+	): Promise<DomainThreatSignal | null> {
+		const record = await this.prisma.threatSignal.findUnique({
+			where: {
+				sourceKind_sourceIdentifier_externalId: {
+					sourceKind: source.kind,
+					sourceIdentifier: source.identifier,
+					externalId,
+				},
+			},
+			include: { entities: true },
+		});
+		return record ? mapPrismaThreatSignalToDomain(record) : null;
+	}
+
+	async save(signal: DomainThreatSignal): Promise<DomainThreatSignal> {
+		const rawAnalysis = signal.rawAnalysisJson as Prisma.InputJsonValue | null;
+
+		const record = await this.prisma.$transaction(async (tx) => {
+			const upserted = await tx.threatSignal.upsert({
+				where: {
+					sourceKind_sourceIdentifier_externalId: {
+						sourceKind: signal.source.kind,
+						sourceIdentifier: signal.source.identifier,
+						externalId: signal.externalId,
+					},
+				},
+				create: {
+					sourceKind: signal.source.kind,
+					sourceIdentifier: signal.source.identifier,
+					sourceLabel: signal.source.label ?? null,
+					externalId: signal.externalId,
+					content: signal.content,
+					capturedAt: signal.capturedAt,
+					isThreat: signal.isThreat,
+					severity: signal.severity,
+					category: signal.category,
+					summary: signal.summary,
+					rawAnalysisJson: rawAnalysis ?? undefined,
+					analyzedAt: signal.analyzedAt,
+				},
+				update: {
+					sourceLabel: signal.source.label ?? null,
+					content: signal.content,
+					capturedAt: signal.capturedAt,
+					isThreat: signal.isThreat,
+					severity: signal.severity,
+					category: signal.category,
+					summary: signal.summary,
+					rawAnalysisJson: rawAnalysis ?? undefined,
+					analyzedAt: signal.analyzedAt,
+				},
+			});
+
+			await tx.threatSignalEntity.deleteMany({
+				where: { threatSignalId: upserted.id },
+			});
+
+			if (signal.entities.length > 0) {
+				await tx.threatSignalEntity.createMany({
+					data: signal.entities.map((entity: AffectedEntity) => ({
+						threatSignalId: upserted.id,
+						kind: entity.kind,
+						role: entity.role,
+						address: entity.address,
+						contextSnippet: entity.contextSnippet,
+					})),
+					skipDuplicates: true,
+				});
+			}
+
+			return tx.threatSignal.findUniqueOrThrow({
+				where: { id: upserted.id },
+				include: { entities: true },
+			});
+		});
+
+		return mapPrismaThreatSignalToDomain(record);
+	}
+}

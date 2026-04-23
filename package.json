@@ -14,6 +14,8 @@
 		"dev:webhooks": "pnpm --dir apps/webhooks dev",
 		"start:reactor": "pnpm --dir apps/reactor start",
 		"dev:reactor": "pnpm --dir apps/reactor dev",
+		"start:watcher": "pnpm --dir apps/watcher start",
+		"dev:watcher": "pnpm --dir apps/watcher dev",
 		"dev:web": "pnpm --dir apps/web dev",
 		"build:web": "pnpm --dir apps/web build",
 		"start:web": "pnpm --dir apps/web start",

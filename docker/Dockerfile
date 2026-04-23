@@ -1,5 +1,5 @@
 # ==============================================================================
-# Multi-stage Dockerfile for Sentinel backend services (api, webhooks, reactor)
+# Multi-stage Dockerfile for Sentinel backend services (api, webhooks, reactor, watcher)
 # ==============================================================================
 
 # --- Base ---
@@ -22,6 +22,7 @@ COPY packages/infrastructure/package.json packages/infrastructure/
 COPY apps/api/package.json apps/api/
 COPY apps/webhooks/package.json apps/webhooks/
 COPY apps/reactor/package.json apps/reactor/
+COPY apps/watcher/package.json apps/watcher/
 
 RUN pnpm install --frozen-lockfile
 
@@ -37,7 +38,7 @@ RUN cp -r packages/infrastructure/src/prisma /tmp/prisma-backup \
     && mkdir -p packages/infrastructure/src \
     && mv /tmp/prisma-backup packages/infrastructure/src/prisma
 
-# APP is set via docker-compose (api, webhooks, reactor)
+# APP is set via docker-compose (api, webhooks, reactor, watcher)
 ARG APP
 ENV APP=${APP}
 

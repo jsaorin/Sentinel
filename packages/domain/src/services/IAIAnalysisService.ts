@@ -1,6 +1,15 @@
 import type { DecodedInstruction } from "../entities/DecodedInstruction.js";
 import type { MultisigScoreWarning } from "../entities/MultisigScore.js";
 import type { ProposalFlag } from "../entities/ProposalScore.js";
+import type {
+	AffectedEntityKind,
+	AffectedEntityRole,
+} from "../entities/AffectedEntity.js";
+import type {
+	ThreatCategory,
+	ThreatSeverity,
+} from "../entities/ThreatSignal.js";
+import type { ThreatSource } from "../events/ThreatSignalReceived.js";
 
 export type Recommendation = "SIGN" | "VERIFY" | "DO_NOT_SIGN";
 
@@ -42,6 +51,27 @@ export interface ProposalAIAnalysis {
 	recommendation: Recommendation;
 }
 
+export interface ThreatAnalysisInput {
+	source: ThreatSource;
+	content: string;
+}
+
+export interface ThreatAnalysisEntity {
+	kind: AffectedEntityKind;
+	role: AffectedEntityRole | null;
+	address: string;
+	contextSnippet: string | null;
+}
+
+export interface ThreatAnalysisResult {
+	isThreat: boolean;
+	severity: ThreatSeverity | null;
+	category: ThreatCategory | null;
+	summary: string | null;
+	entities: ThreatAnalysisEntity[];
+	rawAnalysisJson: unknown;
+}
+
 export interface IAIAnalysisService {
 	summarizeMultisig(
 		context: MultisigAnalysisContext,
@@ -49,4 +79,7 @@ export interface IAIAnalysisService {
 	analyzeProposal(
 		context: ProposalAnalysisContext,
 	): Promise<ProposalAIAnalysis>;
+	analyzeThreatSignal(
+		input: ThreatAnalysisInput,
+	): Promise<ThreatAnalysisResult>;
 }

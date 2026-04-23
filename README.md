@@ -10,7 +10,9 @@ Monorepo with hexagonal architecture (ports & adapters), built with Turborepo + 
 sentinel/
 ├── apps/
 │   ├── api/              # Express REST API
-│   └── reactor/          # AMQP event processor
+│   ├── reactor/          # AMQP event processor
+│   ├── webhooks/         # Helius webhook receiver
+│   └── watcher/          # Threat-intel ingestion worker (Telegram)
 ├── packages/
 │   ├── common/           # Shared: logger, errors, environment
 │   ├── domain/           # Entities, repository interfaces, domain events
@@ -139,6 +141,7 @@ schema/
 | `pnpm build`        | Build all packages and apps        |
 | `pnpm dev:api`      | Start API in development mode      |
 | `pnpm dev:reactor`  | Start Reactor in development mode  |
+| `pnpm --filter watcher dev` | Start Watcher in development mode |
 | `pnpm format`       | Format code with Biome             |
 | `pnpm lint`         | Lint code with Biome               |
 | `pnpm check`        | Format + lint with auto-fix        |

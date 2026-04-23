@@ -7,6 +7,8 @@ import { GroqAIAnalysisService } from "../services/ai/GroqAIAnalysisService.js";
 import { InstructionDecoderService } from "../services/decoder/InstructionDecoderService.js";
 import { OnChainIdlResolverService } from "../services/idl/OnChainIdlResolverService.js";
 import { ScoringService } from "../services/scoring/ScoringService.js";
+import { TelegramWatcherService } from "../services/watchers/TelegramWatcherService.js";
+import { INFRASTRUCTURE_TYPES } from "../types.js";
 
 export const serviceModule = new ContainerModule(
 	(options: ContainerModuleLoadOptions) => {
@@ -43,6 +45,11 @@ export const serviceModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.IdlResolverService)
 			.to(OnChainIdlResolverService)
+			.inSingletonScope();
+
+		options
+			.bind(INFRASTRUCTURE_TYPES.TelegramWatcherService)
+			.to(TelegramWatcherService)
 			.inSingletonScope();
 	},
 );

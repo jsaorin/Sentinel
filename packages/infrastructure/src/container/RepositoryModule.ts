@@ -10,6 +10,7 @@ import { DecodedInstructionRepository } from "../repositories/DecodedInstruction
 import { MultisigScoreRepository } from "../repositories/MultisigScoreRepository.js";
 import { ProgramRepository } from "../repositories/ProgramRepository.js";
 import { ProposalScoreRepository } from "../repositories/ProposalScoreRepository.js";
+import { ThreatSignalRepository } from "../repositories/ThreatSignalRepository.js";
 import { WebhookConfigRepository } from "../repositories/WebhookConfigRepository.js";
 
 export const repositoryModule = new ContainerModule(
@@ -67,6 +68,11 @@ export const repositoryModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.ProgramRepository)
 			.to(ProgramRepository)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.ThreatSignalRepository)
+			.to(ThreatSignalRepository)
 			.inSingletonScope();
 	},
 );

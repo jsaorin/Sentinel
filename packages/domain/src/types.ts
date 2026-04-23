@@ -11,6 +11,7 @@ const DOMAIN_REPOSITORY_TYPES = {
 	MultisigScoreRepository: Symbol.for("MultisigScoreRepository"),
 	ProposalScoreRepository: Symbol.for("ProposalScoreRepository"),
 	ProgramRepository: Symbol.for("ProgramRepository"),
+	ThreatSignalRepository: Symbol.for("ThreatSignalRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {
@@ -29,6 +30,7 @@ export const DOMAIN_CONFIG_TYPES = {
 	HeliusApiConfig: Symbol.for("HeliusApiConfig"),
 	RedisConfig: Symbol.for("RedisConfig"),
 	GroqApiConfig: Symbol.for("GroqApiConfig"),
+	TelegramWatcherConfig: Symbol.for("TelegramWatcherConfig"),
 };
 
 export const DOMAIN_TYPES = {
