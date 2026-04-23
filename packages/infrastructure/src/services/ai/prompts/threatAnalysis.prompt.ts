@@ -48,7 +48,9 @@ Rules:
 - Never invent addresses. Only return addresses that literally appear in the input.
 - If the message is not in English, translate the summary and every contextSnippet to English.`;
 
-export function buildThreatAnalysisUserPrompt(input: ThreatAnalysisInput): string {
+export function buildThreatAnalysisUserPrompt(
+	input: ThreatAnalysisInput,
+): string {
 	return JSON.stringify({
 		source: {
 			kind: input.source.kind,

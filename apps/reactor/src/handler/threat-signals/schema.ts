@@ -16,4 +16,6 @@ export const ThreatSignalReceivedSchema = z.object({
 	}),
 });
 
-export type ThreatSignalReceivedEvent = z.infer<typeof ThreatSignalReceivedSchema>;
+export type ThreatSignalReceivedEvent = z.infer<
+	typeof ThreatSignalReceivedSchema
+>;

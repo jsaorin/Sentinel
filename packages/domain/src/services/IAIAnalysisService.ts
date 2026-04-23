@@ -79,5 +79,7 @@ export interface IAIAnalysisService {
 	analyzeProposal(
 		context: ProposalAnalysisContext,
 	): Promise<ProposalAIAnalysis>;
-	analyzeThreatSignal(input: ThreatAnalysisInput): Promise<ThreatAnalysisResult>;
+	analyzeThreatSignal(
+		input: ThreatAnalysisInput,
+	): Promise<ThreatAnalysisResult>;
 }

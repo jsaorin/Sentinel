@@ -73,13 +73,7 @@ const threatAnalysisSchema = z.object({
 			z.object({
 				kind: z.enum(["program", "multisig", "wallet"]),
 				role: z
-					.enum([
-						"attacker",
-						"victim",
-						"compromised",
-						"vulnerable",
-						"unknown",
-					])
+					.enum(["attacker", "victim", "compromised", "vulnerable", "unknown"])
 					.nullable()
 					.optional(),
 				address: z.string().min(1),
@@ -201,7 +195,10 @@ export class GroqAIAnalysisService implements IAIAnalysisService {
 
 	private rejectNonSolanaAddress(address: string): string | null {
 		if (address.startsWith("0x")) return "evm";
-		if (address.startsWith("bc1") || /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address))
+		if (
+			address.startsWith("bc1") ||
+			/^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
+		)
 			return "bitcoin";
 		if (address.length === 34 && address.startsWith("T")) return "tron";
 		if (address.length <= 35 && address.startsWith("r")) return "ripple";
