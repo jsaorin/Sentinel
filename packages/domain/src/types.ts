@@ -11,6 +11,7 @@ const DOMAIN_REPOSITORY_TYPES = {
 	MultisigScoreRepository: Symbol.for("MultisigScoreRepository"),
 	ProposalScoreRepository: Symbol.for("ProposalScoreRepository"),
 	ProgramRepository: Symbol.for("ProgramRepository"),
+	ThreatSignalRepository: Symbol.for("ThreatSignalRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {

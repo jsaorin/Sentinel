@@ -90,6 +90,22 @@ services:
     networks:
       - app-network
 
+  watcher:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        APP: watcher
+    container_name: sentinel-watcher
+    restart: unless-stopped
+    env_file: ../.env
+    environment:
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
   caddy:
     image: caddy:2-alpine
     container_name: sentinel-caddy

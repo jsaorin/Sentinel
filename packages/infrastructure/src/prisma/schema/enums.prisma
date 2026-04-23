@@ -8,3 +8,37 @@ enum OutboxEventStatus {
   PUBLISHED
   FAILED
 }
+
+enum ThreatSourceKind {
+  telegram
+  twitter
+  rss
+}
+
+enum ThreatSeverity {
+  low
+  medium
+  high
+}
+
+enum ThreatCategory {
+  phishing
+  rugpull
+  exploit
+  compromised_key
+  other
+}
+
+enum AffectedEntityKind {
+  program
+  multisig
+  wallet
+}
+
+enum AffectedEntityRole {
+  attacker
+  victim
+  compromised
+  vulnerable
+  unknown
+}

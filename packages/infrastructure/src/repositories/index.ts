@@ -6,3 +6,4 @@ export { ProposalRepository } from "./ProposalRepository.js";
 export { DecodedInstructionRepository } from "./DecodedInstructionRepository.js";
 export { MultisigScoreRepository } from "./MultisigScoreRepository.js";
 export { ProposalScoreRepository } from "./ProposalScoreRepository.js";
+export { ThreatSignalRepository } from "./ThreatSignalRepository.js";

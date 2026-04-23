@@ -9,3 +9,5 @@ export * from "./DecodedInstruction.js";
 export * from "./MultisigScore.js";
 export * from "./ProposalScore.js";
 export * from "./Program.js";
+export * from "./AffectedEntity.js";
+export * from "./ThreatSignal.js";

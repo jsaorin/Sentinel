@@ -7,3 +7,7 @@ export { mapPrismaVaultToDomain } from "./VaultMapper.js";
 export { mapPrismaDecodedInstructionToDomain } from "./DecodedInstructionMapper.js";
 export { mapPrismaMultisigScoreToDomain } from "./MultisigScoreMapper.js";
 export { mapPrismaProposalScoreToDomain } from "./ProposalScoreMapper.js";
+export {
+	mapPrismaThreatSignalToDomain,
+	mapPrismaThreatSignalEntityToDomain,
+} from "./ThreatSignalMapper.js";
