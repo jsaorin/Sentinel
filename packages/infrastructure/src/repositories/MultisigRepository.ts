@@ -22,6 +22,14 @@ export class MultisigRepository implements IMultisigRepository {
 		return record ? mapPrismaMultisigToDomain(record) : null;
 	}
 
+	async findByIds(ids: string[]): Promise<Multisig[]> {
+		if (ids.length === 0) return [];
+		const records = await this.prisma.multisig.findMany({
+			where: { id: { in: ids } },
+		});
+		return records.map(mapPrismaMultisigToDomain);
+	}
+
 	async findByAddress(address: string): Promise<Multisig | null> {
 		const record = await this.prisma.multisig.findUnique({
 			where: { address },

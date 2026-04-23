@@ -9,6 +9,10 @@ Reference for the REST API consumed by the Sentinel frontend. Keep this document
   - [GET /multisigs/:address](#get-multisigsaddress)
   - [GET /multisigs/:address/signers](#get-multisigsaddresssigners)
   - [GET /multisigs/:address/proposals](#get-multisigsaddressproposals)
+  - [GET /proposals](#get-proposals)
+    - [Curl examples](#curl-examples)
+    - [Frontend usage (TypeScript)](#frontend-usage-typescript)
+    - [Common UI patterns](#common-ui-patterns)
   - [GET /proposals/:proposalId](#get-proposalsproposalid)
 - [DTOs](#dtos)
 - [Enumerations](#enumerations)
@@ -229,6 +233,165 @@ Paginated list of proposals under a multisig, each carrying its deterministic ri
 
 ---
 
+### `GET /proposals`
+
+Paginated feed of proposals across **all** registered multisigs. Designed for the home-screen "latest proposals" view. Each item is a lightweight summary (no instructions) with risk score, deterministic summary and the parent multisig context so the UI can render which multisig the proposal belongs to without an extra fetch. For the full proposal payload (decoded instructions, AI analysis, signers) call [`GET /proposals/:proposalId`](#get-proposalsproposalid).
+
+- **Path params:** none.
+- **Query params:**
+  - `page` *(optional, default `1`)*: 1-based page number. Must be a positive integer.
+  - `pageSize` *(optional, default `20`, max `100`)*: number of items per page. Must be a positive integer.
+  - `sortBy` *(optional, default `createdAt`)*: one of `createdAt` | `executedAt`. Always sorted descending. When sorting by `executedAt`, non-executed proposals (`executedAt = null`) appear at the end (`NULLS LAST`).
+  - `status` *(optional)*: filter by [`ProposalStatus`](#proposalstatus) value (e.g. `ACTIVE`, `APPROVED`, `EXECUTED`, `REJECTED`, `DRAFT`, `CANCELLED`). Case-sensitive.
+  - Invalid values respond with `422 Unprocessable Entity` (Zod validation via `QueryValidator`).
+- **Response `200 OK`:** object with `proposals` (array of [`ProposalListItemDto`](#proposallistitemdto)) and `pagination` metadata (same shape as [GET /multisigs/:address/proposals](#get-multisigsaddressproposals)).
+- **Example (unwrapped `data`):**
+  ```json
+  {
+    "proposals": [
+      {
+        "id": "df4de64a-a22f-453d-9b81-60872ccb1cf3",
+        "proposalIndex": 1,
+        "transactionIndex": 1,
+        "pda": "GZuxJf68WxNB8nrx5bmNNAsDcV8gUE8r4tP7nu9qTr9v",
+        "transactionPda": "5YnJPq5aSKWy9En73vaQ8Vc7QpqUWtyEtDT2mAYZyhA1",
+        "status": "APPROVED",
+        "creator": "d7A3xgXuC18zHpRNFgUKeuuQbRTe1dbpiyGBz3HDhAc",
+        "createdAt": "2026-04-10T23:36:24.000Z",
+        "executedAt": null,
+        "riskScore": 20,
+        "summary": "1 instruction(s) — flags: first-time action",
+        "multisig": {
+          "address": "2p657xuiZRvCjAHyYJQ21C4jdJtXQu4hQn4ZwwTkcAoU",
+          "label": "Treasury multisig"
+        }
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "pageSize": 20,
+      "total": 312,
+      "totalPages": 16
+    }
+  }
+  ```
+
+#### Curl examples
+
+```bash
+# 1) First page, default order (createdAt desc), default size (20)
+curl "http://localhost:3000/api/v1/proposals"
+
+# 2) Second page of 50 items
+curl "http://localhost:3000/api/v1/proposals?page=2&pageSize=50"
+
+# 3) Only ACTIVE proposals (pending signatures)
+curl "http://localhost:3000/api/v1/proposals?status=ACTIVE"
+
+# 4) Most recently executed proposals across all multisigs
+curl "http://localhost:3000/api/v1/proposals?sortBy=executedAt&status=EXECUTED"
+```
+
+Every successful response is wrapped in `{ "message": "success", "data": { proposals, pagination } }`. Always unwrap `data` before rendering (same rule as every other endpoint — see [Overview](#overview)).
+
+#### Frontend usage (TypeScript)
+
+Minimal client using `fetch`. The example reuses the shared DTO types from `@sentinel/common/dtos` so the frontend stays type-safe without redefining shapes.
+
+```ts
+import type { ProposalListItemDto } from "@sentinel/common/dtos";
+
+type PaginationMeta = {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+type ProposalsFeedResponse = {
+  message: "success";
+  data: {
+    proposals: ProposalListItemDto[];
+    pagination: PaginationMeta;
+  };
+};
+
+type FetchProposalsFeedParams = {
+  page?: number;
+  pageSize?: number;
+  sortBy?: "createdAt" | "executedAt";
+  status?: "DRAFT" | "ACTIVE" | "APPROVED" | "REJECTED" | "EXECUTED" | "CANCELLED";
+};
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3000/api/v1";
+
+export async function fetchProposalsFeed(
+  params: FetchProposalsFeedParams = {},
+): Promise<{ proposals: ProposalListItemDto[]; pagination: PaginationMeta }> {
+  const qs = new URLSearchParams();
+  if (params.page !== undefined) qs.set("page", String(params.page));
+  if (params.pageSize !== undefined) qs.set("pageSize", String(params.pageSize));
+  if (params.sortBy) qs.set("sortBy", params.sortBy);
+  if (params.status) qs.set("status", params.status);
+
+  const res = await fetch(`${API_BASE}/proposals?${qs.toString()}`);
+  if (!res.ok) {
+    // 422 = invalid query params (Zod), 500 = server error
+    throw new Error(`Failed to load proposals feed: ${res.status}`);
+  }
+
+  const body = (await res.json()) as ProposalsFeedResponse;
+  return body.data; // already typed as { proposals, pagination }
+}
+```
+
+Usage from a React Server Component or client component:
+
+```tsx
+// app/page.tsx (server component) — home screen feed
+import { fetchProposalsFeed } from "@/lib/api/proposals";
+
+export default async function HomePage() {
+  const { proposals, pagination } = await fetchProposalsFeed({
+    page: 1,
+    pageSize: 20,
+    sortBy: "createdAt",
+  });
+
+  return (
+    <section>
+      <h1>Latest proposals ({pagination.total})</h1>
+      <ul>
+        {proposals.map((p) => (
+          <li key={p.id}>
+            <strong>#{p.proposalIndex}</strong> on{" "}
+            <a href={`/multisig/${p.multisig.address}`}>
+              {p.multisig.label ?? p.multisig.address.slice(0, 8)}
+            </a>{" "}
+            — {p.status}
+            {p.riskScore !== null ? ` · risk ${p.riskScore}` : " · scoring…"}
+            {p.summary && <p>{p.summary}</p>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+```
+
+#### Common UI patterns
+
+- **Home "latest proposals" list (default):** call with no query params. You get newest-first across all multisigs, 20 per page.
+- **Pagination controls:** use `pagination.totalPages` and `pagination.page` to render `< 1 / 16 >` controls. For a "Next" button, increment `page` and refetch. Hide it when `page >= totalPages`.
+- **Status tabs (e.g. `Pending | Approved | Executed`):** map each tab to a `status` query param (`ACTIVE`, `APPROVED`, `EXECUTED`). Reset to `page=1` when the tab changes — the total changes with the filter.
+- **"Recently executed" feed:** `sortBy=executedAt&status=EXECUTED`. Because `EXECUTED` proposals always have `executedAt` set, the `NULLS LAST` behavior is irrelevant here.
+- **Risk banner on home:** the `riskScore` field may be `null` temporarily while the scoring pipeline is still processing the proposal. Render a subtle "Scoring…" placeholder instead of `0`, and poll every few seconds if the row is fresh. See [Pipeline timing](#pipeline-timing-why-some-fields-may-be-null).
+- **Deep link to a proposal:** each item's `id` is the UUID accepted by [`GET /proposals/:proposalId`](#get-proposalsproposalid). `multisig.address` is the path for [`GET /multisigs/:address`](#get-multisigsaddress).
+- **Polling:** safe to poll the first page every 15–30 s for a live feed effect. The endpoint is cheap (indexed `multisigId` lookups, batched queries).
+- **422 handling:** if the client sends an invalid value (e.g. `page=-1`, `pageSize=500`, `status=FOO`), the API responds with `422` and a body like `{ "message": "Query validation failed", "errors": ["pageSize: Number must be less than or equal to 100"] }`. Display these `errors` as form-level feedback.
+
+---
+
 ### `GET /proposals/:proposalId`
 
 Full detail of a proposal: multisig context, scoring (deterministic + flags), AI analysis + recommendation, signers (with per-multisig activity), and decoded instructions.
@@ -387,6 +550,28 @@ Source: [`packages/common/src/dto/ProposalDto.ts`](../packages/common/src/dto/Pr
 | `riskScore` | `number \| null` | Risk on a **0–100** scale (higher is riskier). `null` until the scoring pipeline processed the proposal. |
 | `summary` | `string \| null` | Short deterministic summary auto-generated from the flags (e.g. `"2 instruction(s) — flags: authority transfer, durable nonce"`). Not the AI analysis — see [`ProposalDetailDto`](#proposaldetaildto) for that. `null` until scored. |
 | `instructions` | `Array<{ instructionIndex, programId, data, accounts }>` | Raw instruction payloads as they arrived on-chain. Use the detail endpoint to get decoded versions. |
+
+### `ProposalListItemDto`
+
+Source: [`packages/common/src/dto/ProposalListItemDto.ts`](../packages/common/src/dto/ProposalListItemDto.ts). Used by `GET /proposals` for the cross-multisig feed.
+
+Lightweight listing shape (no `instructions`) plus a `multisig` object that identifies the parent multisig. All fields are **always present**. When the user clicks a row, load the full payload with [`GET /proposals/:proposalId`](#get-proposalsproposalid).
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` (uuid) | Sentinel id. Use it to call `GET /proposals/:proposalId`. |
+| `proposalIndex` | `number` | Ordinal index inside the multisig (may repeat across multisigs — it is relative, not global). |
+| `transactionIndex` | `number` | Squads v4 internal vault-transaction index. |
+| `pda` | `string` | Program-derived address of the proposal account on-chain. |
+| `transactionPda` | `string` | PDA of the underlying vault transaction. |
+| `status` | `string` | Lifecycle state. See [ProposalStatus](#proposalstatus). |
+| `creator` | `string \| null` | Address that created the proposal on-chain. May be `null` for older proposals. |
+| `createdAt` | `string` (ISO 8601) | When the proposal was created on-chain. |
+| `executedAt` | `string \| null` (ISO 8601) | When it was executed, or `null` if not executed yet. |
+| `riskScore` | `number \| null` | Risk on a **0–100** scale (higher is riskier). `null` until the scoring pipeline processed the proposal. |
+| `summary` | `string \| null` | Short deterministic summary from the flags (same source as `ProposalDto.summary`). `null` until scored. |
+| `multisig.address` | `string` | Solana base58 address of the parent multisig. Use it to navigate to `GET /multisigs/:address`. |
+| `multisig.label` | `string \| null` | Optional human name the user assigned on `POST /multisigs`. |
 
 ### `ProposalDetailDto`
 

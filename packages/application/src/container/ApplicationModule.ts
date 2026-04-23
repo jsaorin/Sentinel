@@ -8,6 +8,7 @@ import { ListMultisigsQueryHandler } from "../usecases/multisigs/queries/ListMul
 import { ListSignersQueryHandler } from "../usecases/multisigs/queries/ListSignersQueryHandler.js";
 import { ListProposalsQueryHandler } from "../usecases/multisigs/queries/ListProposalsQueryHandler.js";
 import { GetProposalDetailQueryHandler } from "../usecases/proposals/queries/GetProposalDetailQueryHandler.js";
+import { ListProposalsFeedQueryHandler } from "../usecases/proposals/queries/ListProposalsFeedQueryHandler.js";
 import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
 import { DecodeInstructionsCommandHandler } from "../usecases/instructions/commands/DecodeInstructionsCommandHandler.js";
 import { ScoreMultisigHealthCommandHandler } from "../usecases/scoring/commands/ScoreMultisigHealthCommandHandler.js";
@@ -53,6 +54,10 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.GetProposalDetailQueryHandler)
 			.to(GetProposalDetailQueryHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.ListProposalsFeedQueryHandler)
+			.to(ListProposalsFeedQueryHandler)
 			.inSingletonScope();
 
 		bind(APPLICATION_TYPES.DecodeInstructionsCommandHandler)
