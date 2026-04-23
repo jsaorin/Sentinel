@@ -22,6 +22,14 @@ export class ProposalScoreRepository implements IProposalScoreRepository {
 		return record ? mapPrismaProposalScoreToDomain(record) : null;
 	}
 
+	async findByProposalIds(proposalIds: string[]): Promise<ProposalScore[]> {
+		if (proposalIds.length === 0) return [];
+		const records = await this.prisma.proposalScore.findMany({
+			where: { proposalId: { in: proposalIds } },
+		});
+		return records.map(mapPrismaProposalScoreToDomain);
+	}
+
 	async findByMultisigId(multisigId: string): Promise<ProposalScore[]> {
 		const records = await this.prisma.proposalScore.findMany({
 			where: { proposal: { multisigId } },

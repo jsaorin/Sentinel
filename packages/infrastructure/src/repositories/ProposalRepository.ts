@@ -1,6 +1,10 @@
 import type { Proposal } from "@sentinel/domain";
 import type { ProposalStatus } from "@sentinel/domain";
-import type { IProposalRepository } from "@sentinel/domain/repositories";
+import type {
+	CountAllProposalsOptions,
+	FindAllProposalsPaginatedOptions,
+	IProposalRepository,
+} from "@sentinel/domain/repositories";
 import { injectable } from "inversify";
 import { mapPrismaProposalToDomain } from "../mappers/ProposalMapper.js";
 import { getPrismaClient } from "../prisma/prisma-client-factory.js";
@@ -39,6 +43,24 @@ export class ProposalRepository implements IProposalRepository {
 
 	async countByMultisigId(multisigId: string): Promise<number> {
 		return this.prisma.proposal.count({ where: { multisigId } });
+	}
+
+	async findAllPaginated(
+		options: FindAllProposalsPaginatedOptions,
+	): Promise<Proposal[]> {
+		const records = await this.prisma.proposal.findMany({
+			where: options.status ? { status: options.status } : undefined,
+			orderBy: { [options.sortBy]: { sort: "desc", nulls: "last" } },
+			skip: options.skip,
+			take: options.take,
+		});
+		return records.map(mapPrismaProposalToDomain);
+	}
+
+	async countAll(options: CountAllProposalsOptions): Promise<number> {
+		return this.prisma.proposal.count({
+			where: options.status ? { status: options.status } : undefined,
+		});
 	}
 
 	async findLatestByMultisigId(multisigId: string): Promise<Proposal | null> {

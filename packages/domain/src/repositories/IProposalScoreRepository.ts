@@ -14,6 +14,7 @@ export interface UpdateProposalAIFieldsInput {
 
 export interface IProposalScoreRepository {
 	findByProposalId(proposalId: string): Promise<ProposalScore | null>;
+	findByProposalIds(proposalIds: string[]): Promise<ProposalScore[]>;
 	findByMultisigId(multisigId: string): Promise<ProposalScore[]>;
 	upsertMany(scores: UpsertProposalScoreInput[]): Promise<ProposalScore[]>;
 	updateAIFields(
