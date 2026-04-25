@@ -8,7 +8,9 @@ node_modules
 .env.local
 
 .idea
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .zed
 .DS_Store
 
