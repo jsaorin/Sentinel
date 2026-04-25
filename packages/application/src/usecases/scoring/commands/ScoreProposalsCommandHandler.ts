@@ -1,10 +1,12 @@
+import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
 import {
-	type DecodedInstruction,
 	DOMAIN_TYPES,
+	type DecodedInstruction,
 	type IDecodedInstructionRepository,
 	type IProposalInstructionRepository,
 	type IProposalRepository,
 	type IProposalScoreRepository,
+	type IRealtimeService,
 	type IScoringService,
 	ProposalScored,
 	type UpsertProposalScoreInput,
@@ -38,6 +40,8 @@ export class ScoreProposalsCommandHandler extends BaseUseCase<
 		private scoringService: IScoringService,
 		@inject(APPLICATION_TYPES.OutboxEventPublisher)
 		private eventPublisher: IOutboxEventPublisher,
+		@inject(DOMAIN_TYPES.RealtimeService)
+		private realtime: IRealtimeService,
 	) {
 		super();
 	}
@@ -110,6 +114,18 @@ export class ScoreProposalsCommandHandler extends BaseUseCase<
 			const { routingKey, event } =
 				proposalScoredToIntegrationEvent(domainEvent);
 			await this.eventPublisher.publish(event, { routingKey });
+
+			const payload = { proposalId: score.proposalId };
+			await this.realtime.emitToRoom(
+				REALTIME_ROOMS.proposal(score.proposalId),
+				REALTIME_ACTIONS.NEW_ANALYSIS_PROPOSAL,
+				payload,
+			);
+			await this.realtime.emitToRoom(
+				REALTIME_ROOMS.multisig(multisigId),
+				REALTIME_ACTIONS.NEW_ANALYSIS_PROPOSAL,
+				payload,
+			);
 		}
 
 		this.logger.info("Proposals scored", {

@@ -1,5 +1,6 @@
 import { DOMAIN_TYPES } from "@sentinel/domain";
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
+import { SocketIoRealtimeService } from "../realtime/SocketIoRealtimeService.js";
 import { HeliusWebhookService } from "../services/HeliusWebhookService.js";
 import { SquadsHistoryService } from "../services/SquadsHistoryService.js";
 import { SquadsService } from "../services/SquadsService.js";
@@ -50,6 +51,11 @@ export const serviceModule = new ContainerModule(
 		options
 			.bind(INFRASTRUCTURE_TYPES.TelegramWatcherService)
 			.to(TelegramWatcherService)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.RealtimeService)
+			.to(SocketIoRealtimeService)
 			.inSingletonScope();
 	},
 );

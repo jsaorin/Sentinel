@@ -34,5 +34,10 @@ export const configModule = new ContainerModule(
 				botToken: environment.telegramBotToken,
 				channels: environment.telegramChannels,
 			});
+
+		options.bind(DOMAIN_TYPES.RedisConfig).toConstantValue({
+			host: environment.redisHost,
+			port: environment.redisPort,
+		});
 	},
 );

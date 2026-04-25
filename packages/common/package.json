@@ -33,6 +33,10 @@
 		"./middlewares": {
 			"import": "./dist/middlewares/index.js",
 			"types": "./dist/middlewares/index.d.ts"
+		},
+		"./realtime": {
+			"import": "./dist/realtime/index.js",
+			"types": "./dist/realtime/index.d.ts"
 		}
 	},
 	"scripts": {
@@ -40,6 +44,7 @@
 	},
 	"dependencies": {
 		"dotenv": "^16.4.7",
-		"pino": "^9.6.0"
+		"pino": "^9.6.0",
+		"zod": "^4.1.5"
 	}
 }

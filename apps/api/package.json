@@ -25,9 +25,12 @@
 		"@sentinel/common": "workspace:*",
 		"@sentinel/domain": "workspace:*",
 		"@sentinel/infrastructure": "workspace:*",
+		"@socket.io/redis-adapter": "^8.3.0",
 		"cors": "^2.8.5",
 		"express": "^4.21.2",
-		"helmet": "^8.0.0"
+		"helmet": "^8.0.0",
+		"ioredis": "^5.10.1",
+		"socket.io": "^4.8.1"
 	},
 	"devDependencies": {
 		"@types/cors": "^2.8.17",

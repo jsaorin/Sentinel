@@ -24,6 +24,7 @@ export const DOMAIN_SERVICE_TYPES = {
 	ScoringService: Symbol.for("ScoringService"),
 	AIAnalysisService: Symbol.for("AIAnalysisService"),
 	IdlResolverService: Symbol.for("IdlResolverService"),
+	RealtimeService: Symbol.for("RealtimeService"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {
