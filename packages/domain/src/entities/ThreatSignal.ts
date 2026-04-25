@@ -25,6 +25,7 @@ export class ThreatSignal {
 	public readonly externalId: string;
 	public readonly content: string;
 	public readonly capturedAt: Date;
+	public readonly sourceUrl: string | null;
 	public readonly isThreat: boolean | null;
 	public readonly severity: ThreatSeverity | null;
 	public readonly category: ThreatCategory | null;
@@ -40,6 +41,7 @@ export class ThreatSignal {
 		externalId: string;
 		content: string;
 		capturedAt: Date;
+		sourceUrl?: string | null;
 		isThreat?: boolean | null;
 		severity?: ThreatSeverity | null;
 		category?: ThreatCategory | null;
@@ -54,6 +56,7 @@ export class ThreatSignal {
 		this.externalId = params.externalId;
 		this.content = params.content;
 		this.capturedAt = params.capturedAt;
+		this.sourceUrl = params.sourceUrl ?? null;
 		this.isThreat = params.isThreat ?? null;
 		this.severity = params.severity ?? null;
 		this.category = params.category ?? null;

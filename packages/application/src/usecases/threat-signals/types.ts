@@ -5,4 +5,5 @@ export const THREAT_SIGNAL_USE_CASE_TYPES = {
 	AnalyzeThreatSignalCommandHandler: Symbol.for(
 		"AnalyzeThreatSignalCommandHandler",
 	),
+	ListThreatSignalsQueryHandler: Symbol.for("ListThreatSignalsQueryHandler"),
 } as const;

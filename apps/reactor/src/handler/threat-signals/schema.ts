@@ -13,6 +13,7 @@ export const ThreatSignalReceivedSchema = z.object({
 		externalId: z.string().min(1),
 		content: z.string().min(1),
 		capturedAt: z.string(),
+		sourceUrl: z.string().nullable().optional(),
 	}),
 });
 

@@ -5,6 +5,7 @@ export type IngestThreatSignalCommandInputDto = {
 	externalId: string;
 	content: string;
 	capturedAt: Date;
+	sourceUrl?: string | null;
 };
 
 export type IngestThreatSignalCommandOutputDto = {

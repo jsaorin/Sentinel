@@ -10,6 +10,7 @@ import {
 } from "@sentinel/domain";
 import { Bot, GrammyError, HttpError } from "grammy";
 import { inject, injectable } from "inversify";
+import { buildTelegramSourceUrl } from "./telegram-source-url.js";
 
 export type TelegramChannelConfig = {
 	id: string;
@@ -80,11 +81,13 @@ export class TelegramWatcherService {
 			}
 
 			try {
+				const externalId = String(post.message_id);
 				await this.ingestHandler.execute({
 					source,
-					externalId: String(post.message_id),
+					externalId,
 					content,
 					capturedAt: new Date(post.date * 1000),
+					sourceUrl: buildTelegramSourceUrl(chatId, externalId),
 				});
 			} catch (error) {
 				this.logger.error("telegram:ingest-failed", {

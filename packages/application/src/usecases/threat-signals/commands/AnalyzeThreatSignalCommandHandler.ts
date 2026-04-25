@@ -35,7 +35,7 @@ export class AnalyzeThreatSignalCommandHandler extends BaseUseCase<
 	async execute(
 		input: AnalyzeThreatSignalCommandInputDto,
 	): Promise<AnalyzeThreatSignalCommandOutputDto> {
-		const { source, externalId, content, capturedAt } = input;
+		const { source, externalId, content, capturedAt, sourceUrl } = input;
 
 		const existing = await this.threatSignalRepository.findByExternalRef(
 			source,
@@ -84,6 +84,7 @@ export class AnalyzeThreatSignalCommandHandler extends BaseUseCase<
 			externalId,
 			content,
 			capturedAt,
+			sourceUrl: sourceUrl ?? existing?.sourceUrl ?? null,
 			isThreat: analysis.isThreat,
 			severity: analysis.severity,
 			category: analysis.category,

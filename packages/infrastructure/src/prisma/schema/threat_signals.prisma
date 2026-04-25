@@ -4,6 +4,7 @@ model ThreatSignal {
   sourceIdentifier String           @map("source_identifier")
   externalId       String           @map("external_id")
   sourceLabel      String?          @map("source_label")
+  sourceUrl        String?          @map("source_url")
   content          String
   capturedAt       DateTime         @map("captured_at")
   isThreat         Boolean?         @map("is_threat")

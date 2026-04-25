@@ -30,6 +30,7 @@ export class IngestThreatSignalCommandHandler extends BaseUseCase<
 			input.externalId,
 			input.content,
 			input.capturedAt,
+			input.sourceUrl ?? null,
 		);
 
 		const { routingKey, event } =

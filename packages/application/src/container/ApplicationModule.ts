@@ -17,6 +17,7 @@ import { SummarizeMultisigAICommandHandler } from "../usecases/ai/commands/Summa
 import { AnalyzeProposalAICommandHandler } from "../usecases/ai/commands/AnalyzeProposalAICommandHandler.js";
 import { IngestThreatSignalCommandHandler } from "../usecases/threat-signals/commands/IngestThreatSignalCommandHandler.js";
 import { AnalyzeThreatSignalCommandHandler } from "../usecases/threat-signals/commands/AnalyzeThreatSignalCommandHandler.js";
+import { ListThreatSignalsQueryHandler } from "../usecases/threat-signals/queries/ListThreatSignalsQueryHandler.js";
 
 export const applicationModule = new ContainerModule(
 	(options: ContainerModuleLoadOptions) => {
@@ -88,6 +89,10 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.AnalyzeThreatSignalCommandHandler)
 			.to(AnalyzeThreatSignalCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.ListThreatSignalsQueryHandler)
+			.to(ListThreatSignalsQueryHandler)
 			.inSingletonScope();
 	},
 );

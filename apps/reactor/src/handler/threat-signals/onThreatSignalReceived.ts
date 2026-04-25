@@ -9,7 +9,7 @@ export const onThreatSignalReceived: Handler<
 	ThreatSignalReceivedEvent["data"]
 > = async (ctx) => {
 	const { event, logger, container } = ctx;
-	const { source, externalId, content, capturedAt } = event.data;
+	const { source, externalId, content, capturedAt, sourceUrl } = event.data;
 
 	logger.info("threat-signal:received", {
 		sourceKind: source.kind,
@@ -26,6 +26,7 @@ export const onThreatSignalReceived: Handler<
 		externalId,
 		content,
 		capturedAt: new Date(capturedAt),
+		sourceUrl: sourceUrl ?? null,
 	});
 
 	logger.info("threat-signal:processed", {
