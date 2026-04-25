@@ -13,6 +13,8 @@ class ApiEnvironment extends Environment {
 	private _groqModel!: string;
 	private _groqDryRun!: boolean;
 	private _amqpUrl!: string;
+	private _redisHost!: string;
+	private _redisPort!: number;
 
 	constructor() {
 		super();
@@ -32,6 +34,8 @@ class ApiEnvironment extends Environment {
 		this.groqModel = env.GROQ_MODEL;
 		this.groqDryRun = env.GROQ_DRY_RUN;
 		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
+		this.redisHost = env.REDIS_HOST;
+		this.redisPort = env.REDIS_PORT;
 	}
 
 	get appName() {
@@ -112,6 +116,22 @@ class ApiEnvironment extends Environment {
 
 	set amqpUrl(value) {
 		this._amqpUrl = value;
+	}
+
+	get redisHost() {
+		return this._redisHost;
+	}
+
+	set redisHost(value) {
+		this._redisHost = value;
+	}
+
+	get redisPort() {
+		return this._redisPort;
+	}
+
+	set redisPort(value) {
+		this._redisPort = value;
 	}
 }
 

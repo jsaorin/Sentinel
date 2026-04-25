@@ -1,4 +1,9 @@
-import { ThreatSignalReceived } from "@sentinel/domain";
+import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
+import {
+	DOMAIN_TYPES,
+	type IRealtimeService,
+	ThreatSignalReceived,
+} from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
 import { threatSignalReceivedToIntegrationEvent } from "../../../mappers/events/threatSignalReceivedToIntegration.js";
 import type { IOutboxEventPublisher } from "../../../ports/IOutboxEventPublisher.js";
@@ -18,6 +23,8 @@ export class IngestThreatSignalCommandHandler extends BaseUseCase<
 	constructor(
 		@inject(APPLICATION_TYPES.OutboxEventPublisher)
 		private eventPublisher: IOutboxEventPublisher,
+		@inject(DOMAIN_TYPES.RealtimeService)
+		private realtime: IRealtimeService,
 	) {
 		super();
 	}
@@ -42,6 +49,14 @@ export class IngestThreatSignalCommandHandler extends BaseUseCase<
 			sourceIdentifier: input.source.identifier,
 			externalId: input.externalId,
 		});
+
+		await this.realtime.emitToRoom(
+			REALTIME_ROOMS.watcherFeed(),
+			REALTIME_ACTIONS.AGENT_MESSAGE,
+			{
+				message: `Received signal from ${input.source.kind}:${input.source.identifier}`,
+			},
+		);
 
 		await this.eventPublisher.publish(event, { routingKey });
 

@@ -1,17 +1,21 @@
 import "reflect-metadata";
-import type { Server } from "node:http";
+import { type Server, createServer } from "node:http";
 import { getPrismaClient } from "@sentinel/infrastructure";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import { REALTIME_TYPES } from "./container/realtime/realtimeTypes.js";
 import environment from "./env/api-environment.js";
+import { container } from "./inversify.config.js";
+import { logger } from "./logger/logger.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import routes from "./presentation/routes.js";
-import { logger } from "./logger/logger.js";
+import type { RealtimeGateway } from "./realtime/RealtimeGateway.js";
 
 class App {
 	public express: express.Application;
 	private server?: Server;
+	private realtimeGateway?: RealtimeGateway;
 
 	constructor() {
 		this.express = express();
@@ -50,7 +54,14 @@ class App {
 	public async start(): Promise<void> {
 		await this.connectPrisma();
 
-		this.server = this.express.listen(environment.port, () => {
+		this.server = createServer(this.express);
+
+		this.realtimeGateway = container.get<RealtimeGateway>(
+			REALTIME_TYPES.RealtimeGateway,
+		);
+		await this.realtimeGateway.attach(this.server);
+
+		this.server.listen(environment.port, () => {
 			const port = environment.port;
 			const env = environment.getCurrentEnvironment();
 			const basePath = environment.basePath;
@@ -65,6 +76,12 @@ class App {
 	}
 
 	public async shutdown(): Promise<void> {
+		try {
+			await this.realtimeGateway?.close();
+		} catch (err) {
+			logger.error("Error closing realtime gateway", { err });
+		}
+
 		if (this.server) {
 			this.server.close(() => logger.info("HTTP server closed"));
 		}

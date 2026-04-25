@@ -8,6 +8,7 @@ import {
 import { Container } from "inversify";
 import { configBindings } from "./container/config/configBinding.js";
 import { controllerBindings } from "./container/controller/controllerBinding.js";
+import { realtimeBindings } from "./container/realtime/realtimeBinding.js";
 
 const container = new Container();
 
@@ -20,4 +21,5 @@ container.load(
 	portsModule,
 	applicationModule,
 	controllerBindings,
+	realtimeBindings,
 );

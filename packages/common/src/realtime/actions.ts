@@ -1,0 +1,16 @@
+export const REALTIME_ACTIONS = {
+	AGENT_MESSAGE: "AGENT_MESSAGE",
+	NEW_THREAT_SIGNAL: "NEW_THREAT_SIGNAL",
+	NEW_ANALYSIS_PROPOSAL: "NEW_ANALYSIS_PROPOSAL",
+	NEW_ANALYSIS_MULTISIG: "NEW_ANALYSIS_MULTISIG",
+} as const;
+
+export type RealtimeAction =
+	(typeof REALTIME_ACTIONS)[keyof typeof REALTIME_ACTIONS];
+
+export interface RealtimePayloadMap {
+	[REALTIME_ACTIONS.AGENT_MESSAGE]: { message: string };
+	[REALTIME_ACTIONS.NEW_THREAT_SIGNAL]: { id: string };
+	[REALTIME_ACTIONS.NEW_ANALYSIS_PROPOSAL]: { proposalId: string };
+	[REALTIME_ACTIONS.NEW_ANALYSIS_MULTISIG]: { multisigId: string };
+}

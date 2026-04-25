@@ -15,6 +15,8 @@ class WatcherEnvironment extends Environment {
 	private _amqpUrl!: string;
 	private _telegramBotToken!: string;
 	private _telegramChannels!: TelegramChannelConfig[];
+	private _redisHost!: string;
+	private _redisPort!: number;
 
 	constructor() {
 		super();
@@ -25,6 +27,8 @@ class WatcherEnvironment extends Environment {
 		const env = cleanEnv(process.env, envValidationConfig);
 
 		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
+		this.redisHost = env.REDIS_HOST;
+		this.redisPort = env.REDIS_PORT;
 		this.telegramBotToken = env.TELEGRAM_BOT_TOKEN;
 
 		let parsedChannels: unknown;
@@ -65,6 +69,20 @@ class WatcherEnvironment extends Environment {
 	}
 	set telegramChannels(value) {
 		this._telegramChannels = value;
+	}
+
+	get redisHost() {
+		return this._redisHost;
+	}
+	set redisHost(value) {
+		this._redisHost = value;
+	}
+
+	get redisPort() {
+		return this._redisPort;
+	}
+	set redisPort(value) {
+		this._redisPort = value;
 	}
 }
 

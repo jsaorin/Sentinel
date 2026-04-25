@@ -21,6 +21,11 @@ export const configBindings = new ContainerModule(
 				appId: environment.appName,
 			});
 
+		options.bind(DOMAIN_TYPES.RedisConfig).toConstantValue({
+			host: environment.redisHost,
+			port: environment.redisPort,
+		});
+
 		options
 			.bind(DOMAIN_TYPES.HeliusApiConfig)
 			.toConstantValue({ apiKey: environment.heliusApiKey });
