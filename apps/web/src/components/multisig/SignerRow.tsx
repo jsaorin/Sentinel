@@ -43,7 +43,9 @@ export function SignerRow({
 					</span>
 				))}
 				{pills.length === 0 && (
-					<span className="px-2.5 py-1 text-xs font-semibold tracking-wider uppercase text-text-tertiary bg-bg-raised border border-border-subtle rounded-md">None</span>
+					<span className="px-2.5 py-1 text-xs font-semibold tracking-wider uppercase text-text-tertiary bg-bg-raised border border-border-subtle rounded-md">
+						None
+					</span>
 				)}
 			</div>
 		</div>

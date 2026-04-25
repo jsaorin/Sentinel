@@ -214,12 +214,28 @@ export type PaginatedGlobalProposalsResponse = {
 };
 
 const MOCK_MULTISIGS_META = [
-	{ address: "2p657xuiZRvCjAHyYJQ21C4jdJtXQu4hQn4ZwwTkcAoU", label: "hackathon-multisig" },
-	{ address: "2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88", label: "Drift Security Council" },
-	{ address: "7gYJPNhRsyuiFWTr9apSUqbBHTNVV3bfya4RoHwbD6vp", label: "Treasury Ops" },
+	{
+		address: "2p657xuiZRvCjAHyYJQ21C4jdJtXQu4hQn4ZwwTkcAoU",
+		label: "hackathon-multisig",
+	},
+	{
+		address: "2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88",
+		label: "Drift Security Council",
+	},
+	{
+		address: "7gYJPNhRsyuiFWTr9apSUqbBHTNVV3bfya4RoHwbD6vp",
+		label: "Treasury Ops",
+	},
 ];
 
-const MOCK_STATUSES = ["APPROVED", "EXECUTED", "ACTIVE", "REJECTED", "DRAFT", "CANCELLED"];
+const MOCK_STATUSES = [
+	"APPROVED",
+	"EXECUTED",
+	"ACTIVE",
+	"REJECTED",
+	"DRAFT",
+	"CANCELLED",
+];
 const MOCK_SUMMARIES = [
 	"1 instruction(s) — flags: first-time action",
 	"2 instruction(s) — flags: large transfer",

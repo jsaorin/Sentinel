@@ -62,8 +62,9 @@ export class ProposalController extends Api {
 				sortBy,
 				status,
 			});
-			const proposals: ProposalListItemDto[] =
-				result.proposals.map(toProposalListItemDto);
+			const proposals: ProposalListItemDto[] = result.proposals.map(
+				toProposalListItemDto,
+			);
 			this.send(res, { proposals, pagination: result.pagination }, 200);
 		} catch (e) {
 			next(e);

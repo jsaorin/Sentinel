@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Card, RiskBadge, Badge, AlertBanner } from "@sentinel/ui";
-import { MultisigHeader, ReportCard, MultisigTabs } from "@/components/multisig";
+import {
+	MultisigHeader,
+	ReportCard,
+	MultisigTabs,
+} from "@/components/multisig";
 import { ScoreCard } from "@/components/multisig/ScoreCard";
 import { SignerRow } from "@/components/multisig/SignerRow";
 import { getProposalDetail } from "@/lib/api";
@@ -23,7 +27,8 @@ export async function generateMetadata({
 	const { id } = await params;
 	return {
 		title: `Proposal ${id.slice(0, 8)}...`,
-		description: "Security analysis for proposal. AI risk score, signer verification, and transaction action review.",
+		description:
+			"Security analysis for proposal. AI risk score, signer verification, and transaction action review.",
 	};
 }
 
@@ -82,16 +87,12 @@ export default async function ProposalPage({
 								key={flag.type}
 								className={[
 									"flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-4 px-2",
-									i < flags.length - 1
-										? "border-b border-border-subtle"
-										: "",
+									i < flags.length - 1 ? "border-b border-border-subtle" : "",
 								].join(" ")}
 							>
 								<div className="flex items-center gap-3 min-w-0">
 									<Badge
-										variant={
-											FLAG_SEVERITY_LEVEL[flag.severity] ?? "medium"
-										}
+										variant={FLAG_SEVERITY_LEVEL[flag.severity] ?? "medium"}
 									>
 										{flag.severity}
 									</Badge>
@@ -109,10 +110,7 @@ export default async function ProposalPage({
 			)}
 
 			{/* AI Analysis — explanation */}
-			<ReportCard
-				title="AI Analysis"
-				content={proposal.ai?.analysis ?? null}
-			/>
+			<ReportCard title="AI Analysis" content={proposal.ai?.analysis ?? null} />
 
 			{/* AI Recommendation — verdict last */}
 			{proposal.ai && (
@@ -122,8 +120,13 @@ export default async function ProposalPage({
 					</h3>
 					<div className="mt-3">
 						<AlertBanner
-							level={RECOMMENDATION_VARIANT[proposal.ai.recommendation] ?? "medium"}
-							title={RECOMMENDATION_LABEL[proposal.ai.recommendation] ?? proposal.ai.recommendation}
+							level={
+								RECOMMENDATION_VARIANT[proposal.ai.recommendation] ?? "medium"
+							}
+							title={
+								RECOMMENDATION_LABEL[proposal.ai.recommendation] ??
+								proposal.ai.recommendation
+							}
 						/>
 					</div>
 				</Card>
@@ -174,9 +177,7 @@ export default async function ProposalPage({
 									:: {ix.action}
 								</span>
 							</div>
-							{!ix.isKnown && (
-								<Badge variant="unknown">Unknown</Badge>
-							)}
+							{!ix.isKnown && <Badge variant="unknown">Unknown</Badge>}
 						</div>
 
 						{/* Params */}
@@ -237,8 +238,18 @@ export default async function ProposalPage({
 	/* ── Tabs ──────────────────────────────────────────────── */
 	const tabs = [
 		{ id: "overview", label: "Overview", content: overviewContent },
-		{ id: "signers", label: `Signers (${proposal.signers.length})`, shortLabel: "Signers", content: signersContent },
-		{ id: "instructions", label: `Instructions (${proposal.instructions.length})`, shortLabel: "Instructions", content: instructionsContent },
+		{
+			id: "signers",
+			label: `Signers (${proposal.signers.length})`,
+			shortLabel: "Signers",
+			content: signersContent,
+		},
+		{
+			id: "instructions",
+			label: `Instructions (${proposal.instructions.length})`,
+			shortLabel: "Instructions",
+			content: instructionsContent,
+		},
 	];
 
 	return (
@@ -256,9 +267,7 @@ export default async function ProposalPage({
 									Proposal
 								</h3>
 								<div className="flex items-center gap-3">
-									<Badge
-										variant={STATUS_VARIANT[proposal.status] ?? "medium"}
-									>
+									<Badge variant={STATUS_VARIANT[proposal.status] ?? "medium"}>
 										{STATUS_LABEL[proposal.status] ?? proposal.status}
 									</Badge>
 									<RiskBadge level={riskLevel} size="sm" />

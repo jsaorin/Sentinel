@@ -115,7 +115,9 @@ export function MultisigsTable({ multisigs }: MultisigsTableProps) {
 										</span>
 										<span className="text-xs text-text-tertiary">
 											{m.label ?? "—"} &middot;{" "}
-											{m.threshold != null ? `${m.threshold}/${m.totalSigners}` : "—"}
+											{m.threshold != null
+												? `${m.threshold}/${m.totalSigners}`
+												: "—"}
 										</span>
 									</div>
 
@@ -165,9 +167,7 @@ export function MultisigsTable({ multisigs }: MultisigsTableProps) {
 							</span>
 							<button
 								type="button"
-								onClick={() =>
-									setPage((p) => Math.min(totalPages - 1, p + 1))
-								}
+								onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
 								disabled={page === totalPages - 1}
 								className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-text-secondary disabled:text-text-disabled transition-colors"
 							>

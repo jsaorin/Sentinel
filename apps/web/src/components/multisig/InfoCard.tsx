@@ -67,7 +67,11 @@ export function InfoCard({
 				<InfoRow label="Created" value={created} mono />
 				<InfoRow label="Last Activity" value={lastActivity} />
 				{configAuthority && (
-					<InfoRow label="Config Authority" value={`${configAuthority.slice(0, 8)}...${configAuthority.slice(-4)}`} mono />
+					<InfoRow
+						label="Config Authority"
+						value={`${configAuthority.slice(0, 8)}...${configAuthority.slice(-4)}`}
+						mono
+					/>
 				)}
 			</div>
 		</Card>

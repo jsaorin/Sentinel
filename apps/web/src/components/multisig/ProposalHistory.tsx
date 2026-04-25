@@ -85,9 +85,7 @@ export function ProposalHistory({
 	}
 
 	const filtered =
-		filter === "All"
-			? proposals
-			: proposals.filter((p) => p.status === filter);
+		filter === "All" ? proposals : proposals.filter((p) => p.status === filter);
 
 	return (
 		<Card variant="default" padding="lg">
@@ -111,7 +109,9 @@ export function ProposalHistory({
 					))}
 				</div>
 			</div>
-			<div className={`mt-1 ${loading ? "opacity-50 pointer-events-none" : ""}`}>
+			<div
+				className={`mt-1 ${loading ? "opacity-50 pointer-events-none" : ""}`}
+			>
 				{filtered.length === 0 ? (
 					<p className="py-8 text-center text-text-tertiary text-sm">
 						No proposals found

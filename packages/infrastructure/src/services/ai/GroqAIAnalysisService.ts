@@ -168,7 +168,10 @@ export class GroqAIAnalysisService implements IAIAnalysisService {
 		for (const entity of data.entities) {
 			const address = entity.address?.trim();
 			if (!address) {
-				rejected.push({ address: entity.address ?? null, reason: "missing-address" });
+				rejected.push({
+					address: entity.address ?? null,
+					reason: "missing-address",
+				});
 				continue;
 			}
 			const rejection = this.rejectNonSolanaAddress(address);

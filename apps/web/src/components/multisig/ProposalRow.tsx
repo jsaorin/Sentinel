@@ -37,10 +37,17 @@ export function ProposalRow({
 				</span>
 			</div>
 			<div className="flex items-center gap-4 shrink-0">
-				<Badge variant={STATUS_DISPLAY_VARIANT[status]} className="w-24 justify-start">
+				<Badge
+					variant={STATUS_DISPLAY_VARIANT[status]}
+					className="w-24 justify-start"
+				>
 					{status}
 				</Badge>
-				<RiskBadge level={riskLevel ?? "unknown"} size="sm" className="w-20 justify-start" />
+				<RiskBadge
+					level={riskLevel ?? "unknown"}
+					size="sm"
+					className="w-20 justify-start"
+				/>
 			</div>
 		</Link>
 	);

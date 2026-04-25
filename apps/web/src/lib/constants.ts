@@ -16,7 +16,10 @@ export const STATUS_LABEL: Record<string, string> = {
 };
 
 /** Maps raw API status to the 3 simplified statuses used in tables. */
-export const STATUS_DISPLAY: Record<string, "Pending" | "Executed" | "Rejected"> = {
+export const STATUS_DISPLAY: Record<
+	string,
+	"Pending" | "Executed" | "Rejected"
+> = {
 	DRAFT: "Pending",
 	ACTIVE: "Pending",
 	APPROVED: "Pending",
@@ -36,7 +39,10 @@ export const STATUS_VARIANT: Record<string, "medium" | "safe" | "critical"> = {
 };
 
 /** Maps simplified display status to Badge variant colors. */
-export const STATUS_DISPLAY_VARIANT: Record<string, "medium" | "safe" | "critical"> = {
+export const STATUS_DISPLAY_VARIANT: Record<
+	string,
+	"medium" | "safe" | "critical"
+> = {
 	Pending: "medium",
 	Executed: "safe",
 	Rejected: "critical",
@@ -44,7 +50,10 @@ export const STATUS_DISPLAY_VARIANT: Record<string, "medium" | "safe" | "critica
 
 /* ── Warning / flag severity ─────────────────────────────── */
 
-export const WARNING_SEVERITY: Record<string, "critical" | "high" | "medium" | "low"> = {
+export const WARNING_SEVERITY: Record<
+	string,
+	"critical" | "high" | "medium" | "low"
+> = {
 	CRITICAL_THRESHOLD_ONE: "critical",
 	LOW_THRESHOLD: "high",
 	EXTERNAL_CONFIG_AUTHORITY: "high",
@@ -61,7 +70,10 @@ export const FLAG_SEVERITY_LEVEL: Record<string, RiskLevel> = {
 
 /* ── AI recommendation ───────────────────────────────────── */
 
-export const RECOMMENDATION_VARIANT: Record<string, "critical" | "high" | "medium" | "low" | "info"> = {
+export const RECOMMENDATION_VARIANT: Record<
+	string,
+	"critical" | "high" | "medium" | "low" | "info"
+> = {
 	SIGN: "low",
 	VERIFY: "medium",
 	DO_NOT_SIGN: "critical",
@@ -84,7 +96,12 @@ export const RISK_FILTERS = [
 	"Safe",
 ] as const;
 
-export const PROPOSAL_STATUSES = ["All", "Pending", "Executed", "Rejected"] as const;
+export const PROPOSAL_STATUSES = [
+	"All",
+	"Pending",
+	"Executed",
+	"Rejected",
+] as const;
 
 /* ── Pagination ──────────────────────────────────────────── */
 

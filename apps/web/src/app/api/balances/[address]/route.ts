@@ -10,16 +10,26 @@ const RPC_URL = HELIUS_API_KEY
 const connection = new Connection(RPC_URL);
 
 // Cache Jupiter token list in memory (refreshes on server restart)
-let tokenMap: Map<string, { symbol: string; name: string; logoURI: string | null }> | null = null;
+let tokenMap: Map<
+	string,
+	{ symbol: string; name: string; logoURI: string | null }
+> | null = null;
 
 async function getTokenMap() {
 	if (tokenMap) return tokenMap;
 	try {
 		const res = await fetch("https://token.jup.ag/strict");
-		const list: Array<{ address: string; symbol: string; name: string; logoURI?: string }> =
-			await res.json();
+		const list: Array<{
+			address: string;
+			symbol: string;
+			name: string;
+			logoURI?: string;
+		}> = await res.json();
 		tokenMap = new Map(
-			list.map((t) => [t.address, { symbol: t.symbol, name: t.name, logoURI: t.logoURI ?? null }]),
+			list.map((t) => [
+				t.address,
+				{ symbol: t.symbol, name: t.name, logoURI: t.logoURI ?? null },
+			]),
 		);
 	} catch {
 		tokenMap = new Map();

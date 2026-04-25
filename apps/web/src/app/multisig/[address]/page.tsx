@@ -78,11 +78,11 @@ export default async function MultisigPage({
 		const proposalsData = proposals.map((p) => ({
 			id: `#${p.proposalIndex}`,
 			linkId: p.id,
-			description: p.summary ?? (
-				p.instructions.length > 0
+			description:
+				p.summary ??
+				(p.instructions.length > 0
 					? `${p.instructions.length} instruction${p.instructions.length > 1 ? "s" : ""}`
-					: "Empty proposal"
-			),
+					: "Empty proposal"),
 			status: STATUS_DISPLAY[p.status] ?? ("Pending" as const),
 			riskLevel: p.riskScore != null ? getRiskLevel(p.riskScore) : null,
 		}));
@@ -124,9 +124,7 @@ export default async function MultisigPage({
 			</div>
 		);
 
-		const signersContent = (
-			<SignersList signers={signersData} />
-		);
+		const signersContent = <SignersList signers={signersData} />;
 
 		const proposalsContent = (
 			<ProposalHistory
@@ -139,8 +137,18 @@ export default async function MultisigPage({
 
 		const tabs = [
 			{ id: "overview", label: "Overview", content: overviewContent },
-			{ id: "signers", label: `Signers (${signers.length})`, shortLabel: "Signers", content: signersContent },
-			{ id: "proposals", label: `Proposals (${pagination.total})`, shortLabel: "Proposals", content: proposalsContent },
+			{
+				id: "signers",
+				label: `Signers (${signers.length})`,
+				shortLabel: "Signers",
+				content: signersContent,
+			},
+			{
+				id: "proposals",
+				label: `Proposals (${pagination.total})`,
+				shortLabel: "Proposals",
+				content: proposalsContent,
+			},
 		];
 
 		if (multisig.vaults.length > 0) {

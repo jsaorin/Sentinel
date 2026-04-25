@@ -113,8 +113,12 @@ export function ProposalsTable({
 						</p>
 					) : (
 						filtered.map((p, i) => {
-							const displayStatus = (STATUS_DISPLAY[p.status] ?? "Pending") as "Pending" | "Executed" | "Rejected";
-							const riskLevel = p.riskScore != null ? getRiskLevel(p.riskScore) : null;
+							const displayStatus = (STATUS_DISPLAY[p.status] ?? "Pending") as
+								| "Pending"
+								| "Executed"
+								| "Rejected";
+							const riskLevel =
+								p.riskScore != null ? getRiskLevel(p.riskScore) : null;
 
 							return (
 								<Link
@@ -122,7 +126,9 @@ export function ProposalsTable({
 									href={`/proposal/${p.id}`}
 									className={[
 										"flex items-center justify-between py-4 px-2 hover:bg-bg-hover transition-colors",
-										i < filtered.length - 1 ? "border-b border-border-subtle" : "",
+										i < filtered.length - 1
+											? "border-b border-border-subtle"
+											: "",
 									].join(" ")}
 								>
 									{/* Mobile */}
@@ -131,7 +137,8 @@ export function ProposalsTable({
 											#{p.proposalIndex}
 										</span>
 										<span className="text-xs text-text-tertiary">
-											{p.multisigLabel ?? `${p.multisigAddress.slice(0, 4)}...${p.multisigAddress.slice(-4)}`}
+											{p.multisigLabel ??
+												`${p.multisigAddress.slice(0, 4)}...${p.multisigAddress.slice(-4)}`}
 										</span>
 									</div>
 
@@ -143,7 +150,8 @@ export function ProposalsTable({
 										{p.summary ?? "—"}
 									</span>
 									<span className="w-40 text-left text-md text-text-secondary truncate hidden md:block">
-										{p.multisigLabel ?? `${p.multisigAddress.slice(0, 4)}...${p.multisigAddress.slice(-4)}`}
+										{p.multisigLabel ??
+											`${p.multisigAddress.slice(0, 4)}...${p.multisigAddress.slice(-4)}`}
 									</span>
 									<span className="w-24 hidden md:flex justify-center">
 										<Badge variant={STATUS_DISPLAY_VARIANT[displayStatus]}>
@@ -163,7 +171,8 @@ export function ProposalsTable({
 				{pagination.totalPages > 1 && (
 					<div className="flex items-center justify-between pt-4 mt-2 border-t border-border-subtle">
 						<span className="text-xs text-text-tertiary">
-							Page {pagination.page} of {pagination.totalPages} ({pagination.total} total)
+							Page {pagination.page} of {pagination.totalPages} (
+							{pagination.total} total)
 						</span>
 						<div className="flex items-center gap-2">
 							<button

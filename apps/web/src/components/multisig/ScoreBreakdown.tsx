@@ -46,7 +46,10 @@ function ScoreBar({ item }: { item: BreakdownItem }) {
 	const label = LEVEL_LABELS[level];
 
 	return (
-		<div ref={ref} className="py-3 border-b border-border-subtle last:border-b-0">
+		<div
+			ref={ref}
+			className="py-3 border-b border-border-subtle last:border-b-0"
+		>
 			<div className="flex items-center justify-between mb-2">
 				<span className="text-xs font-semibold tracking-wider uppercase text-text-secondary">
 					{item.label}
@@ -88,7 +91,10 @@ function timeAgo(date: Date): string {
 	return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
 }
 
-export function ScoreBreakdown({ breakdown, calculatedAt }: ScoreBreakdownProps) {
+export function ScoreBreakdown({
+	breakdown,
+	calculatedAt,
+}: ScoreBreakdownProps) {
 	const items: BreakdownItem[] = [
 		{ label: "Threshold", value: breakdown.threshold },
 		{ label: "Config Authority", value: breakdown.configAuthority },

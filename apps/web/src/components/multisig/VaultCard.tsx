@@ -24,13 +24,18 @@ type VaultCardProps = {
 	pda: string;
 };
 
-function TokenIcon({ src, symbol }: { src: string | null; symbol: string | null }) {
+function TokenIcon({
+	src,
+	symbol,
+}: { src: string | null; symbol: string | null }) {
 	const fallbackLetter = (symbol ?? "?").charAt(0);
 
 	if (!src) {
 		return (
 			<div className="w-7 h-7 rounded-full bg-bg-overlay flex items-center justify-center shrink-0">
-				<span className="text-xs font-bold text-text-secondary">{fallbackLetter}</span>
+				<span className="text-xs font-bold text-text-secondary">
+					{fallbackLetter}
+				</span>
 			</div>
 		);
 	}
@@ -46,7 +51,8 @@ function TokenIcon({ src, symbol }: { src: string | null; symbol: string | null 
 				const target = e.currentTarget;
 				target.style.display = "none";
 				const fallback = document.createElement("div");
-				fallback.className = "w-7 h-7 rounded-full bg-bg-overlay flex items-center justify-center shrink-0";
+				fallback.className =
+					"w-7 h-7 rounded-full bg-bg-overlay flex items-center justify-center shrink-0";
 				fallback.innerHTML = `<span class="text-xs font-bold text-text-secondary">${fallbackLetter}</span>`;
 				target.parentNode?.insertBefore(fallback, target);
 			}}
@@ -81,9 +87,7 @@ export function VaultCard({ vaultIndex, pda }: VaultCardProps) {
 		<Card variant="default" padding="lg">
 			{/* Vault header */}
 			<div className="flex items-center justify-between pb-4 border-b border-border-subtle">
-				<h3 className="text-lg font-semibold">
-					Vault {vaultIndex}
-				</h3>
+				<h3 className="text-lg font-semibold">Vault {vaultIndex}</h3>
 				<a
 					href={`${SOLSCAN_BASE}/${pda}`}
 					target="_blank"
