@@ -76,7 +76,7 @@ const threatAnalysisSchema = z.object({
 					.enum(["attacker", "victim", "compromised", "vulnerable", "unknown"])
 					.nullable()
 					.optional(),
-				address: z.string().min(1),
+				address: z.string().nullable().optional(),
 				contextSnippet: z.string().nullable().optional(),
 			}),
 		)
@@ -163,18 +163,23 @@ export class GroqAIAnalysisService implements IAIAnalysisService {
 
 		const data = validation.data;
 		const filteredEntities: ThreatAnalysisResult["entities"] = [];
-		const rejected: Array<{ address: string; reason: string }> = [];
+		const rejected: Array<{ address: string | null; reason: string }> = [];
 
 		for (const entity of data.entities) {
-			const rejection = this.rejectNonSolanaAddress(entity.address);
+			const address = entity.address?.trim();
+			if (!address) {
+				rejected.push({ address: entity.address ?? null, reason: "missing-address" });
+				continue;
+			}
+			const rejection = this.rejectNonSolanaAddress(address);
 			if (rejection) {
-				rejected.push({ address: entity.address, reason: rejection });
+				rejected.push({ address, reason: rejection });
 				continue;
 			}
 			filteredEntities.push({
 				kind: entity.kind,
 				role: entity.role ?? null,
-				address: entity.address,
+				address,
 				contextSnippet: entity.contextSnippet ?? null,
 			});
 		}

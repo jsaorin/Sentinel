@@ -6,6 +6,7 @@ export type ThreatSignalReceivedPayload = {
 	externalId: string;
 	content: string;
 	capturedAt: string;
+	sourceUrl: string | null;
 };
 
 export function threatSignalReceivedToIntegrationEvent(
@@ -25,6 +26,7 @@ export function threatSignalReceivedToIntegrationEvent(
 				externalId: ev.externalId,
 				content: ev.content,
 				capturedAt: ev.capturedAt.toISOString(),
+				sourceUrl: ev.sourceUrl,
 			},
 		},
 	};

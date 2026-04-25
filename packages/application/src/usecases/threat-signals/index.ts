@@ -1,5 +1,6 @@
 export { IngestThreatSignalCommandHandler } from "./commands/IngestThreatSignalCommandHandler.js";
 export { AnalyzeThreatSignalCommandHandler } from "./commands/AnalyzeThreatSignalCommandHandler.js";
+export { ListThreatSignalsQueryHandler } from "./queries/ListThreatSignalsQueryHandler.js";
 export type {
 	IngestThreatSignalCommandInputDto,
 	IngestThreatSignalCommandOutputDto,
@@ -8,4 +9,10 @@ export type {
 	AnalyzeThreatSignalCommandInputDto,
 	AnalyzeThreatSignalCommandOutputDto,
 } from "./dtos/AnalyzeThreatSignalCommandDto.js";
+export type {
+	ListThreatSignalsQueryInputDto,
+	ListThreatSignalsQueryOutputDto,
+	ListThreatSignalsQueryOutputItem,
+	ListThreatSignalsQueryPagination,
+} from "./dtos/ListThreatSignalsQueryDto.js";
 export { THREAT_SIGNAL_USE_CASE_TYPES } from "./types.js";

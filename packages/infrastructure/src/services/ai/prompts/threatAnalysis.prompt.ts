@@ -46,7 +46,21 @@ Rules:
   - "contextSnippet": a 1-2 sentence description (up to 240 chars) explaining what this specific address is and what it did or suffered in the event. Paraphrase using the full message context — do NOT copy the surrounding text verbatim, and do NOT output a label like "Theft address" or "Apr 11 Victim: $2M". Good example: "User wallet drained on 2026-04-11 for 2.079M USDC via the fake Ledger Live iOS app campaign." Null only if the message gives absolutely no context for this address.
 - If you cannot confidently classify an address's kind from the text, use "wallet". Same rule for "role": default to "unknown".
 - Never invent addresses. Only return addresses that literally appear in the input.
-- If the message is not in English, translate the summary and every contextSnippet to English.`;
+- If the message refers in prose to a wallet, account, key, signer, or actor without giving its on-chain address as a literal string, DO NOT create an entity for it. Better to omit than to fabricate. Never output address=null. Never set address to a placeholder, description, or human name.
+- Do NOT merge two distinct mentions into one entity. Each literal address string in the message corresponds to its OWN entity, with its OWN role and contextSnippet derived from the label/header that immediately introduces THAT address. Do not transfer context from a different prose mention onto a listed address.
+- When the message has a header like "Theft addresses" / "Drainer wallets" / "Scammer addresses" followed by a list of N addresses, output exactly N entities with role="attacker", regardless of what prose elsewhere in the message says about other (entity-less) actors.
+- If the message is not in English, translate the summary and every contextSnippet to English.
+
+Disambiguation example. Input excerpt:
+  "An address related to the team sent a message onchain to the exploiter.
+   Theft address
+   0xAAA...
+   SoLAddrBBB..."
+Correct entities: [
+  { "kind": "wallet", "role": "attacker", "address": "0xAAA...", "contextSnippet": "Address listed under 'Theft address' header for the incident." },
+  { "kind": "wallet", "role": "attacker", "address": "SoLAddrBBB...", "contextSnippet": "Address listed under 'Theft address' header for the incident." }
+]
+The "team address" is NOT included because the message does not provide its literal on-chain string.`;
 
 export function buildThreatAnalysisUserPrompt(
 	input: ThreatAnalysisInput,

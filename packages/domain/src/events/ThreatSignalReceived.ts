@@ -15,6 +15,7 @@ export class ThreatSignalReceived implements DomainEvent {
 		public readonly externalId: string,
 		public readonly content: string,
 		public readonly capturedAt: Date,
+		public readonly sourceUrl: string | null = null,
 		public readonly occurredAt = new Date(),
 	) {}
 }

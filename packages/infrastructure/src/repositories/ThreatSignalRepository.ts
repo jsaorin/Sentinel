@@ -1,5 +1,7 @@
 import type {
 	AffectedEntity,
+	CountThreatSignalsOptions,
+	FindAllThreatSignalsPaginatedOptions,
 	IThreatSignalRepository,
 	ThreatSignal as DomainThreatSignal,
 	ThreatSource,
@@ -48,6 +50,7 @@ export class ThreatSignalRepository implements IThreatSignalRepository {
 					sourceKind: signal.source.kind,
 					sourceIdentifier: signal.source.identifier,
 					sourceLabel: signal.source.label ?? null,
+					sourceUrl: signal.sourceUrl,
 					externalId: signal.externalId,
 					content: signal.content,
 					capturedAt: signal.capturedAt,
@@ -60,6 +63,7 @@ export class ThreatSignalRepository implements IThreatSignalRepository {
 				},
 				update: {
 					sourceLabel: signal.source.label ?? null,
+					sourceUrl: signal.sourceUrl,
 					content: signal.content,
 					capturedAt: signal.capturedAt,
 					isThreat: signal.isThreat,
@@ -95,5 +99,31 @@ export class ThreatSignalRepository implements IThreatSignalRepository {
 		});
 
 		return mapPrismaThreatSignalToDomain(record);
+	}
+
+	async findAllPaginated(
+		options: FindAllThreatSignalsPaginatedOptions,
+	): Promise<DomainThreatSignal[]> {
+		const records = await this.prisma.threatSignal.findMany({
+			where: this.buildWhere(options),
+			orderBy: { [options.sortBy]: options.sortOrder },
+			skip: options.skip,
+			take: options.take,
+			include: { entities: true },
+		});
+		return records.map(mapPrismaThreatSignalToDomain);
+	}
+
+	async countAll(options: CountThreatSignalsOptions): Promise<number> {
+		return this.prisma.threatSignal.count({ where: this.buildWhere(options) });
+	}
+
+	private buildWhere(
+		options: CountThreatSignalsOptions,
+	): Prisma.ThreatSignalWhereInput {
+		const where: Prisma.ThreatSignalWhereInput = {};
+		if (options.sourceKind) where.sourceKind = options.sourceKind;
+		if (options.isThreat !== undefined) where.isThreat = options.isThreat;
+		return where;
 	}
 }

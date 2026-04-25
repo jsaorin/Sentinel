@@ -5,6 +5,7 @@ export type AnalyzeThreatSignalCommandInputDto = {
 	externalId: string;
 	content: string;
 	capturedAt: Date;
+	sourceUrl?: string | null;
 };
 
 export type AnalyzeThreatSignalCommandOutputDto = {

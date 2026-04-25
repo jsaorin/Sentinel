@@ -29,6 +29,7 @@ export function mapPrismaThreatSignalToDomain(
 		externalId: record.externalId,
 		content: record.content,
 		capturedAt: record.capturedAt,
+		sourceUrl: record.sourceUrl ?? null,
 		isThreat: record.isThreat,
 		severity: record.severity as ThreatSeverity | null,
 		category: record.category as ThreatCategory | null,

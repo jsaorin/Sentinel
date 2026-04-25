@@ -2,6 +2,7 @@ import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { HealthController } from "../../presentation/health/HealthController.js";
 import { MultisigController } from "../../presentation/multisigs/MultisigController.js";
 import { ProposalController } from "../../presentation/proposals/ProposalController.js";
+import { ThreatSignalController } from "../../presentation/threat-signals/ThreatSignalController.js";
 import { CONTROLLER_TYPES } from "./controllerTypes.js";
 
 export const controllerBindings = new ContainerModule(
@@ -17,5 +18,9 @@ export const controllerBindings = new ContainerModule(
 		options
 			.bind<ProposalController>(CONTROLLER_TYPES.ProposalController)
 			.to(ProposalController);
+
+		options
+			.bind<ThreatSignalController>(CONTROLLER_TYPES.ThreatSignalController)
+			.to(ThreatSignalController);
 	},
 );
