@@ -103,6 +103,54 @@ export const PROPOSAL_STATUSES = [
 	"Rejected",
 ] as const;
 
+/* ── Threat Signal: Severity ─────────────────────────────── */
+
+export const SEVERITY_LABEL: Record<string, string> = {
+	low: "Low",
+	medium: "Medium",
+	high: "High",
+};
+
+export const SEVERITY_VARIANT: Record<string, "low" | "medium" | "high"> = {
+	low: "low",
+	medium: "medium",
+	high: "high",
+};
+
+/* ── Threat Signal: Category ─────────────────────────────── */
+
+export const CATEGORY_LABEL: Record<string, string> = {
+	phishing: "Phishing",
+	rugpull: "Rug Pull",
+	exploit: "Exploit",
+	compromised_key: "Compromised Key",
+	other: "Other",
+};
+
+/* ── Threat Signal: Source Kind ────────────────────────────── */
+
+export const SOURCE_KIND_LABEL: Record<string, string> = {
+	telegram: "Telegram",
+	twitter: "Twitter",
+	rss: "RSS",
+};
+
+/* ── Threat Signal: Filters ───────────────────────────────── */
+
+export const THREAT_SOURCE_FILTERS = [
+	"All",
+	"Telegram",
+	"Twitter",
+	"RSS",
+] as const;
+
+export const THREAT_SEVERITY_FILTERS = [
+	"All",
+	"High",
+	"Medium",
+	"Low",
+] as const;
+
 /* ── Pagination ──────────────────────────────────────────── */
 
 export const PAGE_SIZE = 10;

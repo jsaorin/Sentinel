@@ -137,6 +137,41 @@ export type ProposalDetailResponse = {
 	instructions: DecodedInstructionResponse[];
 };
 
+/* ── Threat signal types ────────────────────────────────── */
+
+export type ThreatSignalListItemResponse = {
+	id: string;
+	sourceKind: "telegram" | "twitter" | "rss";
+	sourceLabel: string | null;
+	sourceUrl: string | null;
+	severity: "low" | "medium" | "high" | null;
+	category:
+		| "phishing"
+		| "rugpull"
+		| "exploit"
+		| "compromised_key"
+		| "other"
+		| null;
+	summary: string | null;
+	isThreat: boolean | null;
+	capturedAt: string;
+	analyzedAt: string | null;
+};
+
+export type PaginatedThreatSignalsResponse = {
+	items: ThreatSignalListItemResponse[];
+	pagination: PaginationResponse;
+};
+
+export type ThreatSignalQueryParams = {
+	page?: number;
+	pageSize?: number;
+	sourceKind?: "telegram" | "twitter" | "rss";
+	isThreat?: boolean;
+	sortBy?: "capturedAt" | "createdAt";
+	sortOrder?: "asc" | "desc";
+};
+
 /* ── Fetch helper ────────────────────────────────────────── */
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
@@ -294,6 +329,26 @@ export async function getAllProposals(
 		},
 	};
 }
+
+/* ── Threat signals ─────────────────────────────────────── */
+
+export async function getThreatSignals(
+	params: ThreatSignalQueryParams = {},
+): Promise<PaginatedThreatSignalsResponse> {
+	const qs = new URLSearchParams();
+	if (params.page != null) qs.set("page", String(params.page));
+	if (params.pageSize != null) qs.set("pageSize", String(params.pageSize));
+	if (params.sourceKind) qs.set("sourceKind", params.sourceKind);
+	if (params.isThreat != null) qs.set("isThreat", String(params.isThreat));
+	if (params.sortBy) qs.set("sortBy", params.sortBy);
+	if (params.sortOrder) qs.set("sortOrder", params.sortOrder);
+	const query = qs.toString();
+	return apiFetch<PaginatedThreatSignalsResponse>(
+		`/threat-signals${query ? `?${query}` : ""}`,
+	);
+}
+
+/* ── Create multisig ───────────────────────────────────── */
 
 export async function createMultisig(
 	address: string,
