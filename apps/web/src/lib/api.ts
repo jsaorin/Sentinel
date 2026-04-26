@@ -238,9 +238,22 @@ export async function getProposalDetail(
 
 /* ── Global proposals (all multisigs) ─────────────────── */
 
-export type GlobalProposalResponse = ProposalResponse & {
-	multisigAddress: string;
-	multisigLabel: string | null;
+export type GlobalProposalResponse = {
+	id: string;
+	proposalIndex: number;
+	transactionIndex: number;
+	pda: string;
+	transactionPda: string;
+	status: string;
+	creator: string | null;
+	createdAt: string;
+	executedAt: string | null;
+	riskScore: number | null;
+	summary: string | null;
+	multisig: {
+		address: string;
+		label: string | null;
+	};
 };
 
 export type PaginatedGlobalProposalsResponse = {
@@ -248,86 +261,16 @@ export type PaginatedGlobalProposalsResponse = {
 	pagination: PaginationResponse;
 };
 
-const MOCK_MULTISIGS_META = [
-	{
-		address: "2p657xuiZRvCjAHyYJQ21C4jdJtXQu4hQn4ZwwTkcAoU",
-		label: "hackathon-multisig",
-	},
-	{
-		address: "2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88",
-		label: "Drift Security Council",
-	},
-	{
-		address: "7gYJPNhRsyuiFWTr9apSUqbBHTNVV3bfya4RoHwbD6vp",
-		label: "Treasury Ops",
-	},
-];
-
-const MOCK_STATUSES = [
-	"APPROVED",
-	"EXECUTED",
-	"ACTIVE",
-	"REJECTED",
-	"DRAFT",
-	"CANCELLED",
-];
-const MOCK_SUMMARIES = [
-	"1 instruction(s) — flags: first-time action",
-	"2 instruction(s) — flags: large transfer",
-	"1 instruction(s) — flags: authority transfer",
-	"3 instruction(s) — flags: unknown program, multi-instruction",
-	"1 instruction(s) — flags: durable nonce",
-	"1 instruction(s)",
-];
-
-function generateMockGlobalProposals(): GlobalProposalResponse[] {
-	const proposals: GlobalProposalResponse[] = [];
-	for (let i = 0; i < 35; i++) {
-		const ms = MOCK_MULTISIGS_META[i % MOCK_MULTISIGS_META.length];
-		const status = MOCK_STATUSES[i % MOCK_STATUSES.length];
-		const riskScore = Math.round(Math.random() * 80);
-		const date = new Date();
-		date.setDate(date.getDate() - i);
-		proposals.push({
-			id: `mock-${String(i).padStart(4, "0")}`,
-			proposalIndex: 100 - i,
-			transactionIndex: 1,
-			pda: `pda${i}`,
-			transactionPda: `txpda${i}`,
-			status,
-			creator: "d7A3xgXuC18zHpRNFgUKeuuQbRTe1dbpiyGBz3HDhAc",
-			createdAt: date.toISOString(),
-			executedAt: status === "EXECUTED" ? date.toISOString() : null,
-			riskScore,
-			summary: MOCK_SUMMARIES[i % MOCK_SUMMARIES.length],
-			instructions: [],
-			multisigAddress: ms.address,
-			multisigLabel: ms.label,
-		});
-	}
-	return proposals;
-}
-
-let _mockCache: GlobalProposalResponse[] | null = null;
-
 export async function getAllProposals(
 	page = 1,
 	pageSize = 10,
 ): Promise<PaginatedGlobalProposalsResponse> {
-	// TODO: Replace with real endpoint when available:
-	//   return apiFetch<PaginatedGlobalProposalsResponse>(`/proposals?page=${page}&pageSize=${pageSize}`);
-	if (!_mockCache) _mockCache = generateMockGlobalProposals();
-	const start = (page - 1) * pageSize;
-	const paged = _mockCache.slice(start, start + pageSize);
-	return {
-		proposals: paged,
-		pagination: {
-			page,
-			pageSize,
-			total: _mockCache.length,
-			totalPages: Math.ceil(_mockCache.length / pageSize),
-		},
-	};
+	const params = new URLSearchParams();
+	params.set("page", String(page));
+	params.set("pageSize", String(pageSize));
+	return apiFetch<PaginatedGlobalProposalsResponse>(
+		`/proposals?${params.toString()}`,
+	);
 }
 
 /* ── Threat signals ─────────────────────────────────────── */
@@ -346,6 +289,15 @@ export async function getThreatSignals(
 	return apiFetch<PaginatedThreatSignalsResponse>(
 		`/threat-signals${query ? `?${query}` : ""}`,
 	);
+}
+
+export async function getThreatSignalById(
+	id: string,
+): Promise<ThreatSignalListItemResponse | null> {
+	const result = await apiFetch<PaginatedThreatSignalsResponse>(
+		"/threat-signals?pageSize=100",
+	);
+	return result.items.find((s) => s.id === id) ?? null;
 }
 
 /* ── Create multisig ───────────────────────────────────── */

@@ -11,7 +11,21 @@ export const metadata: Metadata = {
 };
 
 export default async function ProposalsPage() {
-	const { proposals, pagination } = await getAllProposals(1);
+	let proposals: Awaited<ReturnType<typeof getAllProposals>>["proposals"] = [];
+	let pagination: Awaited<ReturnType<typeof getAllProposals>>["pagination"] = {
+		page: 1,
+		pageSize: 10,
+		total: 0,
+		totalPages: 1,
+	};
+
+	try {
+		const result = await getAllProposals(1);
+		proposals = result.proposals;
+		pagination = result.pagination;
+	} catch {
+		/* API unavailable — render empty table */
+	}
 
 	return (
 		<main className="min-h-screen">

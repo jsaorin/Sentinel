@@ -57,8 +57,8 @@ export function ProposalsTable({
 		const matchesSearch =
 			!search ||
 			String(p.proposalIndex).includes(search) ||
-			(p.multisigLabel ?? "").toLowerCase().includes(search.toLowerCase()) ||
-			p.multisigAddress.toLowerCase().includes(search.toLowerCase());
+			(p.multisig.label ?? "").toLowerCase().includes(search.toLowerCase()) ||
+			p.multisig.address.toLowerCase().includes(search.toLowerCase());
 		return matchesStatus && matchesSearch;
 	});
 
@@ -137,8 +137,8 @@ export function ProposalsTable({
 											#{p.proposalIndex}
 										</span>
 										<span className="text-xs text-text-tertiary">
-											{p.multisigLabel ??
-												`${p.multisigAddress.slice(0, 4)}...${p.multisigAddress.slice(-4)}`}
+											{p.multisig.label ??
+												`${p.multisig.address.slice(0, 4)}...${p.multisig.address.slice(-4)}`}
 										</span>
 									</div>
 
@@ -150,8 +150,8 @@ export function ProposalsTable({
 										{p.summary ?? "—"}
 									</span>
 									<span className="w-40 text-left text-md text-text-secondary truncate hidden md:block">
-										{p.multisigLabel ??
-											`${p.multisigAddress.slice(0, 4)}...${p.multisigAddress.slice(-4)}`}
+										{p.multisig.label ??
+											`${p.multisig.address.slice(0, 4)}...${p.multisig.address.slice(-4)}`}
 									</span>
 									<span className="w-24 hidden md:flex justify-center">
 										<Badge variant={STATUS_DISPLAY_VARIANT[displayStatus]}>
