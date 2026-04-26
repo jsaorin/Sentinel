@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { Card, Badge } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
 import {
@@ -79,7 +80,12 @@ export function ThreatSignalsTable({
 		}
 	}, [refreshKey, fetchPage]);
 
-	const filtered = items.filter((s) => {
+	const deduplicated = items.filter((s, i, arr) => {
+		if (!s.summary) return true;
+		return arr.findIndex((other) => other.summary === s.summary) === i;
+	});
+
+	const filtered = deduplicated.filter((s) => {
 		const matchesSearch =
 			!search ||
 			(s.summary ?? "").toLowerCase().includes(search.toLowerCase()) ||
@@ -146,9 +152,10 @@ export function ThreatSignalsTable({
 								? SEVERITY_VARIANT[s.severity]
 								: undefined;
 
-							const row = (
-								<div
+							return (
+								<Link
 									key={s.id}
+									href={`/scanner/${s.id}`}
 									className={[
 										"flex items-center justify-between py-4 px-2 hover:bg-bg-hover transition-colors",
 										i < filtered.length - 1
@@ -208,24 +215,8 @@ export function ThreatSignalsTable({
 											<span className="text-xs text-text-tertiary">—</span>
 										)}
 									</span>
-								</div>
+								</Link>
 							);
-
-							if (s.sourceUrl) {
-								return (
-									<a
-										key={s.id}
-										href={s.sourceUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="block"
-									>
-										{row}
-									</a>
-								);
-							}
-
-							return row;
 						})
 					)}
 				</div>
