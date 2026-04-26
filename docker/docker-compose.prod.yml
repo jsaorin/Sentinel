@@ -46,9 +46,11 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-sentinel}:${POSTGRES_PASSWORD:-sentinel}@postgres:5432/${POSTGRES_DB:-sentinel}
       RABBITMQ_HOST: rabbitmq
+      REDIS_HOST: redis
     depends_on:
       - postgres
       - rabbitmq
+      - redis
     networks:
       - app-network
 
