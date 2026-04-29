@@ -1,5 +1,8 @@
 import type { ListThreatSignalsQueryOutputItem } from "@sentinel/application";
-import type { ThreatSignalListItemDto } from "@sentinel/common/dtos";
+import type {
+	AffectedEntityDto,
+	ThreatSignalListItemDto,
+} from "@sentinel/common/dtos";
 
 export function toThreatSignalListItemDto(
 	item: ListThreatSignalsQueryOutputItem,
@@ -15,5 +18,13 @@ export function toThreatSignalListItemDto(
 		isThreat: item.isThreat,
 		capturedAt: item.capturedAt.toISOString(),
 		analyzedAt: item.analyzedAt ? item.analyzedAt.toISOString() : null,
+		entities: item.entities.map(
+			(e): AffectedEntityDto => ({
+				kind: e.kind,
+				address: e.address,
+				role: e.role,
+				contextSnippet: e.contextSnippet,
+			}),
+		),
 	};
 }
