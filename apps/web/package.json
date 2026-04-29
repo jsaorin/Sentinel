@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"build": "next build",
+		"build": "pnpm --filter @sentinel/common --filter @sentinel/ui build && next build",
 		"start": "next start",
 		"format": "biome format --write ./src",
 		"lint": "biome lint ./src",
