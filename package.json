@@ -26,7 +26,7 @@
 		"db:seed": "turbo run db:seed",
 		"db:reset": "turbo run db:reset",
 		"clean": "find . -name 'dist' -type d -not -path '*/node_modules/*' -exec rm -rf {} + && find . -name '.turbo' -type d -exec rm -rf {} + && find . -name 'tsconfig.tsbuildinfo' -type f -exec rm -f {} +",
-		"prepare": "husky"
+		"prepare": "husky || true"
 	},
 	"packageManager": "pnpm@10.33.0",
 	"workspaces": ["packages/*", "apps/*"],
