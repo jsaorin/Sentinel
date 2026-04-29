@@ -48,9 +48,13 @@ export class ProposalRepository implements IProposalRepository {
 	async findAllPaginated(
 		options: FindAllProposalsPaginatedOptions,
 	): Promise<Proposal[]> {
+		const orderBy =
+			options.sortBy === "executedAt"
+				? { executedAt: { sort: "desc", nulls: "last" } as const }
+				: { createdAt: "desc" as const };
 		const records = await this.prisma.proposal.findMany({
 			where: options.status ? { status: options.status } : undefined,
-			orderBy: { [options.sortBy]: { sort: "desc", nulls: "last" } },
+			orderBy,
 			skip: options.skip,
 			take: options.take,
 		});
