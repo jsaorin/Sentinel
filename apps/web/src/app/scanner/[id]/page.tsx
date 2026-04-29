@@ -139,21 +139,6 @@ export default async function ThreatSignalPage({
 										: "No"
 							}
 						/>
-						{signal.sourceUrl && (
-							<div className="flex items-center justify-between py-2.5 border-b border-border-subtle last:border-b-0">
-								<span className="text-text-tertiary text-xs uppercase tracking-wider font-semibold">
-									Source URL
-								</span>
-								<a
-									href={signal.sourceUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="text-sm text-text-link hover:text-primary transition-colors font-mono"
-								>
-									Open in source &rarr;
-								</a>
-							</div>
-						)}
 					</div>
 				</Card>
 
