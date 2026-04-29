@@ -54,6 +54,7 @@ export class ListThreatSignalsQueryHandler extends BaseUseCase<
 				isThreat: s.isThreat,
 				capturedAt: s.capturedAt,
 				analyzedAt: s.analyzedAt,
+				entities: s.entities,
 			})),
 			pagination: {
 				page: input.page,

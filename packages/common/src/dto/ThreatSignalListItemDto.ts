@@ -1,3 +1,5 @@
+import type { AffectedEntityDto } from "./AffectedEntityDto.js";
+
 export class ThreatSignalListItemDto {
 	id: string;
 	sourceKind: "telegram" | "twitter" | "rss";
@@ -15,4 +17,5 @@ export class ThreatSignalListItemDto {
 	isThreat: boolean | null;
 	capturedAt: string;
 	analyzedAt: string | null;
+	entities: AffectedEntityDto[];
 }

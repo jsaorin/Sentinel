@@ -1,4 +1,5 @@
 import type {
+	AffectedEntity,
 	ThreatCategory,
 	ThreatSeverity,
 	ThreatSignalSortField,
@@ -26,6 +27,7 @@ export type ListThreatSignalsQueryOutputItem = {
 	isThreat: boolean | null;
 	capturedAt: Date;
 	analyzedAt: Date | null;
+	entities: AffectedEntity[];
 };
 
 export type ListThreatSignalsQueryPagination = {
