@@ -135,6 +135,33 @@ export const SOURCE_KIND_LABEL: Record<string, string> = {
 	rss: "RSS",
 };
 
+/* ── Threat Signal: Affected Entities ──────────────────────── */
+
+export const ENTITY_KIND_LABEL: Record<string, string> = {
+	program: "Program",
+	multisig: "Multisig",
+	wallet: "Wallet",
+};
+
+export const ENTITY_ROLE_LABEL: Record<string, string> = {
+	attacker: "Attacker",
+	victim: "Victim",
+	compromised: "Compromised",
+	vulnerable: "Vulnerable",
+	unknown: "Unknown",
+};
+
+export const ENTITY_ROLE_VARIANT: Record<
+	string,
+	"critical" | "high" | "medium" | "info" | "unknown"
+> = {
+	attacker: "critical",
+	victim: "high",
+	compromised: "high",
+	vulnerable: "medium",
+	unknown: "unknown",
+};
+
 /* ── Threat Signal: Filters ───────────────────────────────── */
 
 export const THREAT_SOURCE_FILTERS = [

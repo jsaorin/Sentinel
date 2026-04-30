@@ -139,6 +139,19 @@ export type ProposalDetailResponse = {
 
 /* ── Threat signal types ────────────────────────────────── */
 
+export type AffectedEntityResponse = {
+	kind: "program" | "multisig" | "wallet";
+	address: string;
+	role:
+		| "attacker"
+		| "victim"
+		| "compromised"
+		| "vulnerable"
+		| "unknown"
+		| null;
+	contextSnippet: string | null;
+};
+
 export type ThreatSignalListItemResponse = {
 	id: string;
 	sourceKind: "telegram" | "twitter" | "rss";
@@ -156,6 +169,7 @@ export type ThreatSignalListItemResponse = {
 	isThreat: boolean | null;
 	capturedAt: string;
 	analyzedAt: string | null;
+	entities: AffectedEntityResponse[];
 };
 
 export type PaginatedThreatSignalsResponse = {

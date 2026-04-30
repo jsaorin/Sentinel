@@ -8,6 +8,10 @@ import {
 	SEVERITY_VARIANT,
 	CATEGORY_LABEL,
 	SOURCE_KIND_LABEL,
+	ENTITY_KIND_LABEL,
+	ENTITY_ROLE_LABEL,
+	ENTITY_ROLE_VARIANT,
+	SOLSCAN_BASE,
 } from "@/lib/constants";
 
 export async function generateMetadata({
@@ -164,6 +168,101 @@ export default async function ThreatSignalPage({
 						)}
 					</div>
 				</Card>
+
+				{/* Affected Entities */}
+				{signal.entities.length > 0 && (
+					<Card variant="default" padding="lg">
+						<h3 className="text-lg font-semibold pb-4 border-b border-border-subtle">
+							Affected Entities ({signal.entities.length})
+						</h3>
+
+						{/* Table header */}
+						<div className="hidden md:flex items-center py-3 px-2 text-xs uppercase tracking-wider font-semibold text-text-tertiary border-b border-border-subtle">
+							<span className="w-28">Type</span>
+							<span className="w-28">Role</span>
+							<span className="w-40">Address</span>
+							<span className="flex-1 min-w-0">Description</span>
+						</div>
+
+						{/* Rows */}
+						{signal.entities.map((entity, i) => (
+							<div
+								key={`${entity.kind}-${entity.address}`}
+								className={[
+									"flex flex-col md:flex-row md:items-center gap-3 md:gap-0 py-4 px-2",
+									i < signal.entities.length - 1
+										? "border-b border-border-subtle"
+										: "",
+								].join(" ")}
+							>
+								{/* Mobile layout */}
+								<div className="flex flex-col gap-2 md:hidden">
+									<div className="flex items-center gap-2">
+										<Badge variant="info">
+											{ENTITY_KIND_LABEL[entity.kind] ?? entity.kind}
+										</Badge>
+										{entity.role && (
+											<Badge
+												variant={
+													ENTITY_ROLE_VARIANT[entity.role] ?? "unknown"
+												}
+											>
+												{ENTITY_ROLE_LABEL[entity.role] ?? entity.role}
+											</Badge>
+										)}
+									</div>
+									<a
+										href={`${SOLSCAN_BASE}/${entity.address}`}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="font-mono text-sm text-text-link hover:text-primary transition-colors"
+									>
+										{entity.address}
+									</a>
+									{entity.contextSnippet && (
+										<p className="text-sm text-text-secondary">
+											{entity.contextSnippet}
+										</p>
+									)}
+								</div>
+
+								{/* Desktop layout */}
+								<span className="w-28 hidden md:flex">
+									<Badge variant="info">
+										{ENTITY_KIND_LABEL[entity.kind] ?? entity.kind}
+									</Badge>
+								</span>
+								<span className="w-28 hidden md:flex">
+									{entity.role ? (
+										<Badge
+											variant={
+												ENTITY_ROLE_VARIANT[entity.role] ?? "unknown"
+											}
+										>
+											{ENTITY_ROLE_LABEL[entity.role] ?? entity.role}
+										</Badge>
+									) : (
+										<span className="text-xs text-text-tertiary">—</span>
+									)}
+								</span>
+								<span className="w-40 hidden md:block">
+									<a
+										href={`${SOLSCAN_BASE}/${entity.address}`}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="font-mono text-sm text-text-link hover:text-primary transition-colors"
+									>
+										{entity.address.slice(0, 6)}...
+										{entity.address.slice(-6)}
+									</a>
+								</span>
+								<span className="flex-1 min-w-0 text-sm text-text-secondary hidden md:block">
+									{entity.contextSnippet ?? "—"}
+								</span>
+							</div>
+						))}
+					</Card>
+				)}
 
 				{/* Signal ID (for reference) */}
 				<Card variant="default" padding="lg">
