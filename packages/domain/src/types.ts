@@ -27,7 +27,7 @@ export const DOMAIN_SERVICE_TYPES = {
 	IdlResolverService: Symbol.for("IdlResolverService"),
 	RealtimeService: Symbol.for("RealtimeService"),
 	HeliusPayloadClassifier: Symbol.for("HeliusPayloadClassifier"),
-	NonceAccountScanner: Symbol.for("NonceAccountScanner"),
+	NonceAccountSubscriber: Symbol.for("NonceAccountSubscriber"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {
@@ -35,6 +35,7 @@ export const DOMAIN_CONFIG_TYPES = {
 	RedisConfig: Symbol.for("RedisConfig"),
 	GroqApiConfig: Symbol.for("GroqApiConfig"),
 	TelegramWatcherConfig: Symbol.for("TelegramWatcherConfig"),
+	LaserStreamConfig: Symbol.for("LaserStreamConfig"),
 };
 
 export const DOMAIN_TYPES = {

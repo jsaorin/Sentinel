@@ -11,7 +11,8 @@ class ReactorEnvironment extends Environment {
 	private _groqApiKey!: string;
 	private _groqModel!: string;
 	private _groqDryRun!: boolean;
-	private _nonceScanIntervalMs!: number;
+	private _alchemyGrpcEndpoint!: string;
+	private _alchemyGrpcToken!: string;
 
 	constructor() {
 		super();
@@ -29,7 +30,8 @@ class ReactorEnvironment extends Environment {
 		this.groqApiKey = env.GROQ_API_KEY;
 		this.groqModel = env.GROQ_MODEL;
 		this.groqDryRun = env.GROQ_DRY_RUN;
-		this.nonceScanIntervalMs = env.NONCE_SCAN_INTERVAL_MS;
+		this.alchemyGrpcEndpoint = env.ALCHEMY_GRPC_ENDPOINT;
+		this.alchemyGrpcToken = env.ALCHEMY_GRPC_TOKEN;
 	}
 
 	get amqpUrl() {
@@ -96,12 +98,20 @@ class ReactorEnvironment extends Environment {
 		this._groqDryRun = value;
 	}
 
-	get nonceScanIntervalMs() {
-		return this._nonceScanIntervalMs;
+	get alchemyGrpcEndpoint() {
+		return this._alchemyGrpcEndpoint;
 	}
 
-	set nonceScanIntervalMs(value) {
-		this._nonceScanIntervalMs = value;
+	set alchemyGrpcEndpoint(value) {
+		this._alchemyGrpcEndpoint = value;
+	}
+
+	get alchemyGrpcToken() {
+		return this._alchemyGrpcToken;
+	}
+
+	set alchemyGrpcToken(value) {
+		this._alchemyGrpcToken = value;
 	}
 }
 

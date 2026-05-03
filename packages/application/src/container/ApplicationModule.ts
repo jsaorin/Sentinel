@@ -17,9 +17,7 @@ import { ReconcileProposalCommandHandler } from "../usecases/realtime-sync/comma
 import { SyncMultisigStateCommandHandler } from "../usecases/realtime-sync/commands/SyncMultisigStateCommandHandler.js";
 import { ScoreMultisigHealthCommandHandler } from "../usecases/scoring/commands/ScoreMultisigHealthCommandHandler.js";
 import { ScoreProposalsCommandHandler } from "../usecases/scoring/commands/ScoreProposalsCommandHandler.js";
-import { ScanAllMultisigsNoncesCommandHandler } from "../usecases/security/commands/ScanAllMultisigsNoncesCommandHandler.js";
-import { ScanMultisigNoncesCommandHandler } from "../usecases/security/commands/ScanMultisigNoncesCommandHandler.js";
-import { ScanSignerNoncesCommandHandler } from "../usecases/security/commands/ScanSignerNoncesCommandHandler.js";
+import { IngestDetectedNonceCommandHandler } from "../usecases/security/commands/IngestDetectedNonceCommandHandler.js";
 import { ListNonceWarningsQueryHandler } from "../usecases/security/queries/ListNonceWarningsQueryHandler.js";
 import { AnalyzeThreatSignalCommandHandler } from "../usecases/threat-signals/commands/AnalyzeThreatSignalCommandHandler.js";
 import { IngestThreatSignalCommandHandler } from "../usecases/threat-signals/commands/IngestThreatSignalCommandHandler.js";
@@ -114,16 +112,8 @@ export const applicationModule = new ContainerModule(
 			.to(SyncMultisigStateCommandHandler)
 			.inSingletonScope();
 
-		bind(APPLICATION_TYPES.ScanSignerNoncesCommandHandler)
-			.to(ScanSignerNoncesCommandHandler)
-			.inSingletonScope();
-
-		bind(APPLICATION_TYPES.ScanMultisigNoncesCommandHandler)
-			.to(ScanMultisigNoncesCommandHandler)
-			.inSingletonScope();
-
-		bind(APPLICATION_TYPES.ScanAllMultisigsNoncesCommandHandler)
-			.to(ScanAllMultisigsNoncesCommandHandler)
+		bind(APPLICATION_TYPES.IngestDetectedNonceCommandHandler)
+			.to(IngestDetectedNonceCommandHandler)
 			.inSingletonScope();
 
 		bind(APPLICATION_TYPES.ListNonceWarningsQueryHandler)

@@ -6,5 +6,6 @@ export const reactorConfig = {
 	prefetch: 10,
 	manualAck: true,
 	reactorPort: environment.reactorPort,
-	nonceScanIntervalMs: environment.nonceScanIntervalMs,
+	alchemyGrpcEndpoint: environment.alchemyGrpcEndpoint,
+	alchemyGrpcToken: environment.alchemyGrpcToken,
 };

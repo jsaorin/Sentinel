@@ -4,6 +4,7 @@ import {
 	DOMAIN_TYPES,
 	type IHeliusWebhookService,
 	type IMultisigRepository,
+	type INonceAccountSubscriber,
 	type IProposalRepository,
 	type IRealtimeService,
 	type ISignerRepository,
@@ -15,7 +16,6 @@ import { APPLICATION_TYPES } from "../../../types.js";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
 import type { IngestNewProposalsCommandHandler } from "../../multisigs/commands/IngestNewProposalsCommandHandler.js";
 import type { ScoreMultisigHealthCommandHandler } from "../../scoring/commands/ScoreMultisigHealthCommandHandler.js";
-import type { ScanSignerNoncesCommandHandler } from "../../security/commands/ScanSignerNoncesCommandHandler.js";
 import type {
 	SyncMultisigStateCommandInputDto,
 	SyncMultisigStateCommandOutputDto,
@@ -47,8 +47,8 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 		private reconcileProposalHandler: ReconcileProposalCommandHandler,
 		@inject(APPLICATION_TYPES.ScoreMultisigHealthCommandHandler)
 		private scoreMultisigHealthHandler: ScoreMultisigHealthCommandHandler,
-		@inject(APPLICATION_TYPES.ScanSignerNoncesCommandHandler)
-		private scanSignerNoncesHandler: ScanSignerNoncesCommandHandler,
+		@inject(DOMAIN_TYPES.NonceAccountSubscriber)
+		private nonceSubscriber: INonceAccountSubscriber,
 		@inject(DOMAIN_TYPES.HeliusWebhookService)
 		private heliusWebhookService: IHeliusWebhookService,
 	) {
@@ -208,42 +208,41 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 				})),
 			);
 
-			// For every signer that just joined the multisig:
-			//   1. Subscribe their address to the Helius MULTISIG_ACTIVITY webhook so
-			//      we get real-time visibility on any tx involving them (catches
-			//      AdvanceNonceAccount where authority = signer at consumption time).
-			//   2. Run a one-shot getProgramAccounts scan to detect any pre-existing
-			//      Durable Nonce account where authority = signer. This is the early
-			//      warning signal of a Drift-style attack staging.
-			const addedSet = new Set(signersDiff.added);
-			if (addedSet.size > 0) {
-				const allSigners =
-					await this.signerRepository.findByMultisigId(multisigId);
-				const newlyAdded = allSigners.filter((s) => addedSet.has(s.address));
-				for (const signer of newlyAdded) {
-					try {
-						await this.heliusWebhookService.addAddressToWebhook(
-							signer.address,
-							WebhookType.MULTISIG_ACTIVITY,
-						);
-					} catch (err) {
-						this.logger.warning("nonce:signer-webhook-register-failed", {
-							signerAddress: signer.address,
-							err: (err as Error).message,
-						});
-					}
-					try {
-						await this.scanSignerNoncesHandler.execute({
-							multisigId,
-							signerId: signer.id,
-							signerAddress: signer.address,
-						});
-					} catch (err) {
-						this.logger.warning("nonce:signer-initial-scan-failed", {
-							signerAddress: signer.address,
-							err: (err as Error).message,
-						});
-					}
+			// For every signer that just joined / left:
+			//   - Register/unregister the address with the LaserStream gRPC nonce
+			//     subscriber so we detect in real-time any future Durable Nonce
+			//     creation where authority = signer (Drift-style attack staging).
+			//   - For added signers, also subscribe to the existing Helius
+			//     MULTISIG_ACTIVITY webhook for general signer-activity visibility.
+			for (const added of signersDiff.added) {
+				try {
+					await this.heliusWebhookService.addAddressToWebhook(
+						added,
+						WebhookType.MULTISIG_ACTIVITY,
+					);
+				} catch (err) {
+					this.logger.warning("nonce:signer-webhook-register-failed", {
+						signerAddress: added,
+						err: (err as Error).message,
+					});
+				}
+				try {
+					await this.nonceSubscriber.addAuthority(added);
+				} catch (err) {
+					this.logger.warning("nonce:subscriber-add-failed", {
+						signerAddress: added,
+						err: (err as Error).message,
+					});
+				}
+			}
+			for (const removed of signersDiff.removed) {
+				try {
+					await this.nonceSubscriber.removeAuthority(removed);
+				} catch (err) {
+					this.logger.warning("nonce:subscriber-remove-failed", {
+						signerAddress: removed,
+						err: (err as Error).message,
+					});
 				}
 			}
 		}

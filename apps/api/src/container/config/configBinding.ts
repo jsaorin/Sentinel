@@ -2,7 +2,6 @@ import { APPLICATION_TYPES } from "@sentinel/application";
 import type { EventPublisherConfig } from "@sentinel/application";
 import type { ILogger } from "@sentinel/common/logger";
 import { DOMAIN_TYPES } from "@sentinel/domain";
-import { INFRASTRUCTURE_TYPES } from "@sentinel/infrastructure";
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import environment from "../../env/api-environment.js";
 import { logger } from "../../logger/logger.js";
@@ -29,6 +28,16 @@ export const configBindings = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.HeliusApiConfig)
 			.toConstantValue({ apiKey: environment.heliusApiKey });
+
+		// LaserStream subscriber is only actively used by the reactor, but the
+		// Sync handler depends on it so we provide a config binding here too.
+		// The api never resolves the subscriber in practice (no endpoint pulls
+		// SyncMultisigStateCommandHandler), so an empty token is safe.
+		options.bind(DOMAIN_TYPES.LaserStreamConfig).toConstantValue({
+			endpoint: "https://solana-mainnet.g.alchemy.com",
+			token: "",
+			heliusApiKey: environment.heliusApiKey,
+		});
 
 		options.bind(DOMAIN_TYPES.GroqApiConfig).toConstantValue({
 			apiKey: environment.groqApiKey,

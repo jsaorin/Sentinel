@@ -15,8 +15,6 @@ class ApiEnvironment extends Environment {
 	private _amqpUrl!: string;
 	private _redisHost!: string;
 	private _redisPort!: number;
-	private _adminBasicAuthUser!: string;
-	private _adminBasicAuthPass!: string;
 
 	constructor() {
 		super();
@@ -38,8 +36,6 @@ class ApiEnvironment extends Environment {
 		this.amqpUrl = `${env.RABBITMQ_PROTOCOL}://${env.RABBITMQ_USER}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:${env.RABBITMQ_PORT}`;
 		this.redisHost = env.REDIS_HOST;
 		this.redisPort = env.REDIS_PORT;
-		this.adminBasicAuthUser = env.ADMIN_BASIC_AUTH_USER;
-		this.adminBasicAuthPass = env.ADMIN_BASIC_AUTH_PASS;
 	}
 
 	get appName() {
@@ -136,22 +132,6 @@ class ApiEnvironment extends Environment {
 
 	set redisPort(value) {
 		this._redisPort = value;
-	}
-
-	get adminBasicAuthUser() {
-		return this._adminBasicAuthUser;
-	}
-
-	set adminBasicAuthUser(value) {
-		this._adminBasicAuthUser = value;
-	}
-
-	get adminBasicAuthPass() {
-		return this._adminBasicAuthPass;
-	}
-
-	set adminBasicAuthPass(value) {
-		this._adminBasicAuthPass = value;
 	}
 }
 

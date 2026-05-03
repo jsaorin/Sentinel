@@ -16,8 +16,6 @@ const envValidationConfig = {
 	RABBITMQ_PASSWORD: str({ default: "guest" }),
 	REDIS_HOST: str({ default: "localhost" }),
 	REDIS_PORT: num({ default: 6379 }),
-	ADMIN_BASIC_AUTH_USER: str({ default: "" }),
-	ADMIN_BASIC_AUTH_PASS: str({ default: "" }),
 };
 
 export default envValidationConfig;

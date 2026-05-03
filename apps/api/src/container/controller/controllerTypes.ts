@@ -3,5 +3,4 @@ export const CONTROLLER_TYPES = {
 	MultisigController: Symbol.for("MultisigController"),
 	ProposalController: Symbol.for("ProposalController"),
 	ThreatSignalController: Symbol.for("ThreatSignalController"),
-	AdminController: Symbol.for("AdminController"),
 };

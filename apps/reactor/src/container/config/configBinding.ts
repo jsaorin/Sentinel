@@ -34,6 +34,12 @@ export const configModule = new ContainerModule(
 			.bind(DOMAIN_TYPES.HeliusApiConfig)
 			.toConstantValue({ apiKey: environment.heliusApiKey });
 
+		options.bind(DOMAIN_TYPES.LaserStreamConfig).toConstantValue({
+			endpoint: environment.alchemyGrpcEndpoint,
+			token: environment.alchemyGrpcToken,
+			heliusApiKey: environment.heliusApiKey,
+		});
+
 		options.bind(DOMAIN_TYPES.GroqApiConfig).toConstantValue({
 			apiKey: environment.groqApiKey,
 			model: environment.groqModel,

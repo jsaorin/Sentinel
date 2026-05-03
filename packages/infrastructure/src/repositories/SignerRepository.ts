@@ -17,6 +17,21 @@ export class SignerRepository implements ISignerRepository {
 		return records.map(mapPrismaSignerToDomain);
 	}
 
+	async findByAddress(address: string): Promise<Signer[]> {
+		const records = await this.prisma.signer.findMany({
+			where: { address },
+		});
+		return records.map(mapPrismaSignerToDomain);
+	}
+
+	async findAllAddresses(): Promise<string[]> {
+		const records = await this.prisma.signer.findMany({
+			distinct: ["address"],
+			select: { address: true },
+		});
+		return records.map((r) => r.address);
+	}
+
 	async createMany(
 		signers: Array<{
 			address: string;

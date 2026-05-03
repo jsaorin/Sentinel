@@ -3,8 +3,8 @@ import { APPLICATION_TYPES, type InboxStore } from "@sentinel/application";
 import type { ILogger } from "@sentinel/common/logger";
 import { reactorConfig } from "./config/index.js";
 import { container } from "./inversify.config.js";
+import { NonceSubscriberLifecycle } from "./lifecycle/NonceSubscriberLifecycle.js";
 import { Subscriber } from "./messaging/subscriber.js";
-import { MultisigNonceScanScheduler } from "./scheduler/MultisigNonceScanScheduler.js";
 import { ReactorServer } from "./server/ReactorServer.js";
 import { subscriptions } from "./subscriptions/index.js";
 
@@ -12,7 +12,7 @@ class ReactorApp {
 	private subscriber: Subscriber | null = null;
 	private server: ReactorServer | null = null;
 	private redis: InboxStore | null = null;
-	private nonceScanScheduler: MultisigNonceScanScheduler | null = null;
+	private nonceLifecycle: NonceSubscriberLifecycle | null = null;
 
 	async start(): Promise<void> {
 		const logger = container.get<ILogger>(APPLICATION_TYPES.Logger);
@@ -51,13 +51,18 @@ class ReactorApp {
 		);
 		await this.server.start();
 
-		// Start the nonce-account scheduler. Every N min publishes one
-		// `multisig.scan.nonces.requested` event per tracked multisig.
-		this.nonceScanScheduler = new MultisigNonceScanScheduler(
-			container,
-			reactorConfig.nonceScanIntervalMs,
-		);
-		this.nonceScanScheduler.start();
+		// Start the LaserStream nonce subscriber. Single persistent gRPC
+		// connection that receives, server-side filtered, every Solana account
+		// write where data is 80 bytes (Durable Nonce) and authority matches
+		// any tracked signer. Each match → IngestDetectedNonceCommandHandler.
+		try {
+			this.nonceLifecycle = new NonceSubscriberLifecycle(container);
+			await this.nonceLifecycle.start();
+		} catch (e) {
+			logger.error("nonce-lifecycle:start-error", {
+				err: (e as Error).message,
+			});
+		}
 
 		logger.info("Sentinel Reactor started", {
 			env: process.env.NODE_ENV,
@@ -69,9 +74,9 @@ class ReactorApp {
 		const logger = container.get<ILogger>(APPLICATION_TYPES.Logger);
 
 		try {
-			this.nonceScanScheduler?.stop();
+			if (this.nonceLifecycle) await this.nonceLifecycle.stop();
 		} catch (e) {
-			logger.error("nonce-scheduler:stop-error", {
+			logger.error("nonce-lifecycle:stop-error", {
 				err: (e as Error).message,
 			});
 		}

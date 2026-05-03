@@ -2,7 +2,7 @@ import { DOMAIN_TYPES } from "@sentinel/domain";
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { SocketIoRealtimeService } from "../realtime/SocketIoRealtimeService.js";
 import { HeliusWebhookService } from "../services/HeliusWebhookService.js";
-import { NonceAccountScannerService } from "../services/NonceAccountScannerService.js";
+import { LaserStreamNonceAccountSubscriber } from "../services/LaserStreamNonceAccountSubscriber.js";
 import { SquadsHistoryService } from "../services/SquadsHistoryService.js";
 import { SquadsService } from "../services/SquadsService.js";
 import { GroqAIAnalysisService } from "../services/ai/GroqAIAnalysisService.js";
@@ -66,8 +66,8 @@ export const serviceModule = new ContainerModule(
 			.inSingletonScope();
 
 		options
-			.bind(DOMAIN_TYPES.NonceAccountScanner)
-			.to(NonceAccountScannerService)
+			.bind(DOMAIN_TYPES.NonceAccountSubscriber)
+			.to(LaserStreamNonceAccountSubscriber)
 			.inSingletonScope();
 	},
 );
