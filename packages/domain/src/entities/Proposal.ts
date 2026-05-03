@@ -18,6 +18,9 @@ export class Proposal {
 	public readonly creator: string | null;
 	public readonly createdAt: Date;
 	public readonly executedAt: Date | null;
+	public readonly approvers: readonly string[];
+	public readonly rejecters: readonly string[];
+	public readonly cancellers: readonly string[];
 
 	constructor(params: {
 		id: string;
@@ -30,6 +33,9 @@ export class Proposal {
 		creator: string | null;
 		createdAt: Date;
 		executedAt: Date | null;
+		approvers?: readonly string[];
+		rejecters?: readonly string[];
+		cancellers?: readonly string[];
 	}) {
 		this.id = params.id;
 		this.multisigId = params.multisigId;
@@ -41,5 +47,8 @@ export class Proposal {
 		this.creator = params.creator;
 		this.createdAt = params.createdAt;
 		this.executedAt = params.executedAt;
+		this.approvers = params.approvers ?? [];
+		this.rejecters = params.rejecters ?? [];
+		this.cancellers = params.cancellers ?? [];
 	}
 }

@@ -1,4 +1,5 @@
 import type { Subscription } from "../messaging/types.js";
+import { heliusWebhookProcessSubscription } from "./helius-webhook-process.subscription.js";
 import { multisigAiSummarySubscription } from "./multisig-ai-summary.subscription.js";
 import { multisigAnalyzeSubscription } from "./multisig-analyze.subscription.js";
 import { proposalAiAnalysisSubscription } from "./proposal-ai-analysis.subscription.js";
@@ -9,4 +10,5 @@ export const subscriptions: Subscription[] = [
 	multisigAiSummarySubscription,
 	proposalAiAnalysisSubscription,
 	threatSignalAnalysisSubscription,
+	heliusWebhookProcessSubscription,
 ];

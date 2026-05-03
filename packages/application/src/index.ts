@@ -13,6 +13,7 @@ export * from "./usecases/scoring/index.js";
 export * from "./usecases/ai/index.js";
 export * from "./usecases/proposals/index.js";
 export * from "./usecases/threat-signals/index.js";
+export * from "./usecases/realtime-sync/index.js";
 
 export * from "./ports/index.js";
 

@@ -15,6 +15,9 @@ export interface ProposalAccountData {
 	creator: string | null;
 	createdAt: Date;
 	executedAt: Date | null;
+	approvers: string[];
+	rejecters: string[];
+	cancellers: string[];
 }
 
 export interface RawInstructionData {

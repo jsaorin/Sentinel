@@ -25,6 +25,7 @@ export const DOMAIN_SERVICE_TYPES = {
 	AIAnalysisService: Symbol.for("AIAnalysisService"),
 	IdlResolverService: Symbol.for("IdlResolverService"),
 	RealtimeService: Symbol.for("RealtimeService"),
+	HeliusPayloadClassifier: Symbol.for("HeliusPayloadClassifier"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {

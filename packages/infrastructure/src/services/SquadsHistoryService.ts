@@ -11,10 +11,10 @@ import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import * as multisig from "@sqds/multisig";
 import { inject, injectable } from "inversify";
 import {
-	classifySquadsInstruction,
-	decodeVaultTransactionCreate,
 	SQUADS_V4_PROGRAM_ID,
 	type SquadsInstructionKind,
+	classifySquadsInstruction,
+	decodeVaultTransactionCreate,
 } from "./squads/SquadsTransactionParser.js";
 
 interface HeliusApiConfig {
@@ -208,6 +208,9 @@ export class SquadsHistoryService implements ISquadsHistoryService {
 			creator,
 			createdAt: resolvedCreatedAt,
 			executedAt: status === "EXECUTED" ? executedAt : null,
+			approvers: [],
+			rejecters: [],
+			cancellers: [],
 		};
 
 		return { proposal, vaultTransaction: innerInstructions };

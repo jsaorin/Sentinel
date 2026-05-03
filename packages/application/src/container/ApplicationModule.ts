@@ -1,23 +1,26 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { APPLICATION_TYPES } from "../types.js";
+import { AnalyzeProposalAICommandHandler } from "../usecases/ai/commands/AnalyzeProposalAICommandHandler.js";
+import { SummarizeMultisigAICommandHandler } from "../usecases/ai/commands/SummarizeMultisigAICommandHandler.js";
 import { HealthCheckQueryHandler } from "../usecases/health/queries/HealthCheckQueryHandler.js";
+import { DecodeInstructionsCommandHandler } from "../usecases/instructions/commands/DecodeInstructionsCommandHandler.js";
 import { AnalyzeMultisigCommandHandler } from "../usecases/multisigs/commands/AnalyzeMultisigCommandHandler.js";
 import { CreateMultisigCommandHandler } from "../usecases/multisigs/commands/CreateMultisigCommandHandler.js";
+import { IngestNewProposalsCommandHandler } from "../usecases/multisigs/commands/IngestNewProposalsCommandHandler.js";
 import { GetMultisigQueryHandler } from "../usecases/multisigs/queries/GetMultisigQueryHandler.js";
 import { ListMultisigsQueryHandler } from "../usecases/multisigs/queries/ListMultisigsQueryHandler.js";
-import { ListSignersQueryHandler } from "../usecases/multisigs/queries/ListSignersQueryHandler.js";
 import { ListProposalsQueryHandler } from "../usecases/multisigs/queries/ListProposalsQueryHandler.js";
+import { ListSignersQueryHandler } from "../usecases/multisigs/queries/ListSignersQueryHandler.js";
 import { GetProposalDetailQueryHandler } from "../usecases/proposals/queries/GetProposalDetailQueryHandler.js";
 import { ListProposalsFeedQueryHandler } from "../usecases/proposals/queries/ListProposalsFeedQueryHandler.js";
-import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
-import { DecodeInstructionsCommandHandler } from "../usecases/instructions/commands/DecodeInstructionsCommandHandler.js";
+import { ReconcileProposalCommandHandler } from "../usecases/realtime-sync/commands/ReconcileProposalCommandHandler.js";
+import { SyncMultisigStateCommandHandler } from "../usecases/realtime-sync/commands/SyncMultisigStateCommandHandler.js";
 import { ScoreMultisigHealthCommandHandler } from "../usecases/scoring/commands/ScoreMultisigHealthCommandHandler.js";
 import { ScoreProposalsCommandHandler } from "../usecases/scoring/commands/ScoreProposalsCommandHandler.js";
-import { SummarizeMultisigAICommandHandler } from "../usecases/ai/commands/SummarizeMultisigAICommandHandler.js";
-import { AnalyzeProposalAICommandHandler } from "../usecases/ai/commands/AnalyzeProposalAICommandHandler.js";
-import { IngestThreatSignalCommandHandler } from "../usecases/threat-signals/commands/IngestThreatSignalCommandHandler.js";
 import { AnalyzeThreatSignalCommandHandler } from "../usecases/threat-signals/commands/AnalyzeThreatSignalCommandHandler.js";
+import { IngestThreatSignalCommandHandler } from "../usecases/threat-signals/commands/IngestThreatSignalCommandHandler.js";
 import { ListThreatSignalsQueryHandler } from "../usecases/threat-signals/queries/ListThreatSignalsQueryHandler.js";
+import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
 
 export const applicationModule = new ContainerModule(
 	(options: ContainerModuleLoadOptions) => {
@@ -37,6 +40,10 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.AnalyzeMultisigCommandHandler)
 			.to(AnalyzeMultisigCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.IngestNewProposalsCommandHandler)
+			.to(IngestNewProposalsCommandHandler)
 			.inSingletonScope();
 
 		bind(APPLICATION_TYPES.GetMultisigQueryHandler)
@@ -93,6 +100,14 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.ListThreatSignalsQueryHandler)
 			.to(ListThreatSignalsQueryHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.ReconcileProposalCommandHandler)
+			.to(ReconcileProposalCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.SyncMultisigStateCommandHandler)
+			.to(SyncMultisigStateCommandHandler)
 			.inSingletonScope();
 	},
 );

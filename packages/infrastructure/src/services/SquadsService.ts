@@ -7,10 +7,10 @@ import {
 	type ProposalAccountData,
 	type VaultTransactionData,
 } from "@sentinel/domain";
-import { InstructionDecoder } from "./InstructionDecoder.js";
-import * as multisig from "@sqds/multisig";
 import { Connection, PublicKey } from "@solana/web3.js";
+import * as multisig from "@sqds/multisig";
 import { inject, injectable } from "inversify";
+import { InstructionDecoder } from "./InstructionDecoder.js";
 
 interface HeliusApiConfig {
 	apiKey: string;
@@ -167,6 +167,9 @@ export class SquadsService implements ISquadsService {
 						creator,
 						createdAt,
 						executedAt,
+						approvers: proposalAccount.approved.map((p) => p.toBase58()),
+						rejecters: proposalAccount.rejected.map((p) => p.toBase58()),
+						cancellers: proposalAccount.cancelled.map((p) => p.toBase58()),
 					});
 				} catch (_error) {
 					this.logger.debug("Failed to deserialize proposal, skipping", {

@@ -1,5 +1,5 @@
-import type { Proposal as PrismaProposal } from "../../generated/client/index.js";
 import { Proposal, type ProposalStatus } from "@sentinel/domain";
+import type { Proposal as PrismaProposal } from "../../generated/client/index.js";
 
 export function mapPrismaProposalToDomain(record: PrismaProposal): Proposal {
 	return new Proposal({
@@ -13,5 +13,8 @@ export function mapPrismaProposalToDomain(record: PrismaProposal): Proposal {
 		creator: record.creator,
 		createdAt: record.createdAt,
 		executedAt: record.executedAt,
+		approvers: record.approvers,
+		rejecters: record.rejecters,
+		cancellers: record.cancellers,
 	});
 }
