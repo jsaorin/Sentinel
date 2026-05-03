@@ -33,6 +33,7 @@ export class HeliusPayloadClassifier implements IHeliusPayloadClassifier {
 	classify(payload: unknown): ClassifiedHeliusEvent | null {
 		const instructions = this.extractInstructions(payload);
 		if (instructions.length === 0) return null;
+		const slot = this.extractSlot(payload);
 
 		let firstSquadsHit: {
 			kind: SquadsInstructionKind;
@@ -72,7 +73,18 @@ export class HeliusPayloadClassifier implements IHeliusPayloadClassifier {
 			? "config-change"
 			: "proposal-action";
 
-		return { multisigAddress, kind: finalKind, proposalPda };
+		return { multisigAddress, kind: finalKind, proposalPda, slot };
+	}
+
+	private extractSlot(payload: unknown): number | undefined {
+		if (!payload || typeof payload !== "object") return undefined;
+		const root = payload as Record<string, unknown>;
+		// Helius sends `slot` at the root for both raw and enhanced payloads.
+		if (typeof root.slot === "number") return root.slot;
+		// Some enhanced payloads nest it under transaction context.
+		const tx = root.transaction as { slot?: unknown } | undefined;
+		if (tx && typeof tx.slot === "number") return tx.slot;
+		return undefined;
 	}
 
 	private extractInstructions(payload: unknown): RawIx[] {

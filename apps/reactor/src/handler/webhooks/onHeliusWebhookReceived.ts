@@ -28,6 +28,7 @@ export const onHeliusWebhookReceived: Handler<
 		multisigAddress: classified.multisigAddress,
 		kind: classified.kind,
 		proposalPda: classified.proposalPda,
+		slot: classified.slot,
 	});
 
 	const handler = container.get<SyncMultisigStateCommandHandler>(
@@ -38,6 +39,7 @@ export const onHeliusWebhookReceived: Handler<
 		multisigAddress: classified.multisigAddress,
 		kind: classified.kind,
 		proposalPda: classified.proposalPda,
+		slot: classified.slot,
 	});
 
 	logger.info("helius:webhook:processed", {

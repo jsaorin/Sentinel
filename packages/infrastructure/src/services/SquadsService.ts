@@ -7,13 +7,60 @@ import {
 	type ProposalAccountData,
 	type VaultTransactionData,
 } from "@sentinel/domain";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey, SolanaJSONRPCError } from "@solana/web3.js";
 import * as multisig from "@sqds/multisig";
 import { inject, injectable } from "inversify";
 import { InstructionDecoder } from "./InstructionDecoder.js";
 
 interface HeliusApiConfig {
 	apiKey: string;
+}
+
+const MIN_CONTEXT_SLOT_BACKOFF_MS = [200, 500, 1000, 2000];
+
+function isMinContextSlotError(err: unknown): boolean {
+	// -32016: Minimum context slot has not been reached
+	// -32004: Block not available (Helius sometimes returns this for the same condition)
+	if (err instanceof SolanaJSONRPCError) {
+		return err.code === -32016 || err.code === -32004;
+	}
+	if (err instanceof Error) {
+		return /minimum context slot|block not available/i.test(err.message);
+	}
+	return false;
+}
+
+async function withMinContextSlotRetry<T>(
+	logger: ILogger,
+	label: string,
+	fn: () => Promise<T>,
+): Promise<T> {
+	let lastErr: unknown;
+	for (
+		let attempt = 0;
+		attempt <= MIN_CONTEXT_SLOT_BACKOFF_MS.length;
+		attempt++
+	) {
+		try {
+			return await fn();
+		} catch (err) {
+			lastErr = err;
+			if (
+				!isMinContextSlotError(err) ||
+				attempt === MIN_CONTEXT_SLOT_BACKOFF_MS.length
+			) {
+				throw err;
+			}
+			const delay = MIN_CONTEXT_SLOT_BACKOFF_MS[attempt];
+			logger.debug("RPC behind minContextSlot, retrying", {
+				label,
+				attempt: attempt + 1,
+				delayMs: delay,
+			});
+			await new Promise((r) => setTimeout(r, delay));
+		}
+	}
+	throw lastErr;
 }
 
 @injectable()
@@ -35,13 +82,26 @@ export class SquadsService implements ISquadsService {
 		);
 	}
 
-	async getMultisigAccountData(address: string): Promise<MultisigAccountData> {
+	async getMultisigAccountData(
+		address: string,
+		minContextSlot?: number,
+	): Promise<MultisigAccountData> {
 		const multisigPda = new PublicKey(address);
 
-		const multisigAccount = await multisig.accounts.Multisig.fromAccountAddress(
-			this.connection,
-			multisigPda,
+		const accountInfo = await withMinContextSlotRetry(
+			this.logger,
+			"getMultisigAccountData",
+			() =>
+				this.connection.getAccountInfo(multisigPda, {
+					commitment: "confirmed",
+					minContextSlot,
+				}),
 		);
+		if (!accountInfo) {
+			throw new Error(`Multisig account not found at ${address}`);
+		}
+		const [multisigAccount] =
+			multisig.accounts.Multisig.fromAccountInfo(accountInfo);
 
 		const transactionIndex =
 			typeof multisigAccount.transactionIndex === "number"
@@ -75,6 +135,7 @@ export class SquadsService implements ISquadsService {
 		multisigAddress: string,
 		transactionIndex: number,
 		startIndex = 1,
+		minContextSlot?: number,
 	): Promise<ProposalAccountData[]> {
 		const multisigPda = new PublicKey(multisigAddress);
 		const proposals: ProposalAccountData[] = [];
@@ -114,7 +175,15 @@ export class SquadsService implements ISquadsService {
 				await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
 			}
 
-			const accountInfos = await this.connection.getMultipleAccountsInfo(keys);
+			const accountInfos = await withMinContextSlotRetry(
+				this.logger,
+				"getProposals",
+				() =>
+					this.connection.getMultipleAccountsInfo(keys, {
+						commitment: "confirmed",
+						minContextSlot,
+					}),
+			);
 
 			for (let j = 0; j < chunk.length; j++) {
 				const accountInfo = accountInfos[j];
@@ -198,6 +267,7 @@ export class SquadsService implements ISquadsService {
 
 	async getVaultTransactionInstructions(
 		transactionPdas: string[],
+		minContextSlot?: number,
 	): Promise<VaultTransactionData[]> {
 		if (transactionPdas.length === 0) {
 			return [];
@@ -220,7 +290,15 @@ export class SquadsService implements ISquadsService {
 				await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
 			}
 
-			const accountInfos = await this.connection.getMultipleAccountsInfo(keys);
+			const accountInfos = await withMinContextSlotRetry(
+				this.logger,
+				"getVaultTransactionInstructions",
+				() =>
+					this.connection.getMultipleAccountsInfo(keys, {
+						commitment: "confirmed",
+						minContextSlot,
+					}),
+			);
 
 			for (let j = 0; j < chunk.length; j++) {
 				const accountInfo = accountInfos[j];

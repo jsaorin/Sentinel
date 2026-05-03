@@ -4,6 +4,8 @@ export type SyncMultisigStateCommandInputDto = {
 	multisigAddress: string;
 	kind: HeliusEventKind;
 	proposalPda?: string;
+	/** Slot of the webhook source tx; forwarded as RPC minContextSlot. */
+	slot?: number;
 };
 
 export type SyncMultisigStateCommandOutputDto = {

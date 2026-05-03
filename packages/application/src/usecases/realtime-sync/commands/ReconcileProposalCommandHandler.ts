@@ -44,7 +44,7 @@ export class ReconcileProposalCommandHandler extends BaseUseCase<
 	async execute(
 		input: ReconcileProposalCommandInputDto,
 	): Promise<ReconcileProposalCommandOutputDto> {
-		const { multisigId, multisigAddress, indices } = input;
+		const { multisigId, multisigAddress, indices, slot } = input;
 
 		if (indices.length === 0) {
 			return { updated: 0, missing: [] };
@@ -70,6 +70,7 @@ export class ReconcileProposalCommandHandler extends BaseUseCase<
 			multisigAddress,
 			maxIndex,
 			minIndex,
+			slot,
 		);
 		const onChainByIndex = new Map(onChain.map((p) => [p.proposalIndex, p]));
 

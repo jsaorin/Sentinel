@@ -49,7 +49,7 @@ export class IngestNewProposalsCommandHandler extends BaseUseCase<
 	async execute(
 		input: IngestNewProposalsCommandInputDto,
 	): Promise<IngestNewProposalsCommandOutputDto> {
-		const { multisigId, address, transactionIndex } = input;
+		const { multisigId, address, transactionIndex, slot } = input;
 
 		const lastProposal =
 			await this.proposalRepository.findLatestByMultisigId(multisigId);
@@ -63,6 +63,7 @@ export class IngestNewProposalsCommandHandler extends BaseUseCase<
 			address,
 			transactionIndex,
 			startIndex,
+			slot,
 		);
 
 		if (proposalData.length === 0) {
@@ -95,7 +96,10 @@ export class IngestNewProposalsCommandHandler extends BaseUseCase<
 
 		const transactionPdas = newProposals.map((p) => p.transactionPda);
 		const vaultTxData =
-			await this.squadsService.getVaultTransactionInstructions(transactionPdas);
+			await this.squadsService.getVaultTransactionInstructions(
+				transactionPdas,
+				slot,
+			);
 
 		const pdaToProposalId = new Map(
 			newProposals.map((p) => [p.transactionPda, p.id]),

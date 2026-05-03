@@ -51,7 +51,7 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 	async execute(
 		input: SyncMultisigStateCommandInputDto,
 	): Promise<SyncMultisigStateCommandOutputDto> {
-		const { multisigAddress, kind, proposalPda } = input;
+		const { multisigAddress, kind, proposalPda, slot } = input;
 
 		const multisig =
 			await this.multisigRepository.findByAddress(multisigAddress);
@@ -83,16 +83,19 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 		const runProposals = kind === "proposal-action" || kind === "unknown";
 
 		if (runConfig) {
-			configChanged = await this.syncConfig(multisig.id, multisigAddress);
+			configChanged = await this.syncConfig(multisig.id, multisigAddress, slot);
 		}
 
 		if (runProposals) {
-			const accountData =
-				await this.squadsService.getMultisigAccountData(multisigAddress);
+			const accountData = await this.squadsService.getMultisigAccountData(
+				multisigAddress,
+				slot,
+			);
 			const ingest = await this.ingestNewProposalsHandler.execute({
 				multisigId: multisig.id,
 				address: multisigAddress,
 				transactionIndex: accountData.transactionIndex,
+				slot,
 			});
 			proposalsCreated = ingest.newProposals.length;
 
@@ -134,6 +137,7 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 						multisigId: multisig.id,
 						multisigAddress,
 						indices,
+						slot,
 					});
 					proposalsUpdated = result.updated;
 				}
@@ -158,9 +162,12 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 	private async syncConfig(
 		multisigId: string,
 		multisigAddress: string,
+		slot?: number,
 	): Promise<boolean> {
-		const accountData =
-			await this.squadsService.getMultisigAccountData(multisigAddress);
+		const accountData = await this.squadsService.getMultisigAccountData(
+			multisigAddress,
+			slot,
+		);
 
 		const current = await this.multisigRepository.findById(multisigId);
 		if (!current) return false;

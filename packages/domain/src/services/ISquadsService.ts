@@ -33,13 +33,18 @@ export interface VaultTransactionData {
 }
 
 export interface ISquadsService {
-	getMultisigAccountData(address: string): Promise<MultisigAccountData>;
+	getMultisigAccountData(
+		address: string,
+		minContextSlot?: number,
+	): Promise<MultisigAccountData>;
 	getProposals(
 		multisigAddress: string,
 		transactionIndex: number,
 		startIndex?: number,
+		minContextSlot?: number,
 	): Promise<ProposalAccountData[]>;
 	getVaultTransactionInstructions(
 		transactionPdas: string[],
+		minContextSlot?: number,
 	): Promise<VaultTransactionData[]>;
 }
