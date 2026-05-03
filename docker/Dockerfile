@@ -4,7 +4,11 @@
 
 # --- Base ---
 FROM node:22-slim AS base
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+# `ca-certificates` is required for outbound TLS (Yellowstone gRPC to Alchemy,
+# Helius RPC over HTTPS, etc.). The `node:22-slim` base does not ship with it.
+RUN apt-get update -y \
+    && apt-get install -y openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 WORKDIR /app
 
