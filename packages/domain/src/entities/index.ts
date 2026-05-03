@@ -11,3 +11,4 @@ export * from "./ProposalScore.js";
 export * from "./Program.js";
 export * from "./AffectedEntity.js";
 export * from "./ThreatSignal.js";
+export * from "./NonceAccount.js";

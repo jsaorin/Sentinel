@@ -6,7 +6,8 @@ model Signer {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  multisig Multisig @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+  multisig      Multisig       @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+  nonceAccounts NonceAccount[]
 
   @@unique([multisigId, address])
   @@index([multisigId])

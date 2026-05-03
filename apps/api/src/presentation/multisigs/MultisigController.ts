@@ -3,6 +3,7 @@ import {
 	type CreateMultisigCommandHandler,
 	type GetMultisigQueryHandler,
 	type ListMultisigsQueryHandler,
+	type ListNonceWarningsQueryHandler,
 	type ListProposalsQueryHandler,
 	type ListSignersQueryHandler,
 } from "@sentinel/application";
@@ -10,6 +11,7 @@ import { Api } from "@sentinel/common/api";
 import type {
 	MultisigDto,
 	MultisigListItemDto,
+	NonceWarningDto,
 	ProposalDto,
 	SignerDto,
 } from "@sentinel/common/dtos";
@@ -35,6 +37,8 @@ export class MultisigController extends Api {
 		private listSignersHandler: ListSignersQueryHandler,
 		@inject(APPLICATION_TYPES.ListProposalsQueryHandler)
 		private listProposalsHandler: ListProposalsQueryHandler,
+		@inject(APPLICATION_TYPES.ListNonceWarningsQueryHandler)
+		private listNonceWarningsHandler: ListNonceWarningsQueryHandler,
 	) {
 		super(logger, environment);
 	}
@@ -121,6 +125,32 @@ export class MultisigController extends Api {
 			});
 			const proposals: ProposalDto[] = result.proposals.map(toProposalDto);
 			this.send(res, { proposals, pagination: result.pagination }, 200);
+		} catch (e) {
+			next(e);
+		}
+	}
+
+	async listNonceWarnings(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		try {
+			const address = req.params.address as string;
+			const result = await this.listNonceWarningsHandler.execute({
+				multisigAddress: address,
+			});
+			const dto: NonceWarningDto[] = result.warnings.map((w) => ({
+				id: w.id,
+				signerAddress: w.signerAddress,
+				nonceAddress: w.nonceAddress,
+				authority: w.authority,
+				fundedBy: w.fundedBy,
+				externallyFunded: w.externallyFunded,
+				severity: w.severity,
+				detectedAt: w.detectedAt.toISOString(),
+			}));
+			this.send(res, dto, 200);
 		} catch (e) {
 			next(e);
 		}

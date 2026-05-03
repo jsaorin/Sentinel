@@ -34,4 +34,9 @@ router.get(
 	controller.listProposals.bind(controller),
 );
 
+router.get(
+	"/multisigs/:address/nonce-warnings",
+	controller.listNonceWarnings.bind(controller),
+);
+
 export default router;

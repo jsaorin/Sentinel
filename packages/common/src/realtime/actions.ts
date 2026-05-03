@@ -6,6 +6,7 @@ export const REALTIME_ACTIONS = {
 	MULTISIG_CONFIG_CHANGED: "MULTISIG_CONFIG_CHANGED",
 	NEW_PROPOSAL: "NEW_PROPOSAL",
 	PROPOSAL_UPDATED: "PROPOSAL_UPDATED",
+	NONCE_ACCOUNT_DETECTED: "NONCE_ACCOUNT_DETECTED",
 } as const;
 
 export type RealtimeAction =
@@ -38,5 +39,13 @@ export interface RealtimePayloadMap {
 		status: string;
 		approverCount: number;
 		rejecterCount: number;
+	};
+	[REALTIME_ACTIONS.NONCE_ACCOUNT_DETECTED]: {
+		multisigId: string;
+		signerAddress: string;
+		nonceAddress: string;
+		fundedBy: string | null;
+		externallyFunded: boolean;
+		severity: "WARNING" | "CRITICAL";
 	};
 }

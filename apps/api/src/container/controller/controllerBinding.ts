@@ -1,4 +1,5 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
+import { AdminController } from "../../presentation/admin/AdminController.js";
 import { HealthController } from "../../presentation/health/HealthController.js";
 import { MultisigController } from "../../presentation/multisigs/MultisigController.js";
 import { ProposalController } from "../../presentation/proposals/ProposalController.js";
@@ -22,5 +23,9 @@ export const controllerBindings = new ContainerModule(
 		options
 			.bind<ThreatSignalController>(CONTROLLER_TYPES.ThreatSignalController)
 			.to(ThreatSignalController);
+
+		options
+			.bind<AdminController>(CONTROLLER_TYPES.AdminController)
+			.to(AdminController);
 	},
 );

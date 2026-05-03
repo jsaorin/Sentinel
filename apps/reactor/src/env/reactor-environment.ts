@@ -11,6 +11,7 @@ class ReactorEnvironment extends Environment {
 	private _groqApiKey!: string;
 	private _groqModel!: string;
 	private _groqDryRun!: boolean;
+	private _nonceScanIntervalMs!: number;
 
 	constructor() {
 		super();
@@ -28,6 +29,7 @@ class ReactorEnvironment extends Environment {
 		this.groqApiKey = env.GROQ_API_KEY;
 		this.groqModel = env.GROQ_MODEL;
 		this.groqDryRun = env.GROQ_DRY_RUN;
+		this.nonceScanIntervalMs = env.NONCE_SCAN_INTERVAL_MS;
 	}
 
 	get amqpUrl() {
@@ -92,6 +94,14 @@ class ReactorEnvironment extends Environment {
 
 	set groqDryRun(value) {
 		this._groqDryRun = value;
+	}
+
+	get nonceScanIntervalMs() {
+		return this._nonceScanIntervalMs;
+	}
+
+	set nonceScanIntervalMs(value) {
+		this._nonceScanIntervalMs = value;
 	}
 }
 

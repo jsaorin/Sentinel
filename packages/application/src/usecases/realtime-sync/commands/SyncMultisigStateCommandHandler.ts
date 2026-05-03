@@ -2,17 +2,20 @@ import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
 import type { MultisigConfigChanges } from "@sentinel/common/realtime";
 import {
 	DOMAIN_TYPES,
+	type IHeliusWebhookService,
 	type IMultisigRepository,
 	type IProposalRepository,
 	type IRealtimeService,
 	type ISignerRepository,
 	type ISquadsService,
+	WebhookType,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
 import { APPLICATION_TYPES } from "../../../types.js";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
 import type { IngestNewProposalsCommandHandler } from "../../multisigs/commands/IngestNewProposalsCommandHandler.js";
 import type { ScoreMultisigHealthCommandHandler } from "../../scoring/commands/ScoreMultisigHealthCommandHandler.js";
+import type { ScanSignerNoncesCommandHandler } from "../../security/commands/ScanSignerNoncesCommandHandler.js";
 import type {
 	SyncMultisigStateCommandInputDto,
 	SyncMultisigStateCommandOutputDto,
@@ -44,6 +47,10 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 		private reconcileProposalHandler: ReconcileProposalCommandHandler,
 		@inject(APPLICATION_TYPES.ScoreMultisigHealthCommandHandler)
 		private scoreMultisigHealthHandler: ScoreMultisigHealthCommandHandler,
+		@inject(APPLICATION_TYPES.ScanSignerNoncesCommandHandler)
+		private scanSignerNoncesHandler: ScanSignerNoncesCommandHandler,
+		@inject(DOMAIN_TYPES.HeliusWebhookService)
+		private heliusWebhookService: IHeliusWebhookService,
 	) {
 		super();
 	}
@@ -200,6 +207,45 @@ export class SyncMultisigStateCommandHandler extends BaseUseCase<
 					permissions: m.permissions,
 				})),
 			);
+
+			// For every signer that just joined the multisig:
+			//   1. Subscribe their address to the Helius MULTISIG_ACTIVITY webhook so
+			//      we get real-time visibility on any tx involving them (catches
+			//      AdvanceNonceAccount where authority = signer at consumption time).
+			//   2. Run a one-shot getProgramAccounts scan to detect any pre-existing
+			//      Durable Nonce account where authority = signer. This is the early
+			//      warning signal of a Drift-style attack staging.
+			const addedSet = new Set(signersDiff.added);
+			if (addedSet.size > 0) {
+				const allSigners =
+					await this.signerRepository.findByMultisigId(multisigId);
+				const newlyAdded = allSigners.filter((s) => addedSet.has(s.address));
+				for (const signer of newlyAdded) {
+					try {
+						await this.heliusWebhookService.addAddressToWebhook(
+							signer.address,
+							WebhookType.MULTISIG_ACTIVITY,
+						);
+					} catch (err) {
+						this.logger.warning("nonce:signer-webhook-register-failed", {
+							signerAddress: signer.address,
+							err: (err as Error).message,
+						});
+					}
+					try {
+						await this.scanSignerNoncesHandler.execute({
+							multisigId,
+							signerId: signer.id,
+							signerAddress: signer.address,
+						});
+					} catch (err) {
+						this.logger.warning("nonce:signer-initial-scan-failed", {
+							signerAddress: signer.address,
+							err: (err as Error).message,
+						});
+					}
+				}
+			}
 		}
 
 		const anythingChanged =

@@ -11,3 +11,4 @@ export { ProposalSignerDto } from "./ProposalSignerDto.js";
 export { DecodedInstructionDto } from "./DecodedInstructionDto.js";
 export { ThreatSignalListItemDto } from "./ThreatSignalListItemDto.js";
 export { AffectedEntityDto } from "./AffectedEntityDto.js";
+export { NonceWarningDto } from "./NonceWarningDto.js";

@@ -1,9 +1,9 @@
+import { decodePermissionsMask } from "@sentinel/common/utils";
 import type {
 	MultisigScoreData,
 	MultisigScoreWarning,
 	MultisigScoringContext,
 } from "@sentinel/domain";
-import { decodePermissionsMask } from "@sentinel/common/utils";
 
 const WEIGHT_THRESHOLD = 0.4;
 const WEIGHT_CONFIG_AUTHORITY = 0.25;
@@ -12,6 +12,8 @@ const WEIGHT_SIGNER_COUNT = 0.15;
 
 const CAP_SINGLE_SIGNER = 15;
 const CAP_THRESHOLD_ONE = 20;
+const CAP_EXTERNAL_NONCE_FUNDER = 25;
+const CAP_NONCE_ACCOUNT_PRESENT = 60;
 
 export function scoreMultisigHealth(
 	context: MultisigScoringContext,
@@ -50,6 +52,7 @@ function applySecurityCaps(
 ): number {
 	const signerCount = context.signers.length;
 	const threshold = context.threshold ?? 0;
+	const nonceAccounts = context.nonceAccounts ?? [];
 
 	let cap = 100;
 
@@ -59,6 +62,12 @@ function applySecurityCaps(
 
 	if (threshold === 1 && signerCount > 1) {
 		cap = Math.min(cap, CAP_THRESHOLD_ONE);
+	}
+
+	if (nonceAccounts.some((n) => n.externallyFunded)) {
+		cap = Math.min(cap, CAP_EXTERNAL_NONCE_FUNDER);
+	} else if (nonceAccounts.length > 0) {
+		cap = Math.min(cap, CAP_NONCE_ACCOUNT_PRESENT);
 	}
 
 	return Math.min(weightedAverage, cap);
@@ -154,6 +163,25 @@ function buildWarnings(
 		warnings.push({
 			code: "LOW_SIGNER_COUNT",
 			message: `Only ${signerCount} signer(s). Minimum of 3 recommended`,
+		});
+	}
+
+	const nonceAccounts = context.nonceAccounts ?? [];
+	const externallyFundedNonces = nonceAccounts.filter(
+		(n) => n.externallyFunded,
+	);
+	if (externallyFundedNonces.length > 0) {
+		for (const n of externallyFundedNonces) {
+			warnings.push({
+				code: "EXTERNAL_NONCE_FUNDER",
+				message: `Durable Nonce account ${n.address} authorized to signer ${n.authority} was funded by external wallet ${n.fundedBy ?? "unknown"}. This is a textbook pre-staging signal of a Drift-style attack — investigate immediately`,
+			});
+		}
+	} else if (nonceAccounts.length > 0) {
+		const distinctAuthorities = new Set(nonceAccounts.map((n) => n.authority));
+		warnings.push({
+			code: "NONCE_ACCOUNT_PRESENT_FOR_SIGNER",
+			message: `${nonceAccounts.length} Durable Nonce account(s) authorized to ${distinctAuthorities.size} signer(s). Verify each is a known offline-signing tool`,
 		});
 	}
 

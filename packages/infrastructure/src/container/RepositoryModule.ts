@@ -1,16 +1,17 @@
 import { DOMAIN_TYPES } from "@sentinel/domain";
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
+import { DecodedInstructionRepository } from "../repositories/DecodedInstructionRepository.js";
 import { MultisigRepository } from "../repositories/MultisigRepository.js";
+import { MultisigScoreRepository } from "../repositories/MultisigScoreRepository.js";
+import { NonceAccountRepository } from "../repositories/NonceAccountRepository.js";
 import { OutboxEventRepository } from "../repositories/OutboxEventRepository.js";
+import { ProgramRepository } from "../repositories/ProgramRepository.js";
 import { ProposalInstructionRepository } from "../repositories/ProposalInstructionRepository.js";
 import { ProposalRepository } from "../repositories/ProposalRepository.js";
-import { SignerRepository } from "../repositories/SignerRepository.js";
-import { VaultRepository } from "../repositories/VaultRepository.js";
-import { DecodedInstructionRepository } from "../repositories/DecodedInstructionRepository.js";
-import { MultisigScoreRepository } from "../repositories/MultisigScoreRepository.js";
-import { ProgramRepository } from "../repositories/ProgramRepository.js";
 import { ProposalScoreRepository } from "../repositories/ProposalScoreRepository.js";
+import { SignerRepository } from "../repositories/SignerRepository.js";
 import { ThreatSignalRepository } from "../repositories/ThreatSignalRepository.js";
+import { VaultRepository } from "../repositories/VaultRepository.js";
 import { WebhookConfigRepository } from "../repositories/WebhookConfigRepository.js";
 
 export const repositoryModule = new ContainerModule(
@@ -73,6 +74,11 @@ export const repositoryModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.ThreatSignalRepository)
 			.to(ThreatSignalRepository)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.NonceAccountRepository)
+			.to(NonceAccountRepository)
 			.inSingletonScope();
 	},
 );

@@ -7,3 +7,4 @@ export * from "./IAIAnalysisService.js";
 export * from "./IIdlResolverService.js";
 export * from "./IRealtimeService.js";
 export * from "./IHeliusPayloadClassifier.js";
+export * from "./INonceAccountScanner.js";

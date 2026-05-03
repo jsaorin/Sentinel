@@ -1,5 +1,6 @@
 import type { DecodedInstruction } from "../entities/DecodedInstruction.js";
 import type { MultisigScoreWarning } from "../entities/MultisigScore.js";
+import type { NonceAccount } from "../entities/NonceAccount.js";
 import type { ProposalFlag } from "../entities/ProposalScore.js";
 import type { Signer } from "../entities/Signer.js";
 
@@ -7,6 +8,7 @@ export interface MultisigScoringContext {
 	threshold: number | null;
 	configAuthority: string | null;
 	signers: Signer[];
+	nonceAccounts?: NonceAccount[];
 }
 
 export interface MultisigScoreData {

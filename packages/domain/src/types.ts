@@ -12,6 +12,7 @@ const DOMAIN_REPOSITORY_TYPES = {
 	ProposalScoreRepository: Symbol.for("ProposalScoreRepository"),
 	ProgramRepository: Symbol.for("ProgramRepository"),
 	ThreatSignalRepository: Symbol.for("ThreatSignalRepository"),
+	NonceAccountRepository: Symbol.for("NonceAccountRepository"),
 };
 
 export const DOMAIN_SERVICE_TYPES = {
@@ -26,6 +27,7 @@ export const DOMAIN_SERVICE_TYPES = {
 	IdlResolverService: Symbol.for("IdlResolverService"),
 	RealtimeService: Symbol.for("RealtimeService"),
 	HeliusPayloadClassifier: Symbol.for("HeliusPayloadClassifier"),
+	NonceAccountScanner: Symbol.for("NonceAccountScanner"),
 };
 
 export const DOMAIN_CONFIG_TYPES = {

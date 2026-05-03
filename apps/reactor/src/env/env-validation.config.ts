@@ -13,6 +13,7 @@ const envValidationConfig = {
 	GROQ_API_KEY: str({ default: "" }),
 	GROQ_MODEL: str({ default: "llama-3.3-70b-versatile" }),
 	GROQ_DRY_RUN: bool({ default: false }),
+	NONCE_SCAN_INTERVAL_MS: num({ default: 600_000 }),
 };
 
 export default envValidationConfig;

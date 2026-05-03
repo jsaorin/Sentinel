@@ -21,11 +21,24 @@ const newAnalysisMultisigSchema = z.object({
 	data: z.object({ multisigId: z.string() }),
 });
 
+const nonceAccountDetectedSchema = z.object({
+	action: z.literal(REALTIME_ACTIONS.NONCE_ACCOUNT_DETECTED),
+	data: z.object({
+		multisigId: z.string(),
+		signerAddress: z.string(),
+		nonceAddress: z.string(),
+		fundedBy: z.string().nullable(),
+		externallyFunded: z.boolean(),
+		severity: z.enum(["WARNING", "CRITICAL"]),
+	}),
+});
+
 const actionSchema = z.discriminatedUnion("action", [
 	agentMessageSchema,
 	newThreatSignalSchema,
 	newAnalysisProposalSchema,
 	newAnalysisMultisigSchema,
+	nonceAccountDetectedSchema,
 ]);
 
 const baseSchema = z.object({

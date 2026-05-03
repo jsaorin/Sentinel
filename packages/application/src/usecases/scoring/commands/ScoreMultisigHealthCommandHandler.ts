@@ -3,6 +3,7 @@ import {
 	DOMAIN_TYPES,
 	type IMultisigRepository,
 	type IMultisigScoreRepository,
+	type INonceAccountRepository,
 	type IRealtimeService,
 	type IScoringService,
 	type ISignerRepository,
@@ -37,6 +38,8 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 		private eventPublisher: IOutboxEventPublisher,
 		@inject(DOMAIN_TYPES.RealtimeService)
 		private realtime: IRealtimeService,
+		@inject(DOMAIN_TYPES.NonceAccountRepository)
+		private nonceAccountRepository: INonceAccountRepository,
 	) {
 		super();
 	}
@@ -48,15 +51,17 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 
 		this.logger.info("Scoring multisig health", { multisigId });
 
-		const [multisig, signers] = await Promise.all([
+		const [multisig, signers, nonceAccounts] = await Promise.all([
 			this.multisigRepository.findById(multisigId),
 			this.signerRepository.findByMultisigId(multisigId),
+			this.nonceAccountRepository.findByMultisigId(multisigId),
 		]);
 
 		const data = this.scoringService.scoreMultisig({
 			threshold: multisig?.threshold ?? null,
 			configAuthority: multisig?.configAuthority ?? null,
 			signers,
+			nonceAccounts,
 		});
 
 		await this.multisigScoreRepository.upsert({
