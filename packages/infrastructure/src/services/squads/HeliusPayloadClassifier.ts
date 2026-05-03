@@ -77,11 +77,22 @@ export class HeliusPayloadClassifier implements IHeliusPayloadClassifier {
 
 	private extractInstructions(payload: unknown): RawIx[] {
 		if (!payload || typeof payload !== "object") return [];
-		const root = payload as { instructions?: unknown };
-		const top = Array.isArray(root.instructions)
-			? (root.instructions as RawIx[])
-			: [];
+		const root = payload as Record<string, unknown>;
 
+		if (Array.isArray(root.instructions)) {
+			return this.extractFromEnhanced(root.instructions as RawIx[]);
+		}
+		if (
+			root.transaction &&
+			typeof root.transaction === "object" &&
+			(root.transaction as { message?: unknown }).message
+		) {
+			return this.extractFromRaw(root);
+		}
+		return [];
+	}
+
+	private extractFromEnhanced(top: RawIx[]): RawIx[] {
 		const inner: RawIx[] = [];
 		for (const ix of top) {
 			if (!ix || typeof ix !== "object") continue;
@@ -89,6 +100,71 @@ export class HeliusPayloadClassifier implements IHeliusPayloadClassifier {
 			if (Array.isArray(nested)) {
 				for (const sub of nested) {
 					if (sub && typeof sub === "object") inner.push(sub as RawIx);
+				}
+			}
+		}
+		return [...top, ...inner];
+	}
+
+	private extractFromRaw(root: Record<string, unknown>): RawIx[] {
+		const message = (root.transaction as { message?: unknown }).message as
+			| { accountKeys?: unknown; instructions?: unknown }
+			| undefined;
+		if (!message) return [];
+		const keys = Array.isArray(message.accountKeys)
+			? (message.accountKeys as unknown[]).filter(
+					(k): k is string => typeof k === "string",
+				)
+			: [];
+		const topRaw = Array.isArray(message.instructions)
+			? (message.instructions as Array<{
+					programIdIndex?: number;
+					accounts?: number[];
+					data?: string;
+				}>)
+			: [];
+
+		const top: RawIx[] = topRaw.map((ix) => ({
+			programId:
+				typeof ix.programIdIndex === "number"
+					? keys[ix.programIdIndex]
+					: undefined,
+			accounts: Array.isArray(ix.accounts)
+				? ix.accounts
+						.map((idx) => (typeof idx === "number" ? keys[idx] : undefined))
+						.filter((s): s is string => typeof s === "string")
+				: [],
+			data: typeof ix.data === "string" ? ix.data : undefined,
+		}));
+
+		const inner: RawIx[] = [];
+		const meta = root.meta as
+			| {
+					innerInstructions?: Array<{ instructions?: unknown }>;
+			  }
+			| undefined;
+		if (meta && Array.isArray(meta.innerInstructions)) {
+			for (const innerSet of meta.innerInstructions) {
+				if (!innerSet || !Array.isArray(innerSet.instructions)) continue;
+				for (const sub of innerSet.instructions as Array<{
+					programIdIndex?: number;
+					accounts?: number[];
+					data?: string;
+				}>) {
+					inner.push({
+						programId:
+							typeof sub.programIdIndex === "number"
+								? keys[sub.programIdIndex]
+								: undefined,
+						accounts: Array.isArray(sub.accounts)
+							? sub.accounts
+									.map((idx) =>
+										typeof idx === "number" ? keys[idx] : undefined,
+									)
+									.filter((s): s is string => typeof s === "string")
+							: [],
+						data: typeof sub.data === "string" ? sub.data : undefined,
+					});
 				}
 			}
 		}
