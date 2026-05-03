@@ -1,33 +1,19 @@
 import {
 	DOMAIN_TYPES,
-	ProposalStatus as DomainProposalStatus,
 	type IMultisigRepository,
-	type IProposalInstructionRepository,
-	type IProposalRepository,
 	type ISignerRepository,
 	type ISquadsService,
 	type IVaultRepository,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
-import { BaseUseCase } from "../../base/BaseUseCase.js";
 import { APPLICATION_TYPES } from "../../../types.js";
-import type { DecodeInstructionsCommandHandler } from "../../instructions/commands/DecodeInstructionsCommandHandler.js";
+import { BaseUseCase } from "../../base/BaseUseCase.js";
 import type { ScoreMultisigHealthCommandHandler } from "../../scoring/commands/ScoreMultisigHealthCommandHandler.js";
-import type { ScoreProposalsCommandHandler } from "../../scoring/commands/ScoreProposalsCommandHandler.js";
 import type {
 	AnalyzeMultisigCommandInputDto,
 	AnalyzeMultisigCommandOutputDto,
 } from "../dtos/AnalyzeMultisigCommandDto.js";
-
-const SQUADS_STATUS_MAP: Record<string, DomainProposalStatus> = {
-	DRAFT: DomainProposalStatus.DRAFT,
-	ACTIVE: DomainProposalStatus.ACTIVE,
-	APPROVED: DomainProposalStatus.APPROVED,
-	REJECTED: DomainProposalStatus.REJECTED,
-	EXECUTING: DomainProposalStatus.EXECUTED,
-	EXECUTED: DomainProposalStatus.EXECUTED,
-	CANCELLED: DomainProposalStatus.CANCELLED,
-};
+import type { IngestNewProposalsCommandHandler } from "./IngestNewProposalsCommandHandler.js";
 
 @injectable()
 @injectFromBase()
@@ -40,20 +26,14 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		private multisigRepository: IMultisigRepository,
 		@inject(DOMAIN_TYPES.SignerRepository)
 		private signerRepository: ISignerRepository,
-		@inject(DOMAIN_TYPES.ProposalRepository)
-		private proposalRepository: IProposalRepository,
-		@inject(DOMAIN_TYPES.ProposalInstructionRepository)
-		private proposalInstructionRepository: IProposalInstructionRepository,
 		@inject(DOMAIN_TYPES.SquadsService)
 		private squadsService: ISquadsService,
 		@inject(DOMAIN_TYPES.VaultRepository)
 		private vaultRepository: IVaultRepository,
-		@inject(APPLICATION_TYPES.DecodeInstructionsCommandHandler)
-		private decodeInstructionsHandler: DecodeInstructionsCommandHandler,
+		@inject(APPLICATION_TYPES.IngestNewProposalsCommandHandler)
+		private ingestNewProposalsHandler: IngestNewProposalsCommandHandler,
 		@inject(APPLICATION_TYPES.ScoreMultisigHealthCommandHandler)
 		private scoreMultisigHealthHandler: ScoreMultisigHealthCommandHandler,
-		@inject(APPLICATION_TYPES.ScoreProposalsCommandHandler)
-		private scoreProposalsHandler: ScoreProposalsCommandHandler,
 	) {
 		super();
 	}
@@ -65,29 +45,20 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 
 		this.logger.info("Analyzing multisig", { multisigId, address });
 
-		// 1. Fetch on-chain multisig data
 		const accountData =
 			await this.squadsService.getMultisigAccountData(address);
 
-		// 2. Update multisig with threshold and configAuthority
 		await this.multisigRepository.update(multisigId, {
 			threshold: accountData.threshold,
 			configAuthority: accountData.configAuthority,
 		});
 
-		// 3. Upsert default vault (index 0)
 		await this.vaultRepository.upsert({
 			multisigId,
 			vaultIndex: 0,
 			pda: accountData.vaultPda,
 		});
 
-		this.logger.info("Vault stored", {
-			multisigId,
-			vaultPda: accountData.vaultPda,
-		});
-
-		// 4. Replace signers (delete + recreate for idempotency — members can change)
 		await this.signerRepository.deleteByMultisigId(multisigId);
 		const signers = await this.signerRepository.createMany(
 			accountData.members.map((member) => ({
@@ -102,91 +73,19 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			count: signers.length,
 		});
 
-		// 5. Incremental proposal fetch — only get new proposals
-		const lastProposal =
-			await this.proposalRepository.findLatestByMultisigId(multisigId);
-		const startIndex = lastProposal ? lastProposal.proposalIndex + 1 : 1;
-
-		const proposalData = await this.squadsService.getProposals(
-			address,
-			accountData.transactionIndex,
-			startIndex,
-		);
-
-		let newProposalsCount = 0;
-		if (proposalData.length > 0) {
-			const newProposals = await this.proposalRepository.createMany(
-				proposalData.map((p) => ({
-					multisigId,
-					proposalIndex: p.proposalIndex,
-					transactionIndex: p.transactionIndex,
-					pda: p.pda,
-					transactionPda: p.transactionPda,
-					status: SQUADS_STATUS_MAP[p.status] ?? DomainProposalStatus.DRAFT,
-					creator: p.creator,
-					createdAt: p.createdAt,
-					executedAt: p.executedAt,
-				})),
-			);
-			newProposalsCount = proposalData.length;
-
-			// 6. Fetch and store instructions for new proposals
-			const transactionPdas = newProposals.map((p) => p.transactionPda);
-			const vaultTxData =
-				await this.squadsService.getVaultTransactionInstructions(
-					transactionPdas,
-				);
-
-			const pdaToProposalId = new Map(
-				newProposals.map((p) => [p.transactionPda, p.id]),
-			);
-
-			const allInstructions = vaultTxData.flatMap((vtx) => {
-				const proposalId = pdaToProposalId.get(vtx.transactionPda);
-				if (!proposalId) return [];
-				return vtx.instructions.map((ix) => ({
-					proposalId,
-					instructionIndex: ix.instructionIndex,
-					programId: ix.programId,
-					data: ix.data,
-					accounts: ix.accounts,
-				}));
-			});
-
-			if (allInstructions.length > 0) {
-				const savedInstructions =
-					await this.proposalInstructionRepository.createMany(allInstructions);
-
-				// 7. Decode instructions via reusable handler
-				await this.decodeInstructionsHandler.execute({
-					instructions: savedInstructions,
-				});
-			}
-		}
-
-		this.logger.info("Proposals stored", {
+		const { newProposals } = await this.ingestNewProposalsHandler.execute({
 			multisigId,
-			newCount: newProposalsCount,
-			startIndex,
+			address,
 			transactionIndex: accountData.transactionIndex,
 		});
 
-		// 8. Get total proposals count
-		const allProposals =
-			await this.proposalRepository.findByMultisigId(multisigId);
-
-		// 9. Score multisig health and all its proposals
 		await this.scoreMultisigHealthHandler.execute({ multisigId });
-		await this.scoreProposalsHandler.execute({
-			multisigId,
-			proposals: allProposals,
-		});
 
 		return {
 			multisigId,
 			threshold: accountData.threshold,
 			signersCount: signers.length,
-			proposalsCount: allProposals.length,
+			proposalsCount: newProposals.length,
 		};
 	}
 }

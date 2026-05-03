@@ -18,6 +18,9 @@ model Proposal {
   creator          String?
   createdAt        DateTime       @default(now()) @map("created_at")
   executedAt       DateTime?      @map("executed_at")
+  approvers        String[]       @default([])
+  rejecters        String[]       @default([])
+  cancellers       String[]       @default([])
 
   multisig      Multisig               @relation(fields: [multisigId], references: [id], onDelete: Cascade)
   instructions  ProposalInstruction[]

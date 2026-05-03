@@ -4,6 +4,7 @@ import type {
 	CountAllProposalsOptions,
 	FindAllProposalsPaginatedOptions,
 	IProposalRepository,
+	UpdateProposalData,
 } from "@sentinel/domain/repositories";
 import { injectable } from "inversify";
 import { mapPrismaProposalToDomain } from "../mappers/ProposalMapper.js";
@@ -37,6 +38,17 @@ export class ProposalRepository implements IProposalRepository {
 			orderBy: { proposalIndex: "desc" },
 			skip: options.skip,
 			take: options.take,
+		});
+		return records.map(mapPrismaProposalToDomain);
+	}
+
+	async findByMultisigIdAndIndices(
+		multisigId: string,
+		indices: number[],
+	): Promise<Proposal[]> {
+		if (indices.length === 0) return [];
+		const records = await this.prisma.proposal.findMany({
+			where: { multisigId, proposalIndex: { in: indices } },
 		});
 		return records.map(mapPrismaProposalToDomain);
 	}
@@ -86,6 +98,9 @@ export class ProposalRepository implements IProposalRepository {
 			creator: string | null;
 			createdAt: Date;
 			executedAt: Date | null;
+			approvers?: string[];
+			rejecters?: string[];
+			cancellers?: string[];
 		}>,
 	): Promise<Proposal[]> {
 		const results: Proposal[] = [];
@@ -102,11 +117,28 @@ export class ProposalRepository implements IProposalRepository {
 					creator: proposal.creator,
 					createdAt: proposal.createdAt,
 					executedAt: proposal.executedAt,
+					approvers: proposal.approvers ?? [],
+					rejecters: proposal.rejecters ?? [],
+					cancellers: proposal.cancellers ?? [],
 				},
 			});
 			results.push(mapPrismaProposalToDomain(record));
 		}
 
 		return results;
+	}
+
+	async update(id: string, data: UpdateProposalData): Promise<Proposal> {
+		const record = await this.prisma.proposal.update({
+			where: { id },
+			data: {
+				...(data.status !== undefined && { status: data.status }),
+				...(data.approvers !== undefined && { approvers: data.approvers }),
+				...(data.rejecters !== undefined && { rejecters: data.rejecters }),
+				...(data.cancellers !== undefined && { cancellers: data.cancellers }),
+				...(data.executedAt !== undefined && { executedAt: data.executedAt }),
+			},
+		});
+		return mapPrismaProposalToDomain(record);
 	}
 }

@@ -1,5 +1,6 @@
 export { CreateMultisigCommandHandler } from "./commands/CreateMultisigCommandHandler.js";
 export { AnalyzeMultisigCommandHandler } from "./commands/AnalyzeMultisigCommandHandler.js";
+export { IngestNewProposalsCommandHandler } from "./commands/IngestNewProposalsCommandHandler.js";
 export { GetMultisigQueryHandler } from "./queries/GetMultisigQueryHandler.js";
 export { ListMultisigsQueryHandler } from "./queries/ListMultisigsQueryHandler.js";
 export { ListSignersQueryHandler } from "./queries/ListSignersQueryHandler.js";
@@ -12,6 +13,10 @@ export type {
 	AnalyzeMultisigCommandInputDto,
 	AnalyzeMultisigCommandOutputDto,
 } from "./dtos/AnalyzeMultisigCommandDto.js";
+export type {
+	IngestNewProposalsCommandInputDto,
+	IngestNewProposalsCommandOutputDto,
+} from "./dtos/IngestNewProposalsCommandDto.js";
 export type {
 	GetMultisigQueryInputDto,
 	GetMultisigQueryOutputDto,

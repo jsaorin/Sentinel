@@ -8,6 +8,7 @@ import { GroqAIAnalysisService } from "../services/ai/GroqAIAnalysisService.js";
 import { InstructionDecoderService } from "../services/decoder/InstructionDecoderService.js";
 import { OnChainIdlResolverService } from "../services/idl/OnChainIdlResolverService.js";
 import { ScoringService } from "../services/scoring/ScoringService.js";
+import { HeliusPayloadClassifier } from "../services/squads/HeliusPayloadClassifier.js";
 import { TelegramWatcherService } from "../services/watchers/TelegramWatcherService.js";
 import { INFRASTRUCTURE_TYPES } from "../types.js";
 
@@ -56,6 +57,11 @@ export const serviceModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.RealtimeService)
 			.to(SocketIoRealtimeService)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.HeliusPayloadClassifier)
+			.to(HeliusPayloadClassifier)
 			.inSingletonScope();
 	},
 );
