@@ -1,5 +1,5 @@
 98-94-161-141.nip.io {
-	handle /ws {
+	handle /ws* {
 		reverse_proxy api:3000
 	}
 
