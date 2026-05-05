@@ -109,6 +109,13 @@ For **TypeScript code fixes** (e.g. a Prisma query bug):
 
 This trades a tiny bit of drift (hot-patched container vs source) for *fast confidence* before pushing.
 
+For **Caddyfile changes** (volume-mounted, no image rebuild):
+1. `docker compose up -d caddy` does NOT recreate the container when only the mounted file changed — the running Caddy keeps its old in-memory config.
+2. `docker exec sentinel-caddy caddy reload --config /etc/caddy/Caddyfile` is unreliable in this image (the admin API may not bind correctly) — observed cases where it logs "adapted config to JSON" but never applies.
+3. **Use `docker restart sentinel-caddy`** — that's the reliable way to pick up Caddyfile edits. ~3s downtime.
+4. Verify the routing actually changed by `curl -sk -i https://98-94-161-141.nip.io/<new-path>` and looking at headers (`via: 1.1 Caddy` + Express headers = proxied to api; `server: Caddy` with `content-length: 8` "Sentinel" = catch-all).
+5. Caddyfile gotcha: `handle /foo` matches ONLY the exact path. For prefix matching use `handle /foo*` (no slash) or `handle /foo/*` (forces trailing slash).
+
 ## 5. Commits & deploys
 
 The user's primary workspace at `/Users/jesusangel/workspace/Sentinel` always has in-progress work. **Never edit, stash, checkout, or commit there.** For any production fix:
