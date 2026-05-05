@@ -93,9 +93,13 @@ export function ThreatSignalsTable({
 	});
 
 	return (
-		<>
+		<Card variant="default" padding="lg">
+			<h2 className="text-lg font-semibold text-text-primary mb-4">
+				Threat Signals
+			</h2>
+
 			{/* Search */}
-			<div className="flex items-center gap-2 bg-bg-card border border-border-default rounded-md p-2 mb-6 focus-within:border-border-strong transition-colors">
+			<div className="flex items-center gap-2 bg-bg-base border border-border-default rounded-md p-2 mb-4 focus-within:border-border-strong transition-colors">
 				<SearchIcon className="w-5 h-5 text-text-tertiary shrink-0 ml-2" />
 				<input
 					type="text"
@@ -106,8 +110,7 @@ export function ThreatSignalsTable({
 				/>
 			</div>
 
-			<Card variant="default" padding="lg">
-				{/* Source filters */}
+			{/* Source filters */}
 				<div className="flex flex-wrap items-center gap-2 pb-4 border-b border-border-subtle">
 					{THREAT_SOURCE_FILTERS.map((s) => (
 						<button
@@ -237,7 +240,6 @@ export function ThreatSignalsTable({
 						</div>
 					</div>
 				)}
-			</Card>
-		</>
+		</Card>
 	);
 }
