@@ -10,5 +10,6 @@ export type RealtimeSocket = Socket<
 >;
 
 export function createRealtimeSocket(apiUrl: string): RealtimeSocket {
-	return io(apiUrl, { path: "/ws", transports: ["websocket"] });
+	const origin = new URL(apiUrl).origin;
+	return io(origin, { path: "/ws", transports: ["websocket"] });
 }
