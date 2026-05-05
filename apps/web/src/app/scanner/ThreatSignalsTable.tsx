@@ -2,15 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Card, Badge } from "@sentinel/ui";
+import { Card, Badge, RiskBadge } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
 import {
 	THREAT_SOURCE_FILTERS,
 	PAGE_SIZE,
 	SOURCE_KIND_LABEL,
 	CATEGORY_LABEL,
-	SEVERITY_VARIANT,
-	SEVERITY_LABEL,
 } from "@/lib/constants";
 import type {
 	ThreatSignalListItemResponse,
@@ -148,9 +146,7 @@ export function ThreatSignalsTable({
 						</p>
 					) : (
 						filtered.map((s, i) => {
-							const severity = s.severity
-								? SEVERITY_VARIANT[s.severity]
-								: undefined;
+							const severityLevel = s.severity ?? null;
 
 							return (
 								<Link
@@ -177,11 +173,7 @@ export function ThreatSignalsTable({
 													{SOURCE_KIND_LABEL[s.sourceKind] ?? s.sourceKind}
 												</Badge>
 											)}
-											{severity && (
-												<Badge variant={severity}>
-													{SEVERITY_LABEL[s.severity!] ?? s.severity}
-												</Badge>
-											)}
+											<RiskBadge level={severityLevel ?? "unknown"} size="sm" />
 										</div>
 									</div>
 
@@ -207,13 +199,7 @@ export function ThreatSignalsTable({
 										)}
 									</span>
 									<span className="w-24 hidden md:flex justify-end">
-										{severity ? (
-											<Badge variant={severity}>
-												{SEVERITY_LABEL[s.severity!] ?? s.severity}
-											</Badge>
-										) : (
-											<span className="text-xs text-text-tertiary">—</span>
-										)}
+										<RiskBadge level={severityLevel ?? "unknown"} size="sm" />
 									</span>
 								</Link>
 							);

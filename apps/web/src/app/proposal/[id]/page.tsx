@@ -91,11 +91,10 @@ export default async function ProposalPage({
 								].join(" ")}
 							>
 								<div className="flex items-center gap-3 min-w-0">
-									<Badge
-										variant={FLAG_SEVERITY_LEVEL[flag.severity] ?? "medium"}
-									>
-										{flag.severity}
-									</Badge>
+									<RiskBadge
+										level={FLAG_SEVERITY_LEVEL[flag.severity] ?? "medium"}
+										size="sm"
+									/>
 									<span className="text-md text-text-primary">
 										{flag.detail}
 									</span>

@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { Card, Badge, AlertBanner } from "@sentinel/ui";
+import { Card, Badge, RiskBadge } from "@sentinel/ui";
 import { MultisigHeader } from "@/components/multisig";
 import { getThreatSignalById } from "@/lib/api";
 import { notFound } from "next/navigation";
 import {
-	SEVERITY_LABEL,
-	SEVERITY_VARIANT,
 	CATEGORY_LABEL,
 	SOURCE_KIND_LABEL,
 	ENTITY_KIND_LABEL,
@@ -48,25 +46,6 @@ function InfoRow({
 	);
 }
 
-function SeverityBanner({
-	severity,
-}: {
-	severity: "low" | "medium" | "high";
-}) {
-	const levelMap = { low: "low", medium: "medium", high: "high" } as const;
-	const titleMap = {
-		low: "Low Severity Threat",
-		medium: "Medium Severity Threat",
-		high: "High Severity Threat",
-	};
-	return (
-		<AlertBanner
-			level={levelMap[severity]}
-			title={titleMap[severity]}
-		/>
-	);
-}
-
 export default async function ThreatSignalPage({
 	params,
 }: {
@@ -85,10 +64,6 @@ export default async function ThreatSignalPage({
 		notFound();
 	}
 
-	const severityVariant = signal.severity
-		? SEVERITY_VARIANT[signal.severity]
-		: undefined;
-
 	return (
 		<main className="min-h-screen pb-16">
 			<MultisigHeader />
@@ -100,17 +75,13 @@ export default async function ThreatSignalPage({
 						<h3 className="text-md sm:text-lg font-semibold">
 							Threat Signal
 						</h3>
-						<div className="flex items-center gap-3">
+						<div className="flex flex-wrap items-center gap-3">
 							{signal.category && (
 								<Badge variant="unknown">
 									{CATEGORY_LABEL[signal.category] ?? signal.category}
 								</Badge>
 							)}
-							{severityVariant && (
-								<Badge variant={severityVariant}>
-									{SEVERITY_LABEL[signal.severity!] ?? signal.severity}
-								</Badge>
-							)}
+							<RiskBadge level={signal.severity ?? "unknown"} size="sm" />
 							<Badge variant="info">
 								{SOURCE_KIND_LABEL[signal.sourceKind] ?? signal.sourceKind}
 							</Badge>
@@ -146,10 +117,6 @@ export default async function ThreatSignalPage({
 					</div>
 				</Card>
 
-				{/* Severity banner */}
-				{signal.severity && (
-					<SeverityBanner severity={signal.severity} />
-				)}
 
 				{/* AI Summary */}
 				<Card variant="default" padding="lg">
@@ -189,7 +156,7 @@ export default async function ThreatSignalPage({
 							<div
 								key={`${entity.kind}-${entity.address}`}
 								className={[
-									"flex flex-col md:flex-row md:items-center gap-3 md:gap-0 py-4 px-2",
+									"flex flex-col md:flex-row md:items-center gap-3 md:gap-0 py-4 md:px-2",
 									i < signal.entities.length - 1
 										? "border-b border-border-subtle"
 										: "",
@@ -197,8 +164,8 @@ export default async function ThreatSignalPage({
 							>
 								{/* Mobile layout */}
 								<div className="flex flex-col gap-2 md:hidden">
-									<div className="flex items-center gap-2">
-										<Badge variant="info">
+									<div className="flex items-center gap-3">
+										<Badge variant="info" className="!px-0">
 											{ENTITY_KIND_LABEL[entity.kind] ?? entity.kind}
 										</Badge>
 										{entity.role && (
@@ -206,6 +173,7 @@ export default async function ThreatSignalPage({
 												variant={
 													ENTITY_ROLE_VARIANT[entity.role] ?? "unknown"
 												}
+												className="!px-0"
 											>
 												{ENTITY_ROLE_LABEL[entity.role] ?? entity.role}
 											</Badge>
@@ -217,7 +185,7 @@ export default async function ThreatSignalPage({
 										rel="noopener noreferrer"
 										className="font-mono text-sm text-text-link hover:text-primary transition-colors"
 									>
-										{entity.address}
+										{entity.address.slice(0, 4)}...{entity.address.slice(-4)}
 									</a>
 									{entity.contextSnippet && (
 										<p className="text-sm text-text-secondary">
@@ -282,10 +250,12 @@ export default async function ThreatSignalPage({
 							/>
 						)}
 						{signal.severity && (
-							<InfoRow
-								label="Severity"
-								value={SEVERITY_LABEL[signal.severity] ?? signal.severity}
-							/>
+							<div className="flex items-center justify-between py-2.5 border-b border-border-subtle last:border-b-0">
+								<span className="text-text-tertiary text-xs uppercase tracking-wider font-semibold">
+									Severity
+								</span>
+								<RiskBadge level={signal.severity} size="sm" />
+							</div>
 						)}
 					</div>
 				</Card>
