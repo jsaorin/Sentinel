@@ -174,7 +174,7 @@ function buildWarnings(
 		for (const n of externallyFundedNonces) {
 			warnings.push({
 				code: "EXTERNAL_NONCE_FUNDER",
-				message: `Durable Nonce account ${n.address} authorized to signer ${n.authority} was funded by external wallet ${n.fundedBy ?? "unknown"}. This is a textbook pre-staging signal of a Drift-style attack — investigate immediately`,
+				message: `Durable Nonce account ${n.address} authorized to signer ${n.authority} was funded by external wallet ${n.fundedBy ?? "unknown"}. External funding of a signer-controlled nonce is a known pre-staging pattern for offline-signed transactions — investigate immediately`,
 			});
 		}
 	} else if (nonceAccounts.length > 0) {
