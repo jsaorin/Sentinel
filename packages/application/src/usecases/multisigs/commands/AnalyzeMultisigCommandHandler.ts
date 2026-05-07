@@ -1,6 +1,7 @@
 import {
 	DOMAIN_TYPES,
 	type IMultisigRepository,
+	type INonceAccountSubscriber,
 	type ISignerRepository,
 	type ISquadsService,
 	type IVaultRepository,
@@ -30,6 +31,8 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 		private squadsService: ISquadsService,
 		@inject(DOMAIN_TYPES.VaultRepository)
 		private vaultRepository: IVaultRepository,
+		@inject(DOMAIN_TYPES.NonceAccountSubscriber)
+		private nonceAccountSubscriber: INonceAccountSubscriber,
 		@inject(APPLICATION_TYPES.IngestNewProposalsCommandHandler)
 		private ingestNewProposalsHandler: IngestNewProposalsCommandHandler,
 		@inject(APPLICATION_TYPES.ScoreMultisigHealthCommandHandler)
@@ -72,6 +75,10 @@ export class AnalyzeMultisigCommandHandler extends BaseUseCase<
 			multisigId,
 			count: signers.length,
 		});
+
+		for (const signer of signers) {
+			await this.nonceAccountSubscriber.addAuthority(signer.address);
+		}
 
 		const { newProposals } = await this.ingestNewProposalsHandler.execute({
 			multisigId,
