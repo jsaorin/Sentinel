@@ -55,10 +55,12 @@ export const WARNING_SEVERITY: Record<
 	"critical" | "high" | "medium" | "low"
 > = {
 	CRITICAL_THRESHOLD_ONE: "critical",
+	EXTERNAL_NONCE_FUNDER: "critical",
 	LOW_THRESHOLD: "high",
 	EXTERNAL_CONFIG_AUTHORITY: "high",
 	CONCENTRATED_SIGNER: "medium",
 	LOW_SIGNER_COUNT: "medium",
+	NONCE_ACCOUNT_PRESENT_FOR_SIGNER: "medium",
 };
 
 export const FLAG_SEVERITY_LEVEL: Record<string, RiskLevel> = {
