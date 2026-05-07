@@ -8,6 +8,8 @@ export function toMultisigScoreDto(score: MultisigScore): MultisigScoreDto {
 	const warnings: MultisigWarningDto[] = score.warnings.map((w) => ({
 		code: w.code,
 		message: w.message,
+		subject: w.subject,
+		detectedAt: w.detectedAt.toISOString(),
 	}));
 
 	return {

@@ -9,6 +9,7 @@ export interface MultisigScoringContext {
 	configAuthority: string | null;
 	signers: Signer[];
 	nonceAccounts?: NonceAccount[];
+	previousWarnings?: MultisigScoreWarning[];
 }
 
 export interface MultisigScoreData {

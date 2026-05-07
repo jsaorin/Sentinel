@@ -61,7 +61,10 @@ export function MultisigLiveSection({
 
 	const score = multisig.healthScore?.overall ?? null;
 	const breakdown = multisig.healthScore?.breakdown;
-	const warnings = multisig.healthScore?.warnings ?? [];
+	const warnings = [...(multisig.healthScore?.warnings ?? [])].sort(
+		(a, b) =>
+			new Date(b.detectedAt).getTime() - new Date(a.detectedAt).getTime(),
+	);
 	const aiSummary = multisig.healthScore?.aiSummary ?? null;
 
 	const overviewContent = (

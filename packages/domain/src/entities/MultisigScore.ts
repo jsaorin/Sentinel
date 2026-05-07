@@ -1,6 +1,8 @@
 export interface MultisigScoreWarning {
 	code: string;
 	message: string;
+	subject: string | null;
+	detectedAt: Date;
 }
 
 export class MultisigScore {
