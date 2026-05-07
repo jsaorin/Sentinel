@@ -109,32 +109,27 @@ export function AgentFeed({ messages }: AgentFeedProps) {
 				</span>
 			</div>
 
-			<div className="mt-3 overflow-y-auto max-h-[300px] rounded-sm bg-bg-base p-3">
-				{messages.length === 0 ? (
-					<ThinkingIndicator />
-				) : (
-					<>
-						{messages.map((msg, i) => (
-							<div
-								key={`${msg.timestamp.getTime()}-${i}`}
-								className="py-0.5 flex gap-2"
-							>
-								<span className="text-xs text-text-tertiary font-mono shrink-0">
-									{msg.timestamp.toLocaleTimeString("en-US", {
-										hour12: false,
-										hour: "2-digit",
-										minute: "2-digit",
-										second: "2-digit",
-									})}
-								</span>
-								<span className="text-xs text-text-secondary font-mono wrap-break-word">
-									{msg.message}
-								</span>
-							</div>
-						))}
-						<div ref={bottomRef} />
-					</>
-				)}
+			<div className="mt-3 overflow-y-auto max-h-[400px] min-h-[120px] rounded-sm bg-bg-base p-3">
+				{messages.map((msg, i) => (
+					<div
+						key={`${msg.timestamp.getTime()}-${i}`}
+						className="py-0.5 flex gap-2 opacity-50"
+					>
+						<span className="text-xs text-text-tertiary font-mono shrink-0">
+							{msg.timestamp.toLocaleTimeString("en-US", {
+								hour12: false,
+								hour: "2-digit",
+								minute: "2-digit",
+								second: "2-digit",
+							})}
+						</span>
+						<span className="text-xs text-text-secondary font-mono wrap-break-word">
+							{msg.message}
+						</span>
+					</div>
+				))}
+				<ThinkingIndicator />
+				<div ref={bottomRef} />
 			</div>
 		</Card>
 	);

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Card, RiskBadge } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
+import { useRealtimeSocket } from "@/contexts/RealtimeContext";
+import { REALTIME_ROOMS, REALTIME_ACTIONS } from "@sentinel/common/realtime";
 import { getLevel } from "@/lib/risk";
 import type { MultisigListItemResponse } from "@/lib/api";
 import { RISK_FILTERS, PAGE_SIZE } from "@/lib/constants";
@@ -12,10 +14,45 @@ type MultisigsTableProps = {
 	multisigs: MultisigListItemResponse[];
 };
 
-export function MultisigsTable({ multisigs }: MultisigsTableProps) {
+export function MultisigsTable({ multisigs: initialMultisigs }: MultisigsTableProps) {
+	const [multisigs, setMultisigs] = useState(initialMultisigs);
 	const [search, setSearch] = useState("");
 	const [riskFilter, setRiskFilter] = useState<string>("All");
 	const [page, setPage] = useState(0);
+
+	const { socket, subscribe, unsubscribe } = useRealtimeSocket();
+
+	const refetchMultisigs = useCallback(async () => {
+		try {
+			const { getMultisigList } = await import("@/lib/api");
+			const result = await getMultisigList();
+			setMultisigs(result);
+		} catch {
+			/* keep current data */
+		}
+	}, []);
+
+	useEffect(() => {
+		if (!socket) return;
+		const room = REALTIME_ROOMS.watcherFeed();
+		subscribe(room);
+
+		let debounceTimer: ReturnType<typeof setTimeout>;
+		const handler = () => {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(refetchMultisigs, 500);
+		};
+
+		socket.on(REALTIME_ACTIONS.MULTISIG_CONFIG_CHANGED, handler as never);
+		socket.on(REALTIME_ACTIONS.NONCE_ACCOUNT_DETECTED, handler as never);
+
+		return () => {
+			clearTimeout(debounceTimer);
+			socket.off(REALTIME_ACTIONS.MULTISIG_CONFIG_CHANGED, handler as never);
+			socket.off(REALTIME_ACTIONS.NONCE_ACCOUNT_DETECTED, handler as never);
+			unsubscribe(room);
+		};
+	}, [socket, subscribe, unsubscribe, refetchMultisigs]);
 
 	const filtered = multisigs.filter((m) => {
 		const matchesSearch =

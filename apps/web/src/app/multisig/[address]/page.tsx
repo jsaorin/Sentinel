@@ -7,9 +7,15 @@ import {
 	VaultsTab,
 } from "@/components/multisig";
 import { getMultisig, getProposals, getSigners } from "@/lib/api";
-import { STATUS_DISPLAY } from "@/lib/constants";
 import { getRiskLevel } from "@/lib/risk";
 import type { Metadata } from "next";
+import {
+	STATUS_DISPLAY,
+	WARNING_SEVERITY,
+	SOLANA_ADDRESS_RE,
+	SOLSCAN_BASE,
+} from "@/lib/constants";
+import { MultisigRealtimeRefresh } from "./MultisigRealtimeRefresh";
 
 export async function generateMetadata({
 	params,
@@ -100,6 +106,7 @@ export default async function MultisigPage({
 
 		return (
 			<main className="min-h-screen pb-16">
+				<MultisigRealtimeRefresh multisigId={multisig.id} />
 				<MultisigHeader />
 
 				<MultisigLiveSection

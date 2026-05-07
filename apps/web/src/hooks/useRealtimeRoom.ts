@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { createRealtimeSocket, type RealtimeSocket } from "@/lib/realtime";
+import { useEffect, useRef } from "react";
+import { useRealtimeSocket } from "@/contexts/RealtimeContext";
 import type {
 	RealtimeAction,
 	RealtimePayloadMap,
@@ -12,17 +12,21 @@ export function useRealtimeRoom<A extends RealtimeAction>(
 	action: A,
 	handler: (data: RealtimePayloadMap[A]) => void,
 ) {
+	const { socket, subscribe, unsubscribe } = useRealtimeSocket();
+	const handlerRef = useRef(handler);
+	handlerRef.current = handler;
+
 	useEffect(() => {
-		const socket: RealtimeSocket = createRealtimeSocket(
-			process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000",
-		);
-		socket.emit("subscribe", room);
-		socket.on(action, handler as never);
+		if (!socket) return;
+		subscribe(room);
+
+		const listener = (data: RealtimePayloadMap[A]) =>
+			handlerRef.current(data);
+		socket.on(action, listener as never);
 
 		return () => {
-			socket.emit("unsubscribe", room);
-			socket.off(action, handler as never);
-			socket.close();
+			socket.off(action, listener as never);
+			unsubscribe(room);
 		};
-	}, [room, action, handler]);
+	}, [socket, room, action, subscribe, unsubscribe]);
 }

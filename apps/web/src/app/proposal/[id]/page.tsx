@@ -18,6 +18,7 @@ import {
 	RECOMMENDATION_LABEL,
 	SOLSCAN_BASE,
 } from "@/lib/constants";
+import { ProposalRealtimeRefresh } from "./ProposalRealtimeRefresh";
 
 export async function generateMetadata({
 	params,
@@ -253,6 +254,7 @@ export default async function ProposalPage({
 
 	return (
 		<main className="min-h-screen pb-16">
+			<ProposalRealtimeRefresh proposalId={id} />
 			<MultisigHeader />
 
 			<div className="max-w-6xl mx-auto px-6 space-y-6">
