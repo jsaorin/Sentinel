@@ -54,7 +54,7 @@ export function MultisigLiveSection({
 	}, [address]);
 
 	useRealtimeRoom(
-		REALTIME_ROOMS.multisig(address),
+		REALTIME_ROOMS.multisig(multisig.id),
 		REALTIME_ACTIONS.NEW_ANALYSIS_MULTISIG,
 		refetch,
 	);
