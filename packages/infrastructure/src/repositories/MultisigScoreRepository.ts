@@ -1,10 +1,10 @@
-import type { Prisma } from "../../generated/client/index.js";
 import type {
 	IMultisigScoreRepository,
 	MultisigScore,
 	UpsertMultisigScoreInput,
 } from "@sentinel/domain";
 import { injectable } from "inversify";
+import type { Prisma } from "../../generated/client/index.js";
 import { mapPrismaMultisigScoreToDomain } from "../mappers/MultisigScoreMapper.js";
 import { getPrismaClient } from "../prisma/prisma-client-factory.js";
 
@@ -22,7 +22,12 @@ export class MultisigScoreRepository implements IMultisigScoreRepository {
 	}
 
 	async upsert(input: UpsertMultisigScoreInput): Promise<MultisigScore> {
-		const warningsJson = input.warnings as unknown as Prisma.InputJsonValue;
+		const warningsJson = input.warnings.map((w) => ({
+			code: w.code,
+			message: w.message,
+			subject: w.subject,
+			detectedAt: w.detectedAt.toISOString(),
+		})) as unknown as Prisma.InputJsonValue;
 		const now = new Date();
 
 		const record = await this.prisma.multisigScore.upsert({
