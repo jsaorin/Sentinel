@@ -1,6 +1,37 @@
+<p align="center">
+  <img src="assets/logo.jpg" alt="Sentinel — AI-Powered Multisig Security" width="640" />
+</p>
+
 # Sentinel
 
-AI-powered multisig security scoring system for Solana. Real-time per-proposal risk analysis, signer behavioral scoring, and durable nonce detection for Squads v4 multisigs.
+> The AI-powered security co-pilot for Solana multisigs.
+
+## The Problem
+
+Before signing any proposal, every multisig signer asks the same two questions:
+
+1. Has anything happened onchain or offchain that affects this multisig and I don't know yet?
+2. Does anyone else know and I don't?
+
+Block explorers show transactions. Simulators show effects. Threat-intel feeds publish addresses. None of them sit between *your* signers and *your* approve button, in real time, with everything correlated.
+
+## What Sentinel Does
+
+Three real-time engines feeding a single verdict:
+
+- **Onchain listener** — catches threats like durable-nonce staging, threshold mutations, signer changes, and config-authority swaps the moment they hit the chain.
+- **Threat-intel agent** — ingests live security intelligence from external sources (starting with ZachXBT's investigations channel), extracts addresses, classifies role and severity, and cross-references against every protected multisig.
+- **AI re-evaluator** — every proposal gets a 0-to-100 risk score and a plain-English rationale, evaluated against the multisig's full history. Verdicts re-run automatically when anything changes — onchain or off.
+
+First-time actions, authority transfers, threshold mutations, large transfers, and interactions with flagged wallets are all surfaced before signers approve.
+
+## The Drift Hook
+
+Sentinel's durable-nonce attack detector would have caught the **$285M Drift exploit eight days before** the funds moved.
+
+## Built For
+
+Operators of high-value Solana multisigs — DAO treasuries, protocol security councils, foundations, and OTC desks. Today's focus is Squads V4, with cross-protocol expansion ahead.
 
 ## Architecture
 
