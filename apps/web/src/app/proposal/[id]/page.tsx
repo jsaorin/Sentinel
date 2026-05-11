@@ -1,23 +1,24 @@
-import type { Metadata } from "next";
-import { Card, RiskBadge, Badge, AlertBanner } from "@sentinel/ui";
 import {
 	MultisigHeader,
-	ReportCard,
 	MultisigTabs,
+	ReportCard,
 } from "@/components/multisig";
 import { ScoreCard } from "@/components/multisig/ScoreCard";
 import { SignerRow } from "@/components/multisig/SignerRow";
 import { getProposalDetail } from "@/lib/api";
-import { getRiskLevel } from "@/lib/risk";
-import { notFound } from "next/navigation";
 import {
-	STATUS_VARIANT,
-	STATUS_LABEL,
 	FLAG_SEVERITY_LEVEL,
-	RECOMMENDATION_VARIANT,
 	RECOMMENDATION_LABEL,
+	RECOMMENDATION_VARIANT,
 	SOLSCAN_BASE,
+	STATUS_LABEL,
+	STATUS_VARIANT,
 } from "@/lib/constants";
+import { getRiskLevel } from "@/lib/risk";
+import { AlertBanner, Badge, Card, RiskBadge } from "@sentinel/ui";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { ProposalRealtimeRefresh } from "./ProposalRealtimeRefresh";
 
 export async function generateMetadata({
 	params,
@@ -91,11 +92,10 @@ export default async function ProposalPage({
 								].join(" ")}
 							>
 								<div className="flex items-center gap-3 min-w-0">
-									<Badge
-										variant={FLAG_SEVERITY_LEVEL[flag.severity] ?? "medium"}
-									>
-										{flag.severity}
-									</Badge>
+									<RiskBadge
+										level={FLAG_SEVERITY_LEVEL[flag.severity] ?? "medium"}
+										size="sm"
+									/>
 									<span className="text-md text-text-primary">
 										{flag.detail}
 									</span>
@@ -254,6 +254,7 @@ export default async function ProposalPage({
 
 	return (
 		<main className="min-h-screen pb-16">
+			<ProposalRealtimeRefresh proposalId={id} />
 			<MultisigHeader />
 
 			<div className="max-w-6xl mx-auto px-6 space-y-6">

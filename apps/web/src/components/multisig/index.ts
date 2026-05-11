@@ -13,3 +13,4 @@ export { ScoreBreakdown } from "./ScoreBreakdown";
 export { VaultsTab } from "./VaultsTab";
 export { VaultCard } from "./VaultCard";
 export { NewAnalysisToast } from "./NewAnalysisToast";
+export { MultisigLiveSection } from "./MultisigLiveSection";

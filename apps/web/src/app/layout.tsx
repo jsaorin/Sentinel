@@ -1,6 +1,7 @@
-import { IBM_Plex_Sans, Orbitron, JetBrains_Mono } from "next/font/google";
-import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
+import { RealtimeProvider } from "@/contexts/RealtimeContext";
+import type { Metadata } from "next";
+import { IBM_Plex_Sans, JetBrains_Mono, Orbitron } from "next/font/google";
 import "./globals.css";
 
 const ibmPlexSans = IBM_Plex_Sans({
@@ -96,7 +97,7 @@ export default function RootLayout({
 		>
 			<body className="bg-bg-base text-text-primary antialiased overflow-x-hidden">
 				<Navbar />
-				{children}
+				<RealtimeProvider>{children}</RealtimeProvider>
 			</body>
 		</html>
 	);

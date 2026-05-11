@@ -126,34 +126,58 @@ function scoreSignerCount(count: number): number {
 function buildWarnings(
 	context: MultisigScoringContext,
 ): MultisigScoreWarning[] {
+	const previousByKey = new Map<string, Date>();
+	for (const w of context.previousWarnings ?? []) {
+		previousByKey.set(warningKey(w.code, w.subject), w.detectedAt);
+	}
+
+	const now = new Date();
+	const make = (
+		code: string,
+		subject: string | null,
+		message: string,
+	): MultisigScoreWarning => ({
+		code,
+		message,
+		subject,
+		detectedAt: previousByKey.get(warningKey(code, subject)) ?? now,
+	});
+
 	const warnings: MultisigScoreWarning[] = [];
 	const signerCount = context.signers.length;
 	const threshold = context.threshold ?? 0;
 
 	if (threshold === 1 && signerCount > 1) {
-		warnings.push({
-			code: "CRITICAL_THRESHOLD_ONE",
-			message:
+		warnings.push(
+			make(
+				"CRITICAL_THRESHOLD_ONE",
+				null,
 				"Threshold = 1: any signer can execute transactions alone. This multisig provides no additional protection over a single-signer wallet",
-		});
+			),
+		);
 	} else if (
 		signerCount > 0 &&
 		threshold > 0 &&
 		threshold / signerCount <= 0.5
 	) {
 		const recommended = Math.ceil(signerCount * 0.6);
-		warnings.push({
-			code: "LOW_THRESHOLD",
-			message: `Low threshold: ${threshold}/${signerCount}. Recommended at least ${recommended}/${signerCount}`,
-		});
+		warnings.push(
+			make(
+				"LOW_THRESHOLD",
+				null,
+				`Low threshold: ${threshold}/${signerCount}. Recommended at least ${recommended}/${signerCount}`,
+			),
+		);
 	}
 
 	if (context.configAuthority !== null) {
-		warnings.push({
-			code: "EXTERNAL_CONFIG_AUTHORITY",
-			message:
+		warnings.push(
+			make(
+				"EXTERNAL_CONFIG_AUTHORITY",
+				null,
 				"External config authority assigned. This address can modify the multisig without signer approval",
-		});
+			),
+		);
 	}
 
 	for (const signer of context.signers) {
@@ -161,18 +185,24 @@ function buildWarnings(
 			signer.permissions.mask,
 		);
 		if (initiate && vote && execute) {
-			warnings.push({
-				code: "CONCENTRATED_SIGNER",
-				message: `Signer ${signer.address} holds all permissions (initiate+vote+execute). Consider separating roles`,
-			});
+			warnings.push(
+				make(
+					"CONCENTRATED_SIGNER",
+					signer.address,
+					`Signer ${signer.address} holds all permissions (initiate+vote+execute). Consider separating roles`,
+				),
+			);
 		}
 	}
 
 	if (signerCount < 3 && signerCount > 0) {
-		warnings.push({
-			code: "LOW_SIGNER_COUNT",
-			message: `Only ${signerCount} signer(s). Minimum of 3 recommended`,
-		});
+		warnings.push(
+			make(
+				"LOW_SIGNER_COUNT",
+				null,
+				`Only ${signerCount} signer(s). Minimum of 3 recommended`,
+			),
+		);
 	}
 
 	const nonceAccounts = context.nonceAccounts ?? [];
@@ -181,39 +211,58 @@ function buildWarnings(
 	);
 	if (externallyFundedNonces.length > 0) {
 		for (const n of externallyFundedNonces) {
-			warnings.push({
-				code: "EXTERNAL_NONCE_FUNDER",
-				message: `Durable Nonce account ${n.address} authorized to signer ${n.authority} was funded by external wallet ${n.fundedBy ?? "unknown"}. This is a textbook pre-staging signal of a Drift-style attack — investigate immediately`,
-			});
+			warnings.push(
+				make(
+					"EXTERNAL_NONCE_FUNDER",
+					n.address,
+					`Durable Nonce account ${n.address} authorized to signer ${n.authority} was funded by external wallet ${n.fundedBy ?? "unknown"}. External funding of a signer-controlled nonce is a known pre-staging pattern for offline-signed transactions — investigate immediately`,
+				),
+			);
 		}
 	} else if (nonceAccounts.length > 0) {
 		const distinctAuthorities = new Set(nonceAccounts.map((n) => n.authority));
-		warnings.push({
-			code: "NONCE_ACCOUNT_PRESENT_FOR_SIGNER",
-			message: `${nonceAccounts.length} Durable Nonce account(s) authorized to ${distinctAuthorities.size} signer(s). Verify each is a known offline-signing tool`,
-		});
+		warnings.push(
+			make(
+				"NONCE_ACCOUNT_PRESENT_FOR_SIGNER",
+				null,
+				`${nonceAccounts.length} Durable Nonce account(s) authorized to ${distinctAuthorities.size} signer(s). Verify each is a known offline-signing tool`,
+			),
+		);
 	}
 
 	const threatExposures = context.threatExposures ?? [];
 	for (const exposure of threatExposures) {
 		const roleLabel = exposure.role ?? "unknown";
 		if (exposure.severity === "critical") {
-			warnings.push({
-				code: "SIGNER_LINKED_TO_ATTACK",
-				message: `Signer ${exposure.signerAddress} was identified in a threat report as ${roleLabel}. Treat this multisig as compromised and rotate the key immediately`,
-			});
+			warnings.push(
+				make(
+					"SIGNER_LINKED_TO_ATTACK",
+					exposure.signerAddress,
+					`Signer ${exposure.signerAddress} was identified in a threat report as ${roleLabel}. Treat this multisig as compromised and rotate the key immediately`,
+				),
+			);
 		} else if (exposure.severity === "high") {
-			warnings.push({
-				code: "SIGNER_LINKED_TO_VULNERABILITY",
-				message: `Signer ${exposure.signerAddress} is flagged as ${roleLabel} in a recent threat report. Investigate and consider rotating the key`,
-			});
+			warnings.push(
+				make(
+					"SIGNER_LINKED_TO_VULNERABILITY",
+					exposure.signerAddress,
+					`Signer ${exposure.signerAddress} is flagged as ${roleLabel} in a recent threat report. Investigate and consider rotating the key`,
+				),
+			);
 		} else {
-			warnings.push({
-				code: "SIGNER_FLAGGED_IN_THREAT",
-				message: `Signer ${exposure.signerAddress} appears in a threat report (role: ${roleLabel}). Review the source for context`,
-			});
+			warnings.push(
+				make(
+					"SIGNER_FLAGGED_IN_THREAT",
+					exposure.signerAddress,
+					`Signer ${exposure.signerAddress} appears in a threat report (role: ${roleLabel}). Review the source for context`,
+				),
+			);
 		}
 	}
 
 	return warnings;
+}
+
+function warningKey(code: string, subject: string | null): string {
+	return `${code}|${subject ?? ""}`;
 }

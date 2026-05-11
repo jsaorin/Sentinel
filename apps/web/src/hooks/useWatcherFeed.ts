@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { createRealtimeSocket, type RealtimeSocket } from "@/lib/realtime";
+import { useRealtimeSocket } from "@/contexts/RealtimeContext";
 import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
+import { useEffect, useRef } from "react";
 
 export function useWatcherFeed(opts: {
 	onAgentMessage: (msg: string) => void;
 	onNewThreatSignal: () => void;
 }) {
+	const { socket, subscribe, unsubscribe } = useRealtimeSocket();
 	const optsRef = useRef(opts);
 	optsRef.current = opts;
 
 	useEffect(() => {
-		const socket: RealtimeSocket = createRealtimeSocket(
-			process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000",
-		);
+		if (!socket) return;
 		const room = REALTIME_ROOMS.watcherFeed();
-		socket.emit("subscribe", room);
+		subscribe(room);
 
 		socket.on(REALTIME_ACTIONS.AGENT_MESSAGE, (data) => {
 			optsRef.current.onAgentMessage(data.message);
@@ -27,10 +26,9 @@ export function useWatcherFeed(opts: {
 		});
 
 		return () => {
-			socket.emit("unsubscribe", room);
 			socket.off(REALTIME_ACTIONS.AGENT_MESSAGE);
 			socket.off(REALTIME_ACTIONS.NEW_THREAT_SIGNAL);
-			socket.close();
+			unsubscribe(room);
 		};
-	}, []);
+	}, [socket, subscribe, unsubscribe]);
 }

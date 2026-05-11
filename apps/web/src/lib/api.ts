@@ -18,6 +18,8 @@ export type PermissionsResponse = {
 export type MultisigWarningResponse = {
 	code: string;
 	message: string;
+	subject: string | null;
+	detectedAt: string;
 };
 
 export type MultisigScoreResponse = {
@@ -142,13 +144,7 @@ export type ProposalDetailResponse = {
 export type AffectedEntityResponse = {
 	kind: "program" | "multisig" | "wallet";
 	address: string;
-	role:
-		| "attacker"
-		| "victim"
-		| "compromised"
-		| "vulnerable"
-		| "unknown"
-		| null;
+	role: "attacker" | "victim" | "compromised" | "vulnerable" | "unknown" | null;
 	contextSnippet: string | null;
 };
 

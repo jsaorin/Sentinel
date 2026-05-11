@@ -11,6 +11,7 @@ export interface MultisigScoringContext {
 	signers: Signer[];
 	nonceAccounts?: NonceAccount[];
 	threatExposures?: MultisigThreatExposure[];
+	previousWarnings?: MultisigScoreWarning[];
 }
 
 export interface MultisigScoreData {

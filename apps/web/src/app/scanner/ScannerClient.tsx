@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { useWatcherFeed } from "@/hooks/useWatcherFeed";
+import type {
+	PaginationResponse,
+	ThreatSignalListItemResponse,
+} from "@/lib/api";
+import { useCallback, useState } from "react";
 import { AgentFeed } from "./AgentFeed";
 import { ThreatSignalsTable } from "./ThreatSignalsTable";
-import type {
-	ThreatSignalListItemResponse,
-	PaginationResponse,
-} from "@/lib/api";
 
 const MAX_MESSAGES = 200;
 
@@ -44,17 +44,13 @@ export function ScannerClient({
 	});
 
 	return (
-		<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-			<div className="lg:col-span-1">
-				<AgentFeed messages={agentMessages} />
-			</div>
-			<div className="lg:col-span-2">
-				<ThreatSignalsTable
-					initialItems={initialSignals}
-					initialPagination={initialPagination}
-					refreshKey={refreshKey}
-				/>
-			</div>
+		<div className="flex flex-col gap-6">
+			<AgentFeed messages={agentMessages} />
+			<ThreatSignalsTable
+				initialItems={initialSignals}
+				initialPagination={initialPagination}
+				refreshKey={refreshKey}
+			/>
 		</div>
 	);
 }

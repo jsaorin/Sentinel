@@ -3,7 +3,6 @@
 import { WarningIcon } from "@/components/icons";
 import { useRealtimeRoom } from "@/hooks/useRealtimeRoom";
 import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
-import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 const AUTO_DISMISS_MS = 8000;
@@ -15,7 +14,6 @@ type NewAnalysisToastProps = {
 };
 
 export function NewAnalysisToast({ multisigId }: NewAnalysisToastProps) {
-	const router = useRouter();
 	const [toasts, setToasts] = useState<Toast[]>([]);
 
 	const dismiss = useCallback((id: string) => {
@@ -26,8 +24,7 @@ export function NewAnalysisToast({ multisigId }: NewAnalysisToastProps) {
 		const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 		setToasts((prev) => [...prev, { id }]);
 		setTimeout(() => dismiss(id), AUTO_DISMISS_MS);
-		router.refresh();
-	}, [dismiss, router]);
+	}, [dismiss]);
 
 	useRealtimeRoom(
 		REALTIME_ROOMS.multisig(multisigId),

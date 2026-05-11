@@ -55,11 +55,11 @@ export const WARNING_SEVERITY: Record<
 	"critical" | "high" | "medium" | "low"
 > = {
 	CRITICAL_THRESHOLD_ONE: "critical",
+	EXTERNAL_NONCE_FUNDER: "critical",
 	LOW_THRESHOLD: "high",
 	EXTERNAL_CONFIG_AUTHORITY: "high",
 	CONCENTRATED_SIGNER: "medium",
 	LOW_SIGNER_COUNT: "medium",
-	EXTERNAL_NONCE_FUNDER: "critical",
 	NONCE_ACCOUNT_PRESENT_FOR_SIGNER: "medium",
 	SIGNER_LINKED_TO_ATTACK: "critical",
 	SIGNER_LINKED_TO_VULNERABILITY: "high",

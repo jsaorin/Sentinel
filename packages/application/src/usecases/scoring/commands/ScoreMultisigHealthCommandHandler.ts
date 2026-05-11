@@ -54,12 +54,13 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 
 		this.logger.info("Scoring multisig health", { multisigId });
 
-		const [multisig, signers, nonceAccounts, threatExposures] =
+		const [multisig, signers, nonceAccounts, threatExposures, previousScore] =
 			await Promise.all([
 				this.multisigRepository.findById(multisigId),
 				this.signerRepository.findByMultisigId(multisigId),
 				this.nonceAccountRepository.findByMultisigId(multisigId),
 				this.threatExposureRepository.findByMultisigId(multisigId),
+				this.multisigScoreRepository.findByMultisigId(multisigId),
 			]);
 
 		const data = this.scoringService.scoreMultisig({
@@ -68,6 +69,7 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 			signers,
 			nonceAccounts,
 			threatExposures,
+			previousWarnings: previousScore?.warnings ?? [],
 		});
 
 		await this.multisigScoreRepository.upsert({

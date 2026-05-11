@@ -1,8 +1,8 @@
-import { io, type Socket } from "socket.io-client";
 import type {
-	RealtimeServerToClientEvents,
 	RealtimeClientToServerEvents,
+	RealtimeServerToClientEvents,
 } from "@sentinel/common/realtime";
+import { type Socket, io } from "socket.io-client";
 
 export type RealtimeSocket = Socket<
 	RealtimeServerToClientEvents,
@@ -10,5 +10,6 @@ export type RealtimeSocket = Socket<
 >;
 
 export function createRealtimeSocket(apiUrl: string): RealtimeSocket {
-	return io(apiUrl, { path: "/ws", transports: ["websocket"] });
+	const origin = new URL(apiUrl).origin;
+	return io(origin, { path: "/ws", transports: ["websocket"] });
 }

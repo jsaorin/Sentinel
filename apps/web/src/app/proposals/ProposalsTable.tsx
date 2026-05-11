@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { Card, Badge, RiskBadge } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
-import { getRiskLevel } from "@/lib/risk";
+import { useRealtimeSocket } from "@/contexts/RealtimeContext";
+import type { GlobalProposalResponse, PaginationResponse } from "@/lib/api";
 import {
-	PROPOSAL_STATUSES,
 	PAGE_SIZE,
+	PROPOSAL_STATUSES,
 	STATUS_DISPLAY,
 	STATUS_DISPLAY_VARIANT,
 } from "@/lib/constants";
-import type { GlobalProposalResponse, PaginationResponse } from "@/lib/api";
+import { getRiskLevel } from "@/lib/risk";
+import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
+import { Badge, Card, RiskBadge } from "@sentinel/ui";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 type ProposalsTableProps = {
 	initialProposals: GlobalProposalResponse[];
@@ -28,7 +30,7 @@ export function ProposalsTable({
 	const [statusFilter, setStatusFilter] = useState<string>("All");
 	const [loading, setLoading] = useState(false);
 
-	async function fetchPage(page: number) {
+	const fetchPage = useCallback(async (page: number) => {
 		setLoading(true);
 		try {
 			const { getAllProposals } = await import("@/lib/api");
@@ -40,7 +42,31 @@ export function ProposalsTable({
 		} finally {
 			setLoading(false);
 		}
-	}
+	}, []);
+
+	const { socket, subscribe, unsubscribe } = useRealtimeSocket();
+
+	useEffect(() => {
+		if (!socket) return;
+		const room = REALTIME_ROOMS.watcherFeed();
+		subscribe(room);
+
+		let debounceTimer: ReturnType<typeof setTimeout>;
+		const refetch = () => {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(() => fetchPage(pagination.page), 500);
+		};
+
+		socket.on(REALTIME_ACTIONS.NEW_PROPOSAL, refetch as never);
+		socket.on(REALTIME_ACTIONS.PROPOSAL_UPDATED, refetch as never);
+
+		return () => {
+			clearTimeout(debounceTimer);
+			socket.off(REALTIME_ACTIONS.NEW_PROPOSAL, refetch as never);
+			socket.off(REALTIME_ACTIONS.PROPOSAL_UPDATED, refetch as never);
+			unsubscribe(room);
+		};
+	}, [socket, subscribe, unsubscribe, pagination.page, fetchPage]);
 
 	function handleSearchChange(value: string) {
 		setSearch(value);

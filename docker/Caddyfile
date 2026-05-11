@@ -1,4 +1,8 @@
 98-94-161-141.nip.io {
+	handle /ws* {
+		reverse_proxy api:3000
+	}
+
 	handle /api/* {
 		reverse_proxy api:3000
 	}
