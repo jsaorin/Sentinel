@@ -42,9 +42,18 @@ export function generateSummary(
 			return generateAtaSummary(action, accounts);
 		case "Squads Multisig Program":
 			return "Squads multisig instruction";
+		case "Memo Program":
+		case "Memo Program (v1)":
+			return generateMemoSummary(params);
 		default:
 			return `Unknown instruction on ${programName || "unknown program"}`;
 	}
+}
+
+function generateMemoSummary(params: Record<string, string>): string {
+	const memo = params.memo ?? "";
+	const preview = memo.length > 80 ? `${memo.slice(0, 77)}...` : memo;
+	return `On-chain memo: "${preview}"`;
 }
 
 function generateSystemSummary(

@@ -29,9 +29,19 @@ export function parseInstruction(
 			return { action: "CreateAssociatedTokenAccount", params: {} };
 		case "Squads Multisig Program":
 			return parseSquadsProgram(buffer);
+		case "Memo Program":
+		case "Memo Program (v1)":
+			return parseMemoProgram(buffer);
 		default:
 			return null;
 	}
+}
+
+function parseMemoProgram(buffer: Buffer): ParsedInstruction {
+	return {
+		action: "Memo",
+		params: { memo: buffer.toString("utf-8") },
+	};
 }
 
 function readU32LE(buffer: Buffer, offset: number): number {
