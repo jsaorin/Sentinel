@@ -1,6 +1,6 @@
 model NonceAccount {
   id               String   @id @default(uuid())
-  address          String   @unique
+  address          String
   authority        String
   fundedBy         String?  @map("funded_by")
   multisigId       String   @map("multisig_id")
@@ -13,6 +13,7 @@ model NonceAccount {
   multisig Multisig @relation(fields: [multisigId], references: [id], onDelete: Cascade)
   signer   Signer   @relation(fields: [signerId], references: [id], onDelete: Cascade)
 
+  @@unique([address, multisigId])
   @@index([authority])
   @@index([multisigId])
   @@index([signerId])
