@@ -1,11 +1,9 @@
-import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
 import {
 	DOMAIN_TYPES,
 	type IMultisigRepository,
 	type IMultisigScoreRepository,
 	type IMultisigThreatExposureRepository,
 	type INonceAccountRepository,
-	type IRealtimeService,
 	type IScoringService,
 	type ISignerRepository,
 	MultisigScored,
@@ -37,8 +35,6 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 		private scoringService: IScoringService,
 		@inject(APPLICATION_TYPES.OutboxEventPublisher)
 		private eventPublisher: IOutboxEventPublisher,
-		@inject(DOMAIN_TYPES.RealtimeService)
-		private realtime: IRealtimeService,
 		@inject(DOMAIN_TYPES.NonceAccountRepository)
 		private nonceAccountRepository: INonceAccountRepository,
 		@inject(DOMAIN_TYPES.MultisigThreatExposureRepository)
@@ -91,12 +87,6 @@ export class ScoreMultisigHealthCommandHandler extends BaseUseCase<
 		const domainEvent = new MultisigScored(multisigId, data.overallScore);
 		const { routingKey, event } = multisigScoredToIntegrationEvent(domainEvent);
 		await this.eventPublisher.publish(event, { routingKey });
-
-		await this.realtime.emitToRoom(
-			REALTIME_ROOMS.multisig(multisigId),
-			REALTIME_ACTIONS.NEW_ANALYSIS_MULTISIG,
-			{ multisigId },
-		);
 
 		return {
 			multisigId,

@@ -25,6 +25,9 @@
 		"db:seed": "tsx src/prisma/seed/index.ts",
 		"test:multisig:generate": "tsx scripts/generate-test-signer.ts",
 		"test:multisig:flow": "tsx scripts/test-multisig-flow.ts",
+		"demo:create": "tsx scripts/demo/01_create_multisig.ts",
+		"demo:propose": "tsx scripts/demo/02_create_proposal.ts",
+		"demo:nonce": "tsx scripts/demo/03_create_nonce_account.ts",
 		"prebuild": "pnpm run prisma:generate",
 		"build": "tsc -b"
 	},
