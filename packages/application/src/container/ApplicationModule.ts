@@ -21,6 +21,7 @@ import { IngestDetectedNonceCommandHandler } from "../usecases/security/commands
 import { ListNonceWarningsQueryHandler } from "../usecases/security/queries/ListNonceWarningsQueryHandler.js";
 import { AnalyzeThreatSignalCommandHandler } from "../usecases/threat-signals/commands/AnalyzeThreatSignalCommandHandler.js";
 import { IngestThreatSignalCommandHandler } from "../usecases/threat-signals/commands/IngestThreatSignalCommandHandler.js";
+import { LinkThreatEntityToMultisigsCommandHandler } from "../usecases/threat-signals/commands/LinkThreatEntityToMultisigsCommandHandler.js";
 import { ListThreatSignalsQueryHandler } from "../usecases/threat-signals/queries/ListThreatSignalsQueryHandler.js";
 import { SaveWebhookEventCommandHandler } from "../usecases/webhooks/commands/SaveWebhookEventCommandHandler.js";
 
@@ -98,6 +99,10 @@ export const applicationModule = new ContainerModule(
 
 		bind(APPLICATION_TYPES.AnalyzeThreatSignalCommandHandler)
 			.to(AnalyzeThreatSignalCommandHandler)
+			.inSingletonScope();
+
+		bind(APPLICATION_TYPES.LinkThreatEntityToMultisigsCommandHandler)
+			.to(LinkThreatEntityToMultisigsCommandHandler)
 			.inSingletonScope();
 
 		bind(APPLICATION_TYPES.ListThreatSignalsQueryHandler)

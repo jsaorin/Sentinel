@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { useRealtimeSocket } from "@/contexts/RealtimeContext";
 import type { RealtimeAction } from "@sentinel/common/realtime";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 
-export function useRealtimeRefresh(
-	room: string,
-	actions: RealtimeAction[],
-) {
+export function useRealtimeRefresh(room: string, actions: RealtimeAction[]) {
 	const router = useRouter();
 	const { socket, subscribe, unsubscribe } = useRealtimeSocket();
 	const actionsRef = useRef(actions);

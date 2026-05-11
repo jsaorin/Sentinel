@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { useWatcherFeed } from "@/hooks/useWatcherFeed";
+import type {
+	PaginationResponse,
+	ThreatSignalListItemResponse,
+} from "@/lib/api";
+import { useCallback, useState } from "react";
 import { AgentFeed } from "./AgentFeed";
 import { ThreatSignalsTable } from "./ThreatSignalsTable";
-import type {
-	ThreatSignalListItemResponse,
-	PaginationResponse,
-} from "@/lib/api";
 
 const MAX_MESSAGES = 200;
 

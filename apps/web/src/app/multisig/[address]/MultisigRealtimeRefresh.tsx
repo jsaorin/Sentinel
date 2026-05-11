@@ -1,7 +1,7 @@
 "use client";
 
 import { useRealtimeRefresh } from "@/hooks/useRealtimeRefresh";
-import { REALTIME_ROOMS, REALTIME_ACTIONS } from "@sentinel/common/realtime";
+import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
 
 const ACTIONS = [
 	REALTIME_ACTIONS.MULTISIG_CONFIG_CHANGED,

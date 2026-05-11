@@ -2,19 +2,20 @@ import {
 	MultisigHeader,
 	MultisigLiveSection,
 	MultisigNotFound,
+	NewAnalysisToast,
 	ProposalHistory,
 	SignersList,
 	VaultsTab,
 } from "@/components/multisig";
 import { getMultisig, getProposals, getSigners } from "@/lib/api";
-import { getRiskLevel } from "@/lib/risk";
-import type { Metadata } from "next";
 import {
-	STATUS_DISPLAY,
-	WARNING_SEVERITY,
 	SOLANA_ADDRESS_RE,
 	SOLSCAN_BASE,
+	STATUS_DISPLAY,
+	WARNING_SEVERITY,
 } from "@/lib/constants";
+import { getRiskLevel } from "@/lib/risk";
+import type { Metadata } from "next";
 import { MultisigRealtimeRefresh } from "./MultisigRealtimeRefresh";
 
 export async function generateMetadata({
@@ -108,6 +109,7 @@ export default async function MultisigPage({
 			<main className="min-h-screen pb-16">
 				<MultisigRealtimeRefresh multisigId={multisig.id} />
 				<MultisigHeader />
+				<NewAnalysisToast multisigId={multisig.id} />
 
 				<MultisigLiveSection
 					address={address}

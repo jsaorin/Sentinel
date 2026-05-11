@@ -1,8 +1,8 @@
-import { io, type Socket } from "socket.io-client";
 import type {
-	RealtimeServerToClientEvents,
 	RealtimeClientToServerEvents,
+	RealtimeServerToClientEvents,
 } from "@sentinel/common/realtime";
+import { type Socket, io } from "socket.io-client";
 
 export type RealtimeSocket = Socket<
 	RealtimeServerToClientEvents,

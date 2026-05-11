@@ -1,15 +1,15 @@
 "use client";
 
+import { type RealtimeSocket, createRealtimeSocket } from "@/lib/realtime";
 import {
+	type ReactNode,
 	createContext,
 	useCallback,
 	useContext,
 	useEffect,
 	useRef,
 	useState,
-	type ReactNode,
 } from "react";
-import { createRealtimeSocket, type RealtimeSocket } from "@/lib/realtime";
 
 type RealtimeContextValue = {
 	socket: RealtimeSocket | null;

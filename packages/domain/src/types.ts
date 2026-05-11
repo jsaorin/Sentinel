@@ -13,6 +13,9 @@ const DOMAIN_REPOSITORY_TYPES = {
 	ProgramRepository: Symbol.for("ProgramRepository"),
 	ThreatSignalRepository: Symbol.for("ThreatSignalRepository"),
 	NonceAccountRepository: Symbol.for("NonceAccountRepository"),
+	MultisigThreatExposureRepository: Symbol.for(
+		"MultisigThreatExposureRepository",
+	),
 };
 
 export const DOMAIN_SERVICE_TYPES = {

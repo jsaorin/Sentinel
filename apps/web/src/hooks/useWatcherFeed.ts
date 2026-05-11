@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useRealtimeSocket } from "@/contexts/RealtimeContext";
 import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
+import { useEffect, useRef } from "react";
 
 export function useWatcherFeed(opts: {
 	onAgentMessage: (msg: string) => void;

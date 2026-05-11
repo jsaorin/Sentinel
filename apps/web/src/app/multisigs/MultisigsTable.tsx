@@ -1,20 +1,22 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import { Card, RiskBadge } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
 import { useRealtimeSocket } from "@/contexts/RealtimeContext";
-import { REALTIME_ROOMS, REALTIME_ACTIONS } from "@sentinel/common/realtime";
-import { getLevel } from "@/lib/risk";
 import type { MultisigListItemResponse } from "@/lib/api";
-import { RISK_FILTERS, PAGE_SIZE } from "@/lib/constants";
+import { PAGE_SIZE, RISK_FILTERS } from "@/lib/constants";
+import { getLevel } from "@/lib/risk";
+import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
+import { Card, RiskBadge } from "@sentinel/ui";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 type MultisigsTableProps = {
 	multisigs: MultisigListItemResponse[];
 };
 
-export function MultisigsTable({ multisigs: initialMultisigs }: MultisigsTableProps) {
+export function MultisigsTable({
+	multisigs: initialMultisigs,
+}: MultisigsTableProps) {
 	const [multisigs, setMultisigs] = useState(initialMultisigs);
 	const [search, setSearch] = useState("");
 	const [riskFilter, setRiskFilter] = useState<string>("All");

@@ -16,7 +16,8 @@ model ThreatSignal {
   createdAt        DateTime         @default(now()) @map("created_at")
   updatedAt        DateTime         @updatedAt @map("updated_at")
 
-  entities ThreatSignalEntity[]
+  entities          ThreatSignalEntity[]
+  multisigExposures MultisigThreatExposure[]
 
   @@unique([sourceKind, sourceIdentifier, externalId])
   @@index([isThreat])
@@ -32,7 +33,8 @@ model ThreatSignalEntity {
   contextSnippet String?             @map("context_snippet")
   createdAt      DateTime            @default(now()) @map("created_at")
 
-  threatSignal ThreatSignal @relation(fields: [threatSignalId], references: [id], onDelete: Cascade)
+  threatSignal      ThreatSignal             @relation(fields: [threatSignalId], references: [id], onDelete: Cascade)
+  multisigExposures MultisigThreatExposure[]
 
   @@unique([threatSignalId, kind, address])
   @@index([address])

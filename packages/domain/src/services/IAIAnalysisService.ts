@@ -1,10 +1,10 @@
-import type { DecodedInstruction } from "../entities/DecodedInstruction.js";
-import type { MultisigScoreWarning } from "../entities/MultisigScore.js";
-import type { ProposalFlag } from "../entities/ProposalScore.js";
 import type {
 	AffectedEntityKind,
 	AffectedEntityRole,
 } from "../entities/AffectedEntity.js";
+import type { DecodedInstruction } from "../entities/DecodedInstruction.js";
+import type { MultisigScoreWarning } from "../entities/MultisigScore.js";
+import type { ProposalFlag } from "../entities/ProposalScore.js";
 import type {
 	ThreatCategory,
 	ThreatSeverity,
@@ -12,6 +12,18 @@ import type {
 import type { ThreatSource } from "../events/ThreatSignalReceived.js";
 
 export type Recommendation = "SIGN" | "VERIFY" | "DO_NOT_SIGN";
+
+export interface MultisigThreatExposureSummary {
+	signerAddress: string;
+	role: AffectedEntityRole | null;
+	kind: AffectedEntityKind;
+	severity: "critical" | "high" | "medium";
+	threatSeverity: ThreatSeverity | null;
+	threatCategory: ThreatCategory | null;
+	sourceLabel: string | null;
+	summary: string | null;
+	capturedAt: string;
+}
 
 export interface MultisigAnalysisContext {
 	multisigId: string;
@@ -26,6 +38,7 @@ export interface MultisigAnalysisContext {
 		riskScore: number;
 		summary: string;
 	}>;
+	threatExposures?: MultisigThreatExposureSummary[];
 }
 
 export interface ProposalAnalysisContext {

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useRealtimeSocket } from "@/contexts/RealtimeContext";
 import type {
 	RealtimeAction,
 	RealtimePayloadMap,
 } from "@sentinel/common/realtime";
+import { useEffect, useRef } from "react";
 
 export function useRealtimeRoom<A extends RealtimeAction>(
 	room: string,
@@ -20,8 +20,7 @@ export function useRealtimeRoom<A extends RealtimeAction>(
 		if (!socket) return;
 		subscribe(room);
 
-		const listener = (data: RealtimePayloadMap[A]) =>
-			handlerRef.current(data);
+		const listener = (data: RealtimePayloadMap[A]) => handlerRef.current(data);
 		socket.on(action, listener as never);
 
 		return () => {

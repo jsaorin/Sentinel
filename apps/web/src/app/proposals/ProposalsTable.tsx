@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import { Card, Badge, RiskBadge } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
 import { useRealtimeSocket } from "@/contexts/RealtimeContext";
-import { REALTIME_ROOMS, REALTIME_ACTIONS } from "@sentinel/common/realtime";
-import { getRiskLevel } from "@/lib/risk";
+import type { GlobalProposalResponse, PaginationResponse } from "@/lib/api";
 import {
-	PROPOSAL_STATUSES,
 	PAGE_SIZE,
+	PROPOSAL_STATUSES,
 	STATUS_DISPLAY,
 	STATUS_DISPLAY_VARIANT,
 } from "@/lib/constants";
-import type { GlobalProposalResponse, PaginationResponse } from "@/lib/api";
+import { getRiskLevel } from "@/lib/risk";
+import { REALTIME_ACTIONS, REALTIME_ROOMS } from "@sentinel/common/realtime";
+import { Badge, Card, RiskBadge } from "@sentinel/ui";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 type ProposalsTableProps = {
 	initialProposals: GlobalProposalResponse[];

@@ -11,3 +11,4 @@ export {
 	mapPrismaThreatSignalToDomain,
 	mapPrismaThreatSignalEntityToDomain,
 } from "./ThreatSignalMapper.js";
+export { mapPrismaMultisigThreatExposureToDomain } from "./MultisigThreatExposureMapper.js";

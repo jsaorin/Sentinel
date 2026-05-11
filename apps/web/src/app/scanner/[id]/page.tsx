@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
-import { Card, Badge, RiskBadge } from "@sentinel/ui";
 import { MultisigHeader } from "@/components/multisig";
 import { getThreatSignalById } from "@/lib/api";
-import { notFound } from "next/navigation";
 import {
 	CATEGORY_LABEL,
-	SOURCE_KIND_LABEL,
 	ENTITY_KIND_LABEL,
 	ENTITY_ROLE_LABEL,
 	ENTITY_ROLE_VARIANT,
 	SOLSCAN_BASE,
+	SOURCE_KIND_LABEL,
 } from "@/lib/constants";
+import { Badge, Card, RiskBadge } from "@sentinel/ui";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
 	params,
@@ -72,9 +72,7 @@ export default async function ThreatSignalPage({
 				{/* Header card */}
 				<Card variant="default" padding="lg">
 					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
-						<h3 className="text-md sm:text-lg font-semibold">
-							Threat Signal
-						</h3>
+						<h3 className="text-md sm:text-lg font-semibold">Threat Signal</h3>
 						<div className="flex flex-wrap items-center gap-3">
 							{signal.category && (
 								<Badge variant="unknown">
@@ -90,7 +88,11 @@ export default async function ThreatSignalPage({
 					<div className="mt-1">
 						<InfoRow
 							label="Source"
-							value={signal.sourceLabel ?? SOURCE_KIND_LABEL[signal.sourceKind] ?? signal.sourceKind}
+							value={
+								signal.sourceLabel ??
+								SOURCE_KIND_LABEL[signal.sourceKind] ??
+								signal.sourceKind
+							}
 						/>
 						<InfoRow
 							label="Captured"
@@ -116,7 +118,6 @@ export default async function ThreatSignalPage({
 						/>
 					</div>
 				</Card>
-
 
 				{/* AI Summary */}
 				<Card variant="default" padding="lg">
@@ -170,9 +171,7 @@ export default async function ThreatSignalPage({
 										</Badge>
 										{entity.role && (
 											<Badge
-												variant={
-													ENTITY_ROLE_VARIANT[entity.role] ?? "unknown"
-												}
+												variant={ENTITY_ROLE_VARIANT[entity.role] ?? "unknown"}
 												className="!px-0"
 											>
 												{ENTITY_ROLE_LABEL[entity.role] ?? entity.role}
@@ -203,9 +202,7 @@ export default async function ThreatSignalPage({
 								<span className="w-28 hidden md:flex">
 									{entity.role ? (
 										<Badge
-											variant={
-												ENTITY_ROLE_VARIANT[entity.role] ?? "unknown"
-											}
+											variant={ENTITY_ROLE_VARIANT[entity.role] ?? "unknown"}
 										>
 											{ENTITY_ROLE_LABEL[entity.role] ?? entity.role}
 										</Badge>

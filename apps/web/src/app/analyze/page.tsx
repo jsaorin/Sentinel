@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card } from "@sentinel/ui";
 import { SearchIcon } from "@/components/icons";
 import { createMultisig } from "@/lib/api";
+import { Card } from "@sentinel/ui";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const TABS = [
 	{ id: "multisig", label: "Multisig Address" },
@@ -35,7 +35,7 @@ export default function AnalyzePage() {
 		router.push(`/multisig/${trimmed}`);
 	}
 
-return (
+	return (
 		<main className="min-h-screen">
 			<div className="max-w-3xl mx-auto px-6 py-16">
 				{/* Header */}

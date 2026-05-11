@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { Card } from "@sentinel/ui";
+import { useEffect, useRef, useState } from "react";
 
 const THINKING_VERBS = [
 	"Scanning networks...",

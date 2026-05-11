@@ -1,23 +1,23 @@
-import type { Metadata } from "next";
-import { Card, RiskBadge, Badge, AlertBanner } from "@sentinel/ui";
 import {
 	MultisigHeader,
-	ReportCard,
 	MultisigTabs,
+	ReportCard,
 } from "@/components/multisig";
 import { ScoreCard } from "@/components/multisig/ScoreCard";
 import { SignerRow } from "@/components/multisig/SignerRow";
 import { getProposalDetail } from "@/lib/api";
-import { getRiskLevel } from "@/lib/risk";
-import { notFound } from "next/navigation";
 import {
-	STATUS_VARIANT,
-	STATUS_LABEL,
 	FLAG_SEVERITY_LEVEL,
-	RECOMMENDATION_VARIANT,
 	RECOMMENDATION_LABEL,
+	RECOMMENDATION_VARIANT,
 	SOLSCAN_BASE,
+	STATUS_LABEL,
+	STATUS_VARIANT,
 } from "@/lib/constants";
+import { getRiskLevel } from "@/lib/risk";
+import { AlertBanner, Badge, Card, RiskBadge } from "@sentinel/ui";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ProposalRealtimeRefresh } from "./ProposalRealtimeRefresh";
 
 export async function generateMetadata({

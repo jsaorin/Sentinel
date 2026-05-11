@@ -1,9 +1,9 @@
 import type {
 	AffectedEntity,
 	CountThreatSignalsOptions,
+	ThreatSignal as DomainThreatSignal,
 	FindAllThreatSignalsPaginatedOptions,
 	IThreatSignalRepository,
-	ThreatSignal as DomainThreatSignal,
 	ThreatSource,
 } from "@sentinel/domain";
 import { injectable } from "inversify";
@@ -15,6 +15,14 @@ import { getPrismaClient } from "../prisma/prisma-client-factory.js";
 export class ThreatSignalRepository implements IThreatSignalRepository {
 	private get prisma() {
 		return getPrismaClient();
+	}
+
+	async findById(id: string): Promise<DomainThreatSignal | null> {
+		const record = await this.prisma.threatSignal.findUnique({
+			where: { id },
+			include: { entities: true },
+		});
+		return record ? mapPrismaThreatSignalToDomain(record) : null;
 	}
 
 	async findByExternalRef(

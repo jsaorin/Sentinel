@@ -3,6 +3,7 @@ import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { DecodedInstructionRepository } from "../repositories/DecodedInstructionRepository.js";
 import { MultisigRepository } from "../repositories/MultisigRepository.js";
 import { MultisigScoreRepository } from "../repositories/MultisigScoreRepository.js";
+import { MultisigThreatExposureRepository } from "../repositories/MultisigThreatExposureRepository.js";
 import { NonceAccountRepository } from "../repositories/NonceAccountRepository.js";
 import { OutboxEventRepository } from "../repositories/OutboxEventRepository.js";
 import { ProgramRepository } from "../repositories/ProgramRepository.js";
@@ -79,6 +80,11 @@ export const repositoryModule = new ContainerModule(
 		options
 			.bind(DOMAIN_TYPES.NonceAccountRepository)
 			.to(NonceAccountRepository)
+			.inSingletonScope();
+
+		options
+			.bind(DOMAIN_TYPES.MultisigThreatExposureRepository)
+			.to(MultisigThreatExposureRepository)
 			.inSingletonScope();
 	},
 );

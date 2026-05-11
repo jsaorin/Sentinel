@@ -7,11 +7,12 @@ model Multisig {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  signers       Signer[]
-  proposals     Proposal[]
-  vaults        Vault[]
-  score         MultisigScore?
-  nonceAccounts NonceAccount[]
+  signers          Signer[]
+  proposals        Proposal[]
+  vaults           Vault[]
+  score            MultisigScore?
+  nonceAccounts    NonceAccount[]
+  threatExposures  MultisigThreatExposure[]
 
   @@map("multisig")
 }
