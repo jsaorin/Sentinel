@@ -22,6 +22,7 @@ export type CountThreatSignalsOptions = {
 };
 
 export interface IThreatSignalRepository {
+	findById(id: string): Promise<ThreatSignal | null>;
 	findByExternalRef(
 		source: ThreatSource,
 		externalId: string,

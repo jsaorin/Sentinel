@@ -12,3 +12,4 @@ export * from "./IProposalScoreRepository.js";
 export * from "./IProgramRepository.js";
 export * from "./IThreatSignalRepository.js";
 export * from "./INonceAccountRepository.js";
+export * from "./IMultisigThreatExposureRepository.js";

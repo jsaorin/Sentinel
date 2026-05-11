@@ -14,6 +14,8 @@ const CAP_SINGLE_SIGNER = 15;
 const CAP_THRESHOLD_ONE = 20;
 const CAP_EXTERNAL_NONCE_FUNDER = 25;
 const CAP_NONCE_ACCOUNT_PRESENT = 60;
+const CAP_SIGNER_LINKED_TO_ATTACK = 10;
+const CAP_SIGNER_LINKED_TO_VULNERABILITY = 35;
 
 export function scoreMultisigHealth(
 	context: MultisigScoringContext,
@@ -53,6 +55,7 @@ function applySecurityCaps(
 	const signerCount = context.signers.length;
 	const threshold = context.threshold ?? 0;
 	const nonceAccounts = context.nonceAccounts ?? [];
+	const threatExposures = context.threatExposures ?? [];
 
 	let cap = 100;
 
@@ -68,6 +71,12 @@ function applySecurityCaps(
 		cap = Math.min(cap, CAP_EXTERNAL_NONCE_FUNDER);
 	} else if (nonceAccounts.length > 0) {
 		cap = Math.min(cap, CAP_NONCE_ACCOUNT_PRESENT);
+	}
+
+	if (threatExposures.some((e) => e.severity === "critical")) {
+		cap = Math.min(cap, CAP_SIGNER_LINKED_TO_ATTACK);
+	} else if (threatExposures.some((e) => e.severity === "high")) {
+		cap = Math.min(cap, CAP_SIGNER_LINKED_TO_VULNERABILITY);
 	}
 
 	return Math.min(weightedAverage, cap);
@@ -183,6 +192,27 @@ function buildWarnings(
 			code: "NONCE_ACCOUNT_PRESENT_FOR_SIGNER",
 			message: `${nonceAccounts.length} Durable Nonce account(s) authorized to ${distinctAuthorities.size} signer(s). Verify each is a known offline-signing tool`,
 		});
+	}
+
+	const threatExposures = context.threatExposures ?? [];
+	for (const exposure of threatExposures) {
+		const roleLabel = exposure.role ?? "unknown";
+		if (exposure.severity === "critical") {
+			warnings.push({
+				code: "SIGNER_LINKED_TO_ATTACK",
+				message: `Signer ${exposure.signerAddress} was identified in a threat report as ${roleLabel}. Treat this multisig as compromised and rotate the key immediately`,
+			});
+		} else if (exposure.severity === "high") {
+			warnings.push({
+				code: "SIGNER_LINKED_TO_VULNERABILITY",
+				message: `Signer ${exposure.signerAddress} is flagged as ${roleLabel} in a recent threat report. Investigate and consider rotating the key`,
+			});
+		} else {
+			warnings.push({
+				code: "SIGNER_FLAGGED_IN_THREAT",
+				message: `Signer ${exposure.signerAddress} appears in a threat report (role: ${roleLabel}). Review the source for context`,
+			});
+		}
 	}
 
 	return warnings;

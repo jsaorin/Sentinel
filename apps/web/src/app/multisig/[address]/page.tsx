@@ -1,26 +1,27 @@
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
-import { Card, AlertBanner } from "@sentinel/ui";
 import {
-	MultisigHeader,
 	InfoCard,
-	ScoreCard,
-	SignersList,
-	ReportCard,
-	ProposalHistory,
+	MultisigHeader,
 	MultisigNotFound,
 	MultisigTabs,
-	VaultsTab,
+	NewAnalysisToast,
+	ProposalHistory,
+	ReportCard,
 	ScoreBreakdown,
+	ScoreCard,
+	SignersList,
+	VaultsTab,
 } from "@/components/multisig";
-import { getMultisig, getSigners, getProposals } from "@/lib/api";
-import { getRiskLevel } from "@/lib/risk";
+import { getMultisig, getProposals, getSigners } from "@/lib/api";
 import {
-	STATUS_DISPLAY,
-	WARNING_SEVERITY,
 	SOLANA_ADDRESS_RE,
 	SOLSCAN_BASE,
+	STATUS_DISPLAY,
+	WARNING_SEVERITY,
 } from "@/lib/constants";
+import { getRiskLevel } from "@/lib/risk";
+import { AlertBanner, Card } from "@sentinel/ui";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
 export async function generateMetadata({
 	params,
@@ -163,6 +164,7 @@ export default async function MultisigPage({
 		return (
 			<main className="min-h-screen pb-16">
 				<MultisigHeader />
+				<NewAnalysisToast multisigId={multisig.id} />
 
 				<div className="max-w-6xl mx-auto px-6 space-y-6">
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">

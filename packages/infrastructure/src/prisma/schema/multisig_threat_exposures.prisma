@@ -1,0 +1,23 @@
+model MultisigThreatExposure {
+  id                   String              @id @default(uuid())
+  multisigId           String              @map("multisig_id")
+  signerId             String?             @map("signer_id")
+  signerAddress        String              @map("signer_address")
+  threatSignalId       String              @map("threat_signal_id")
+  threatSignalEntityId String              @map("threat_signal_entity_id")
+  kind                 AffectedEntityKind
+  role                 AffectedEntityRole?
+  detectedAt           DateTime            @default(now()) @map("detected_at")
+  createdAt            DateTime            @default(now()) @map("created_at")
+  updatedAt            DateTime            @updatedAt @map("updated_at")
+
+  multisig           Multisig           @relation(fields: [multisigId], references: [id], onDelete: Cascade)
+  signer             Signer?            @relation(fields: [signerId], references: [id], onDelete: SetNull)
+  threatSignal       ThreatSignal       @relation(fields: [threatSignalId], references: [id], onDelete: Cascade)
+  threatSignalEntity ThreatSignalEntity @relation(fields: [threatSignalEntityId], references: [id], onDelete: Cascade)
+
+  @@unique([multisigId, threatSignalEntityId])
+  @@index([multisigId])
+  @@index([signerAddress])
+  @@map("multisig_threat_exposure")
+}

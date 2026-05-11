@@ -1,5 +1,6 @@
 export { IngestThreatSignalCommandHandler } from "./commands/IngestThreatSignalCommandHandler.js";
 export { AnalyzeThreatSignalCommandHandler } from "./commands/AnalyzeThreatSignalCommandHandler.js";
+export { LinkThreatEntityToMultisigsCommandHandler } from "./commands/LinkThreatEntityToMultisigsCommandHandler.js";
 export { ListThreatSignalsQueryHandler } from "./queries/ListThreatSignalsQueryHandler.js";
 export type {
 	IngestThreatSignalCommandInputDto,
@@ -9,6 +10,10 @@ export type {
 	AnalyzeThreatSignalCommandInputDto,
 	AnalyzeThreatSignalCommandOutputDto,
 } from "./dtos/AnalyzeThreatSignalCommandDto.js";
+export type {
+	LinkThreatEntityToMultisigsCommandInputDto,
+	LinkThreatEntityToMultisigsCommandOutputDto,
+} from "./dtos/LinkThreatEntityToMultisigsCommandDto.js";
 export type {
 	ListThreatSignalsQueryInputDto,
 	ListThreatSignalsQueryOutputDto,

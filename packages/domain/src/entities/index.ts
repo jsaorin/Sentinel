@@ -12,3 +12,4 @@ export * from "./Program.js";
 export * from "./AffectedEntity.js";
 export * from "./ThreatSignal.js";
 export * from "./NonceAccount.js";
+export * from "./MultisigThreatExposure.js";

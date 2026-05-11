@@ -59,6 +59,11 @@ export const WARNING_SEVERITY: Record<
 	EXTERNAL_CONFIG_AUTHORITY: "high",
 	CONCENTRATED_SIGNER: "medium",
 	LOW_SIGNER_COUNT: "medium",
+	EXTERNAL_NONCE_FUNDER: "critical",
+	NONCE_ACCOUNT_PRESENT_FOR_SIGNER: "medium",
+	SIGNER_LINKED_TO_ATTACK: "critical",
+	SIGNER_LINKED_TO_VULNERABILITY: "high",
+	SIGNER_FLAGGED_IN_THREAT: "medium",
 };
 
 export const FLAG_SEVERITY_LEVEL: Record<string, RiskLevel> = {

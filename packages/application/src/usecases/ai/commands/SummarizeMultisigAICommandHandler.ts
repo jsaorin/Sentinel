@@ -3,9 +3,13 @@ import {
 	type IAIAnalysisService,
 	type IMultisigRepository,
 	type IMultisigScoreRepository,
+	type IMultisigThreatExposureRepository,
 	type IProposalScoreRepository,
 	type ISignerRepository,
+	type IThreatSignalRepository,
 	type MultisigAnalysisContext,
+	type MultisigThreatExposureSummary,
+	severityForRole,
 } from "@sentinel/domain";
 import { inject, injectFromBase, injectable } from "inversify";
 import { BaseUseCase } from "../../base/BaseUseCase.js";
@@ -33,6 +37,10 @@ export class SummarizeMultisigAICommandHandler extends BaseUseCase<
 		private proposalScoreRepository: IProposalScoreRepository,
 		@inject(DOMAIN_TYPES.AIAnalysisService)
 		private aiAnalysisService: IAIAnalysisService,
+		@inject(DOMAIN_TYPES.MultisigThreatExposureRepository)
+		private threatExposureRepository: IMultisigThreatExposureRepository,
+		@inject(DOMAIN_TYPES.ThreatSignalRepository)
+		private threatSignalRepository: IThreatSignalRepository,
 	) {
 		super();
 	}
@@ -44,12 +52,14 @@ export class SummarizeMultisigAICommandHandler extends BaseUseCase<
 
 		this.logger.info("Summarising multisig with AI", { multisigId });
 
-		const [multisig, signers, score, proposalScores] = await Promise.all([
-			this.multisigRepository.findById(multisigId),
-			this.signerRepository.findByMultisigId(multisigId),
-			this.multisigScoreRepository.findByMultisigId(multisigId),
-			this.proposalScoreRepository.findByMultisigId(multisigId),
-		]);
+		const [multisig, signers, score, proposalScores, threatExposures] =
+			await Promise.all([
+				this.multisigRepository.findById(multisigId),
+				this.signerRepository.findByMultisigId(multisigId),
+				this.multisigScoreRepository.findByMultisigId(multisigId),
+				this.proposalScoreRepository.findByMultisigId(multisigId),
+				this.threatExposureRepository.findByMultisigId(multisigId),
+			]);
 
 		if (!multisig || !score) {
 			this.logger.warning("AI summary skipped: missing multisig or score", {
@@ -68,6 +78,32 @@ export class SummarizeMultisigAICommandHandler extends BaseUseCase<
 				summary: p.summary,
 			}));
 
+		const distinctSignalIds = Array.from(
+			new Set(threatExposures.map((e) => e.threatSignalId)),
+		);
+		const signals = await Promise.all(
+			distinctSignalIds.map((id) => this.threatSignalRepository.findById(id)),
+		);
+		const signalById = new Map<string, (typeof signals)[number]>(
+			signals.map((s, i) => [distinctSignalIds[i], s]),
+		);
+
+		const threatExposureSummaries: MultisigThreatExposureSummary[] =
+			threatExposures.map((exposure) => {
+				const signal = signalById.get(exposure.threatSignalId) ?? null;
+				return {
+					signerAddress: exposure.signerAddress,
+					role: exposure.role,
+					kind: exposure.kind,
+					severity: severityForRole(exposure.role),
+					threatSeverity: signal?.severity ?? null,
+					threatCategory: signal?.category ?? null,
+					sourceLabel: signal?.source.label ?? null,
+					summary: signal?.summary ?? null,
+					capturedAt: (signal?.capturedAt ?? exposure.detectedAt).toISOString(),
+				};
+			});
+
 		const context: MultisigAnalysisContext = {
 			multisigId,
 			address: multisig.address,
@@ -77,6 +113,7 @@ export class SummarizeMultisigAICommandHandler extends BaseUseCase<
 			overallScore: score.overallScore,
 			warnings: score.warnings,
 			recentProposals,
+			threatExposures: threatExposureSummaries,
 		};
 
 		try {
