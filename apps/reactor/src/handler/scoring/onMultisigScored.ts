@@ -37,6 +37,12 @@ export const onMultisigScored: Handler<MultisigScoredEvent["data"]> = async (
 	});
 
 	await realtime.emitToRoom(
+		REALTIME_ROOMS.multisig(multisigId),
+		REALTIME_ACTIONS.NEW_ANALYSIS_MULTISIG,
+		{ multisigId },
+	);
+
+	await realtime.emitToRoom(
 		REALTIME_ROOMS.watcherFeed(),
 		REALTIME_ACTIONS.AGENT_MESSAGE,
 		{ message: `Multisig ${multisigId} analysis complete` },
